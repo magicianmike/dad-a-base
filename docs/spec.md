@@ -108,7 +108,8 @@ See [Case Study](#case-study).
   - each Joke in a halftone comic frame, with a caption.
 - **No ratings.** The API has no rating for a Joke, so none is invented.
 - **Tokens** in three layers: primitive (the raw palette, type and steps), semantic (`--color-surface`, `--space-4`) and domain (`--masthead-font`, `--joke-frame-halftone`). Components use only semantic and domain tokens, and a test enforces it.
-- **Themes:** light and dark. The default follows the system setting, the toggle overrides it and is saved, and the theme is applied before first paint so it doesn't flash.
+- **Themes:** light and dark. The page follows the system setting until the visitor presses the theme toggle, a small sun-and-moon switch, a toggle button named "Dark theme". Their choice is saved and applied before first paint, so it doesn't flash. There's no "Auto" option.
+- **Navigation** lists only built pages. Each milestone adds its own (`src/navigation.ts`).
 - **Voice:** [`voice.md`](voice.md). Copy is punny, but an error always says plainly what happened. A test checks that every error state has both.
 - **Extras:** keyboard shortcuts (`/` focuses search, `r` gets a new random joke), and page transitions with `<Transition>` that turn off under `prefers-reduced-motion`.
 
@@ -134,7 +135,7 @@ The author does a VoiceOver pass on a Mac and an iPhone for each milestone, reco
 
 ## Case Study
 
-`/case-study` is an MDX page with live components in fixed states, inline SVG diagrams, a "View the code on GitHub" button that stays visible, and an Open Graph image made at build time ([ADR 0003](adr/0003-case-study-in-app.md)). It gives more weight to engineering, while still showing product ownership and UX skill.
+`/case-study` is an MDX page with live components in fixed states, inline SVG diagrams, and an Open Graph image made at build time ([ADR 0003](adr/0003-case-study-in-app.md)). It gives more weight to engineering, while still showing product ownership and UX skill. It doesn't link to the code: the repo is internal to onX.
 
 1. **In 60 seconds**
 2. **Product and UX**

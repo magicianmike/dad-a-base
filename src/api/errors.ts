@@ -34,7 +34,8 @@ export function toAppError(error: unknown): AppError {
     if (typeof statusCode === 'number') {
       return new AppError(codeForStatus(statusCode), current.message, { cause: error })
     }
-    if (current instanceof TypeError && /fetch|network/i.test(current.message)) {
+    // Chrome says "Failed to fetch", Firefox "NetworkError…", Safari "Load failed".
+    if (current instanceof TypeError && /fetch|network|load failed/i.test(current.message)) {
       return new AppError('offline', current.message, { cause: error })
     }
     current = (current as { networkError?: unknown }).networkError ?? current.cause

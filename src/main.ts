@@ -4,6 +4,7 @@ import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import App from './App.vue'
 import { createApolloClient } from './api/client'
+import { focusOnNavigation } from './focusOnNavigation'
 import { router } from './router'
 import './styles/global.css'
 
@@ -14,6 +15,7 @@ async function start() {
     await worker.start({ onUnhandledFrame: 'bypass', quiet: true })
   }
 
+  focusOnNavigation(router)
   createApp(App)
     .provide(DefaultApolloClient, createApolloClient())
     .use(createPinia())

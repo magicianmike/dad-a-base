@@ -6,6 +6,9 @@ beforeAll(() => server.listen({ onUnhandledFrame: 'error' }))
 afterEach(() => {
   server.resetHandlers()
   resetMocks()
+  sessionStorage.clear()
+  localStorage.clear()
+  delete document.documentElement.dataset.theme
 })
 afterAll(() => server.close())
 

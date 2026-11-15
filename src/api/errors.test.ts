@@ -26,10 +26,13 @@ describe('toAppError', () => {
     expect(toAppError(new ApolloError({ networkError: serverError })).code).toBe('500')
   })
 
-  it('treats a failed fetch as offline', () => {
-    const error = new ApolloError({ networkError: new TypeError('Failed to fetch') })
-    expect(toAppError(error).code).toBe('offline')
-  })
+  it.each(['Failed to fetch', 'NetworkError when attempting to fetch resource.', 'Load failed'])(
+    'treats a failed fetch as offline, as a browser words it: %s',
+    (message) => {
+      const error = new ApolloError({ networkError: new TypeError(message) })
+      expect(toAppError(error).code).toBe('offline')
+    },
+  )
 
   it('looks through an error’s cause', () => {
     const error = new Error('Wrapped', { cause: new AppError('429', 'Slow down') })

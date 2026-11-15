@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
-const routes = ['/', '/random', '/design-system']
+const routes = ['/', '/random', '/design-system', '/error/500', '/no/such/page']
 
 for (const colorScheme of ['light', 'dark'] as const) {
   test.describe(`${colorScheme} scheme`, () => {

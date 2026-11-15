@@ -2,6 +2,7 @@
 import { useHead } from '@unhead/vue'
 import { useRandomJoke } from '@/api/useRandomJoke'
 import AppButton from '@/components/AppButton.vue'
+import ErrorView from '@/components/ErrorView.vue'
 import JokeCard from '@/components/JokeCard.vue'
 import StoryHeading from '@/components/StoryHeading.vue'
 
@@ -11,13 +12,15 @@ const { joke, loading, error, next } = useRandomJoke()
 </script>
 
 <template>
-  <StoryHeading kicker="Hot off the press">A random joke</StoryHeading>
-  <div class="story" aria-live="polite" :aria-busy="loading">
-    <p v-if="error" role="alert">Couldn't fetch a joke ({{ error.code }}).</p>
-    <JokeCard v-else-if="joke" :joke="joke" />
-    <p v-else>Loading a joke…</p>
-  </div>
-  <AppButton variant="primary" :disabled="loading" @click="next">Another one</AppButton>
+  <ErrorView v-if="error" :code="error.code" :on-retry="next" />
+  <template v-else>
+    <StoryHeading kicker="Hot off the press">A random joke</StoryHeading>
+    <div class="story" aria-live="polite" :aria-busy="loading">
+      <JokeCard v-if="joke" :joke="joke" />
+      <p v-else>Loading a joke…</p>
+    </div>
+    <AppButton variant="primary" :disabled="loading" @click="next">Another one</AppButton>
+  </template>
 </template>
 
 <style scoped>

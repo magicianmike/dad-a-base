@@ -41,8 +41,8 @@ export default mergeConfig(
           plugins: [
             storybookTest({ configDir: fileURLToPath(new URL('./.storybook', import.meta.url)) }),
           ],
-          // Vite finds Vue late on a cold cache and reloads mid-run, failing the run (as in CI).
-          optimizeDeps: { include: ['vue'] },
+          // On a cold cache, Vite finds these late and reloads mid-run, failing the run (as in CI). Pre-bundle them.
+          optimizeDeps: { include: ['vue', 'vue-router', 'pinia', '@unhead/vue/client'] },
           test: {
             name: 'storybook',
             browser: {
