@@ -1,6 +1,6 @@
 # Vue 3, TypeScript and Vite, with plain CSS
 
-Dadabase is a Vue 3 single-page app, written with the Composition API and `<script setup>` in TypeScript and built with Vite, styled with plain CSS and CSS Modules. The brief leaves the stack open. The job calls for Vue, and a take-home project should show depth in that ecosystem, so the app uses its standard pieces: vue-router, Pinia, `@vue/apollo-composable` and `@unhead/vue`. The brief says it judges how the components are laid out, so the layout is written by hand instead of coming from a component library.
+Dad-a-base is a Vue 3 single-page app, written with the Composition API and `<script setup>` in TypeScript and built with Vite, styled with plain CSS and CSS Modules. The brief leaves the stack open. The job calls for Vue, and a take-home project should show depth in that ecosystem, so the app uses its standard pieces: vue-router, Pinia, `@vue/apollo-composable` and `@unhead/vue`. The brief says it judges how the components are laid out, so the layout is written by hand instead of coming from a component library.
 
 ## Considered Options
 

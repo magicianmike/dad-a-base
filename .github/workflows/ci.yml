@@ -17,11 +17,11 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
-      - run: npm run test:coverage
-      - run: npm run build
       - run: npx playwright install --with-deps
-      # Every Storybook story, run as a component test in Chromium.
-      - run: npm run test:components
+      # Unit tests and every Storybook story (as a component test in Chromium), with one coverage gate over both.
+      - run: npm run test:coverage
+      # The app, and Storybook under /storybook, as Vercel builds them.
+      - run: npm run build:site
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v4
         if: failure()

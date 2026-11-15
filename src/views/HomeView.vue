@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useHead } from '@unhead/vue'
+import StoryHeading from '@/components/StoryHeading.vue'
 
 useHead({ title: '' })
 </script>
 
 <template>
-  <h1>Dadabase</h1>
-  <p>A database of dad jokes, sorted by groan.</p>
+  <StoryHeading kicker="Today's top story">Local dad says the thing again</StoryHeading>
+  <p>All the jokes that are fit to groan.</p>
   <RouterLink to="/random">Get a random joke</RouterLink>
 </template>

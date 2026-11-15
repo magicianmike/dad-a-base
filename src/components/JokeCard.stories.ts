@@ -13,7 +13,15 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   play: async ({ canvas, args }) => {
-    await expect(canvas.getByText(args.joke.joke)).toBeInTheDocument()
+    await expect(canvas.getByRole('blockquote')).toHaveTextContent(args.joke.joke)
+    await expect(canvas.getByText(`Joke #${args.joke.id}`)).toBeInTheDocument()
+  },
+}
+
+export const WithCaption: Story = {
+  args: { caption: 'Witnesses report groaning.' },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText('Witnesses report groaning.')).toBeInTheDocument()
   },
 }
 

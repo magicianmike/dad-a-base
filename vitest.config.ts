@@ -20,6 +20,8 @@ export default mergeConfig(
           test: {
             name: 'unit',
             environment: 'jsdom',
+            // Vitest empties CSS by default, even `?raw` imports. The token files are read as data.
+            css: { include: [/src\/styles\/tokens\/.+\.css/] },
             globals: true,
             include: ['src/**/*.test.ts'],
             setupFiles: ['src/test/setup.ts'],

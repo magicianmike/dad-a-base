@@ -1,16 +1,89 @@
-:root {
-  color-scheme: light dark;
-  --color-surface: var(--gray-0);
-  --color-surface-raised: var(--gray-100);
-  --color-text: var(--gray-900);
-  --color-text-muted: var(--gray-700);
+/*
+ * Semantic tokens: what a value is for (ADR 0004). Themes change only this layer.
+ * The theme follows the system unless `data-theme` is set, on the root by the toggle (milestone 2) or on any element,
+ * as /design-system does to show both themes at once. Contrast is checked in tokens.test.ts.
+ */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+  --color-surface: var(--newsprint-100);
+  --color-surface-raised: var(--newsprint-50);
+  --color-text: var(--ink-900);
+  --color-text-muted: var(--ink-600);
+  --color-border: var(--ink-900);
+  --color-accent: var(--red-700);
+  --color-on-accent: var(--white);
+  --color-highlight: var(--yellow-400);
+  --color-focus: var(--blue-700);
+  --color-dots: var(--dots-red-light);
+  --color-skin: var(--skin-light);
+  --color-hair: var(--hair-brown);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --color-surface: var(--gray-900);
-    --color-surface-raised: var(--gray-700);
-    --color-text: var(--gray-0);
-    --color-text-muted: var(--gray-100);
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --color-surface: var(--night-900);
+    --color-surface-raised: var(--night-800);
+    --color-text: var(--cream-100);
+    --color-text-muted: var(--cream-400);
+    --color-border: var(--cream-100);
+    --color-accent: var(--red-300);
+    --color-on-accent: var(--night-900);
+    --color-highlight: var(--yellow-300);
+    --color-focus: var(--blue-300);
+    --color-dots: var(--dots-red-dark);
+    --color-skin: var(--skin-dark);
+    --color-hair: var(--hair-brown);
   }
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --color-surface: var(--night-900);
+  --color-surface-raised: var(--night-800);
+  --color-text: var(--cream-100);
+  --color-text-muted: var(--cream-400);
+  --color-border: var(--cream-100);
+  --color-accent: var(--red-300);
+  --color-on-accent: var(--night-900);
+  --color-highlight: var(--yellow-300);
+  --color-focus: var(--blue-300);
+  --color-dots: var(--dots-red-dark);
+  --color-skin: var(--skin-dark);
+  --color-hair: var(--hair-brown);
+}
+
+:root {
+  --font-display: var(--font-blackletter);
+  --font-heading: var(--font-condensed);
+  --font-body: var(--font-hyperlegible);
+  --font-label: var(--font-comic);
+  --text-xs: var(--size-100);
+  --text-sm: var(--size-200);
+  --text-base: var(--size-300);
+  --text-lg: var(--size-400);
+  --text-xl: var(--size-500);
+  --text-2xl: var(--size-600);
+  --text-3xl: var(--size-700);
+  --text-display: var(--size-fluid-masthead);
+  --text-feature: var(--size-fluid-joke);
+  --space-1: var(--step-1);
+  --space-2: var(--step-2);
+  --space-3: var(--step-3);
+  --space-4: var(--step-4);
+  --space-5: var(--step-5);
+  --space-6: var(--step-6);
+  --space-7: var(--step-7);
+  --space-8: var(--step-8);
+  --border-width: var(--line-2);
+  --border-width-strong: var(--line-3);
+  --rule-width: var(--line-3);
+  --indicator-width: var(--line-4);
+  --focus-ring-width: var(--line-3);
+  --shadow-offset: var(--offset-3);
+  --shadow-offset-large: var(--offset-6);
+  --target-min: var(--size-target);
+  --measure: var(--measure-page);
+  --measure-reading: var(--measure-text);
 }

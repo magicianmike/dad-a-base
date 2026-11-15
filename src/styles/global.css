@@ -1,3 +1,4 @@
+@import url('./fonts.css');
 @import url('./tokens/primitive.css');
 @import url('./tokens/semantic.css');
 @import url('./tokens/domain.css');
@@ -12,7 +13,8 @@ body {
   margin: 0;
   background: var(--color-surface);
   color: var(--color-text);
-  font-family: system-ui, sans-serif;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
   line-height: 1.5;
 }
 
@@ -22,6 +24,38 @@ body {
   min-height: 100dvh;
 }
 
+h1,
+h2,
+h3 {
+  margin: 0 0 var(--space-3);
+  font-family: var(--headline-font);
+  font-weight: 700;
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+h1 {
+  font-size: var(--text-3xl);
+}
+
+h2 {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+h3 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
 a {
   color: inherit;
+}
+
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-width);
 }

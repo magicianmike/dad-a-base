@@ -1,12 +1,69 @@
-/* Placeholder primitives for the tracer. Milestone 1 replaces them with the chosen direction. */
+/*
+ * Primitive tokens: the raw values (ADR 0004). Only semantic.css and domain.css use these.
+ * The palette is newsprint and its night edition, from the chosen direction (journal 0001).
+ */
 :root {
-  --gray-0: #fff;
-  --gray-100: #f3f3f3;
-  --gray-700: #444;
-  --gray-900: #151515;
-  --space-2: 0.5rem;
-  --space-4: 1rem;
-  --space-6: 1.5rem;
-  --font-size-joke: 1.5rem;
-  --measure: 40rem;
+  /* Newsprint, for the light theme */
+  --newsprint-50: #fbf8f0;
+  --newsprint-100: #f3eee2;
+  --ink-900: #2b2b2b;
+  --ink-600: #5d584e;
+  --red-700: #a9442e;
+  --blue-700: #3e6990;
+  --yellow-400: #e9b44c;
+
+  /* The night edition, for the dark theme */
+  --night-900: #1d1f24;
+  --night-800: #262931;
+  --cream-100: #ece6d6;
+  --cream-400: #b5ad9c;
+  --red-300: #e8846f;
+  --blue-300: #86b1d9;
+  --yellow-300: #f0c56b;
+
+  /* The dad */
+  --skin-light: #f2c7a5;
+  --skin-dark: #d9a77f;
+  --hair-brown: #4a3426;
+  --white: #fff;
+
+  /* Halftone dots, the red at low opacity */
+  --dots-red-light: rgb(169 68 46 / 16%);
+  --dots-red-dark: rgb(232 132 111 / 14%);
+
+  /* Type */
+  --font-blackletter: 'UnifrakturMaguntia', 'Old English Text MT', serif;
+  --font-condensed: 'Oswald', 'Arial Narrow', sans-serif;
+  --font-hyperlegible: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  --font-comic: 'Comic Neue', 'Comic Sans MS', cursive;
+  --size-100: 0.8125rem;
+  --size-200: 0.875rem;
+  --size-300: 1rem;
+  --size-400: 1.125rem;
+  --size-500: 1.4rem;
+  --size-600: 1.8rem;
+  --size-700: 2.7rem;
+  --size-fluid-joke: clamp(1.35rem, 1rem + 1.6vw, 1.8rem);
+  --size-fluid-masthead: clamp(2.2rem, 0.5rem + 9cqi, 5.2rem);
+
+  /* Steps of space, on a 4px grid */
+  --step-1: 0.25rem;
+  --step-2: 0.5rem;
+  --step-3: 0.75rem;
+  --step-4: 1rem;
+  --step-5: 1.5rem;
+  --step-6: 2rem;
+  --step-7: 2.5rem;
+  --step-8: 4rem;
+
+  /* Lines and offsets */
+  --line-1: 1px;
+  --line-2: 2px;
+  --line-3: 3px;
+  --line-4: 4px;
+  --offset-3: 3px;
+  --offset-6: 6px;
+  --size-target: 44px;
+  --measure-page: 64rem;
+  --measure-text: 44rem;
 }

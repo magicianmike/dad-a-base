@@ -1,4 +1,41 @@
-:root {
-  --joke-card-bg: var(--color-surface-raised);
-  --joke-text-size: var(--font-size-joke);
+/*
+ * Domain tokens: Dad-a-base's own parts (ADR 0004). Built from semantic tokens only, so they follow the theme.
+ * A custom property's var() resolves where it's declared, so these are declared again on every element that sets a
+ * theme. On :root alone, a dark panel inside a light page would inherit the light values.
+ */
+:root,
+[data-theme] {
+  /* The masthead */
+  --masthead-font: var(--font-display);
+  --masthead-size: var(--text-display);
+  --masthead-hyphen-color: var(--color-accent);
+  --masthead-rule: var(--rule-width) double var(--color-border);
+
+  /* Headlines, kickers and captions */
+  --headline-font: var(--font-heading);
+  --kicker-font: var(--font-label);
+  --kicker-color: var(--color-accent);
+  --caption-font: var(--font-label);
+  --caption-color: var(--color-text-muted);
+
+  /* A Joke, framed like a comic panel */
+  --joke-frame-bg: var(--color-surface-raised);
+
+  /* Halftone: 1.6px dots on an 8px pitch */
+  --joke-frame-halftone: radial-gradient(var(--color-dots) 1.6px, transparent 1.7px) 0 0 / 8px 8px;
+  --joke-frame-border: var(--border-width-strong) solid var(--color-border);
+  --joke-text-size: var(--text-feature);
+
+  /* Buttons, with a printed offset shadow */
+  --button-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--color-border);
+  --button-primary-bg: var(--color-accent);
+  --button-primary-text: var(--color-on-accent);
+
+  /* A correction notice, the Error states */
+  --correction-shadow: var(--shadow-offset-large) var(--shadow-offset-large) 0
+    var(--color-highlight);
+
+  /* The dad */
+  --dad-skin: var(--color-skin);
+  --dad-hair: var(--color-hair);
 }

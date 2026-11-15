@@ -1,10 +1,10 @@
-# Dadabase: spec
+# Dad-a-base: spec
 
-Dadabase is a quirky, comedic dad-joke site built on the [icanhazdadjoke](https://icanhazdadjoke.com/api) REST API, for the brief in [`brief.md`](brief.md). It's a take-home interview project. Beyond the brief, it aims to show depth in the Vue ecosystem, product ownership, and UX and design craft. A Case Study inside the app explains how and why it was built.
+Dad-a-base is a quirky, comedic dad-joke site built on the [icanhazdadjoke](https://icanhazdadjoke.com/api) REST API, for the brief in [`brief.md`](brief.md). It's a take-home interview project. Beyond the brief, it aims to show depth in the Vue ecosystem, product ownership, and UX and design craft. A Case Study inside the app explains how and why it was built.
 
 ## Brief, and what it becomes
 
-| Brief                                          | Dadabase                                                                         |
+| Brief                                          | Dad-a-base                                                                       |
 | ---------------------------------------------- | -------------------------------------------------------------------------------- |
 | Search for a joke                              | `/search`: search as you type, with the query and page in the URL                |
 | Pagination, nice to have                       | Numbered pagination with an 11-number window                                     |
@@ -100,9 +100,14 @@ See [Case Study](#case-study).
 
 ## Design
 
-- **Brand:** Dadabase, quirky and comedic.
-- **Visual direction:** chosen from three throwaway prototypes: a retro database terminal, a 70s dad den, and a comic zine.
-- **Tokens** in three layers: primitive (the raw palette, the type scale, spacing), semantic (`--color-surface`, `--color-text-muted`) and domain (`--joke-card-bg`, `--punchline-color`). Components use only semantic and domain tokens.
+- **Brand:** The Dad-a-base, quirky and comedic: a newspaper's Sunday funnies. Live at <https://the-dad-a-base.vercel.app>.
+- **Visual direction:** "Sunday funnies", chosen over three rounds of throwaway prototypes ([journal 0001](journal/0001-visual-direction.md)):
+  - a blackletter masthead with a dad peeking over his newspaper as its crest;
+  - newsprint colours in light, and a "night edition" in dark;
+  - Oswald headlines, Comic Neue kickers and captions, and Atkinson Hyperlegible for everything else;
+  - each Joke in a halftone comic frame, with a caption.
+- **No ratings.** The API has no rating for a Joke, so none is invented.
+- **Tokens** in three layers: primitive (the raw palette, type and steps), semantic (`--color-surface`, `--space-4`) and domain (`--masthead-font`, `--joke-frame-halftone`). Components use only semantic and domain tokens, and a test enforces it.
 - **Themes:** light and dark. The default follows the system setting, the toggle overrides it and is saved, and the theme is applied before first paint so it doesn't flash.
 - **Voice:** [`voice.md`](voice.md). Copy is punny, but an error always says plainly what happened. A test checks that every error state has both.
 - **Extras:** keyboard shortcuts (`/` focuses search, `r` gets a new random joke), and page transitions with `<Transition>` that turn off under `prefers-reduced-motion`.
@@ -165,4 +170,4 @@ Its live embeds are a joke card, the pagination window in fixed states, each err
 5. **Favorites.**
 6. **Keyboard shortcuts and transitions.**
 7. **The Case Study.**
-8. **The README and polish.**
+8. **The README and polish,** including a "reveal the punchline" interaction for Jokes with a clear setup and punchline.

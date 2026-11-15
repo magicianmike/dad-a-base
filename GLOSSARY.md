@@ -1,6 +1,6 @@
-# Dadabase
+# Dad-a-base
 
-A dad-joke site, alongside a Case Study that explains how and why it was built.
+The Dad-a-base: a dad-joke site styled as a newspaper's Sunday funnies, alongside a Case Study that explains how and why it was built.
 
 ## Language
 
@@ -30,6 +30,13 @@ One of `ErrorView`'s codes: `404`, `403`, `429`, `500`, `offline` or `unknown`. 
 The write-up of the product, design and engineering decisions, aimed at hiring managers, at `/case-study` on the same site.
 _Avoid_: About page (it's only the link's name), portfolio
 
+**Masthead**:
+The paper's name at the top of every page: "The Dad-a-base" in blackletter, with the dad as its crest.
+_Avoid_: Logo, header (the header holds the Masthead, the dateline and the navigation)
+
+**Kicker**:
+The short label above a headline, such as "Today's top story".
+
 **Visitor**:
-The person using Dadabase.
+The person using Dad-a-base.
 _Avoid_: User (ambiguous with the Case Study's reader)

@@ -17,13 +17,15 @@ describe('App', () => {
       },
     })
 
-    expect(await screen.findByRole('heading', { level: 1, name: 'Dadabase' })).toBeInTheDocument()
-    await waitFor(() => expect(document.title).toBe('Dadabase'))
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Local dad says the thing again' }),
+    ).toBeInTheDocument()
+    await waitFor(() => expect(document.title).toBe('The Dad-a-base'))
 
     await userEvent.click(screen.getByRole('link', { name: 'Get a random joke' }))
 
     expect(await screen.findByText(jokes[0]!.joke)).toBeInTheDocument()
-    await waitFor(() => expect(document.title).toBe('A random joke · Dadabase'))
+    await waitFor(() => expect(document.title).toBe('A random joke · Dad-a-base'))
   })
 })
 
