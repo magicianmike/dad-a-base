@@ -1,0 +1,299 @@
+<!doctype html>
+<!--
+  PROTOTYPE, throw away. Milestone 1 of Dadabase, round 2.
+  Three toned-down takes on direction C (comic zine), switchable via ?variant=C1|C2|C3, each showing
+  ?page=home|joke|404 in ?theme=light|dark. No setup/punchline split (milestone 8) and no groan rating (dropped).
+  C1: tidy zine (C, calmer). C2: Sunday funnies (newspaper comics page). C3: Dad says (a character and speech bubbles).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dadabase · zine variations prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bangers&family=Comic+Neue:ital,wght@0,700;1,700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Atkinson Hyperlegible', sans-serif; }
+  #root { min-height: 100dvh; display: flex; flex-direction: column; background: var(--paper); color: var(--ink); }
+  main { flex: 1; }
+  button, input { font: inherit; }
+  button { cursor: pointer; }
+  a { color: inherit; }
+  .wrap { width: 100%; max-width: 64rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+  /* ───────────── C1 · tidy zine ───────────── */
+  .C1 { --paper:#fffaf0; --panel:#fff; --ink:#1b1b1b; --muted:#555; --pop:#d93a62; --sun:#ffcf33; --sky:#36a9e1; --dot:rgba(255,190,0,.55); --shadow:#1b1b1b; }
+  .C1[data-theme=dark] { --paper:#17151f; --panel:#221f2e; --ink:#f1edff; --muted:#bbb5d1; --pop:#ff6a8f; --sun:#ffd84d; --sky:#5cc4f5; --dot:rgba(255,216,77,.35); --shadow:#000; }
+  .C1 header { background:var(--panel); border-bottom:4px solid var(--ink); }
+  .C1 header .in { max-width:64rem; margin:0 auto; padding:1rem 1.25rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .C1 .halftone { height:14px; background-image:radial-gradient(var(--dot) 2.5px, transparent 2.6px); background-size:9px 9px; border-bottom:3px solid var(--ink); }
+  .C1 .logo { font-family:'Bangers', cursive; font-size:2.2rem; letter-spacing:.04em; text-decoration:none; text-shadow:2px 2px 0 var(--pop); }
+  .C1 nav { display:flex; gap:.25rem; flex-wrap:wrap; }
+  .C1 nav a { text-decoration:none; font-weight:700; padding:.6rem .8rem; min-height:44px; display:inline-flex; align-items:center; }
+  .C1 nav a[aria-current] { background:linear-gradient(transparent 55%, var(--sun) 55%); color:var(--ink); }
+  .C1[data-theme=dark] nav a[aria-current] { background:linear-gradient(transparent 55%, rgba(255,216,77,.45) 55%); }
+  .C1 h1, .C1 h2 { font-family:'Bangers', cursive; font-weight:400; letter-spacing:.04em; margin:0 0 1rem; }
+  .C1 h1 { font-size:2.6rem; } .C1 h2 { font-size:1.7rem; margin-top:3rem; }
+  .C1 .panel { position:relative; background:var(--panel); border:3px solid var(--ink); box-shadow:6px 6px 0 var(--shadow); padding:2rem 1.75rem 1.75rem; }
+  .C1[data-theme=dark] .panel { box-shadow:6px 6px 0 var(--pop); }
+  .C1 .cap { position:absolute; top:-.9rem; left:1rem; background:var(--sun); color:#1b1b1b; border:3px solid var(--ink); font-family:'Bangers', cursive; letter-spacing:.06em; padding:.05rem .6rem; }
+  .C1 .joke { font-size:clamp(1.35rem, 3vw, 1.75rem); font-weight:700; line-height:1.4; margin:0; }
+  .C1 .sticker { position:absolute; right:1rem; bottom:-1rem; background:var(--pop); color:#fff; font-family:'Bangers', cursive; letter-spacing:.06em; padding:.25rem .6rem; border:3px solid var(--ink); transform:rotate(4deg); }
+  .C1 .row { display:flex; gap:.75rem; flex-wrap:wrap; margin-top:2rem; }
+  .C1 .btn { background:var(--panel); color:var(--ink); border:3px solid var(--ink); box-shadow:4px 4px 0 var(--shadow); padding:.55rem 1.1rem; font-weight:700; min-height:44px; }
+  .C1[data-theme=dark] .btn { box-shadow:4px 4px 0 #000; }
+  .C1 .btn.primary { background:var(--sun); color:#1b1b1b; }
+  .C1 .search { display:flex; gap:.75rem; }
+  .C1 .search input { flex:1; min-width:0; border:3px solid var(--ink); padding:.6rem .9rem; background:var(--panel); color:var(--ink); }
+  .C1 .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(15rem, 1fr)); gap:1.25rem; }
+  .C1 .grid .panel { padding:1.25rem; box-shadow:4px 4px 0 var(--shadow); }
+  .C1 .err { display:grid; grid-template-columns:auto 1fr; gap:2rem; align-items:center; }
+  .C1 .burst { width:12rem; }
+  .C1 footer { border-top:4px solid var(--ink); background:var(--panel); }
+  .C1 footer .in { max-width:64rem; margin:0 auto; padding:1rem 1.25rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:.5rem; color:var(--muted); }
+  @media (max-width: 40rem) { .C1 .err { grid-template-columns:1fr; } .C1 .burst { width:9rem; } }
+
+  /* ───────────── C2 · Sunday funnies ───────────── */
+  .C2 { --paper:#f3eee2; --panel:#fbf8f0; --ink:#2b2b2b; --muted:#5d584e; --red:#c8553d; --blue:#3e6990; --yellow:#e9b44c; --dots:rgba(200,85,61,.16); }
+  .C2[data-theme=dark] { --paper:#1d1f24; --panel:#262931; --ink:#ece6d6; --muted:#b5ad9c; --red:#e8846f; --blue:#86b1d9; --yellow:#f0c56b; --dots:rgba(232,132,111,.14); }
+  .C2 header { text-align:center; padding:1.5rem 1.25rem 0; max-width:64rem; margin:0 auto; width:100%; }
+  .C2 .masthead { font-family:'Bangers', cursive; font-size:clamp(2.6rem, 9vw, 5rem); letter-spacing:.05em; line-height:1; text-decoration:none; display:inline-block; color:var(--ink); }
+  .C2 .masthead span { color:var(--red); }
+  .C2 .dateline { display:flex; justify-content:space-between; flex-wrap:wrap; gap:.5rem; border-top:3px double var(--ink); border-bottom:1px solid var(--ink); padding:.35rem 0; margin-top:.5rem;
+                  font-family:'Comic Neue', cursive; font-weight:700; font-size:.85rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+  .C2 nav { display:flex; justify-content:center; gap:.25rem 1.5rem; flex-wrap:wrap; border-bottom:3px double var(--ink); }
+  .C2 nav a { text-decoration:none; font-weight:700; text-transform:uppercase; letter-spacing:.08em; font-size:.9rem; padding:.7rem .25rem; min-height:44px; display:inline-flex; align-items:center; border-bottom:4px solid transparent; }
+  .C2 nav a[aria-current] { border-bottom-color:var(--red); color:var(--red); }
+  .C2 .cols { display:grid; grid-template-columns: 2fr 1fr; gap:2rem; }
+  .C2 .kicker { font-family:'Comic Neue', cursive; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--red); font-size:.85rem; margin:0 0 .5rem; }
+  .C2 h1, .C2 h2 { font-family:'Bangers', cursive; font-weight:400; letter-spacing:.04em; margin:0 0 .75rem; line-height:1.05; }
+  .C2 h1 { font-size:2.4rem; } .C2 h2 { font-size:1.5rem; }
+  .C2 .frame { border:3px solid var(--ink); background:var(--panel) radial-gradient(var(--dots) 1.6px, transparent 1.7px) 0 0 / 8px 8px; padding:2.5rem 2rem; }
+  .C2 .frame p { margin:0; font-size:clamp(1.35rem, 3vw, 1.8rem); font-weight:700; line-height:1.4; background:var(--panel); padding:.2rem .4rem; box-decoration-break:clone; -webkit-box-decoration-break:clone; display:inline; }
+  .C2 figcaption { font-family:'Comic Neue', cursive; font-style:italic; font-weight:700; color:var(--muted); margin-top:.6rem; }
+  .C2 .row { display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1.5rem; }
+  .C2 .btn { border:2px solid var(--ink); background:var(--panel); color:var(--ink); padding:.55rem 1rem; min-height:44px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; font-size:.85rem; box-shadow:3px 3px 0 var(--ink); }
+  .C2 .btn.primary { background:var(--red); color:#fff; border-color:var(--ink); }
+  .C2[data-theme=dark] .btn.primary { color:#1d1f24; }
+  .C2 aside section { border-top:3px solid var(--ink); padding-top:.75rem; margin-bottom:2rem; }
+  .C2 aside input { width:100%; border:2px solid var(--ink); background:var(--panel); color:var(--ink); padding:.6rem .8rem; margin-bottom:.6rem; }
+  .C2 aside ol { margin:0; padding-left:1.25rem; } .C2 aside li { margin:.6rem 0; line-height:1.4; }
+  .C2 .correction { max-width:40rem; margin:1rem auto; border:3px solid var(--ink); background:var(--panel); padding:1.75rem; box-shadow:6px 6px 0 var(--yellow); }
+  .C2 .correction h1 { color:var(--red); }
+  .C2 footer { border-top:3px double var(--ink); padding:1rem 1.25rem; text-align:center; font-family:'Comic Neue', cursive; font-weight:700; color:var(--muted); }
+  @media (max-width: 48rem) { .C2 .cols { grid-template-columns:1fr; } }
+
+  /* ───────────── C3 · Dad says ───────────── */
+  .C3 { --paper:#fdf6ec; --panel:#fff; --ink:#232323; --muted:#5b5752; --coral:#ff6b6b; --sun:#ffd166; --mint:#06d6a0; --sky:#4cc9f0; --skin:#f6c9a4; --hair:#4a3426; }
+  .C3[data-theme=dark] { --paper:#1c1a24; --panel:#2a2736; --ink:#f5f0ff; --muted:#c0b9d6; --coral:#ff8787; --sun:#ffd98a; --mint:#4be3b8; --sky:#7ad8f5; --skin:#d9a77f; }
+  .C3 header { padding:1rem 1.25rem; }
+  .C3 header .in { max-width:64rem; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;
+                   background:var(--panel); border:3px solid var(--ink); border-radius:20px; box-shadow:5px 5px 0 var(--ink); padding:.5rem .5rem .5rem 1.25rem; }
+  .C3 .logo { font-family:'Fredoka', sans-serif; font-weight:700; font-size:1.8rem; text-decoration:none; }
+  .C3 .logo span { color:var(--coral); }
+  .C3 nav { display:flex; gap:.35rem; flex-wrap:wrap; }
+  .C3 nav a { text-decoration:none; font-family:'Fredoka', sans-serif; font-weight:600; padding:.5rem 1rem; border-radius:999px; min-height:44px; display:inline-flex; align-items:center; border:3px solid transparent; }
+  .C3 nav a[aria-current] { background:var(--sun); border-color:var(--ink); color:#232323; }
+  .C3 h1, .C3 h2 { font-family:'Fredoka', sans-serif; font-weight:700; margin:0 0 1rem; line-height:1.1; }
+  .C3 h1 { font-size:clamp(2rem, 5vw, 2.8rem); } .C3 h2 { font-size:1.6rem; margin-top:3rem; }
+  .C3 .scene { display:grid; grid-template-columns: 9rem 1fr; gap:1.5rem; align-items:end; }
+  .C3 .dad { width:9rem; }
+  .C3 .bubble { position:relative; background:var(--panel); border:3px solid var(--ink); border-radius:28px; box-shadow:6px 6px 0 var(--ink); padding:1.75rem 2rem; margin-bottom:2.5rem; }
+  .C3 .bubble::before { content:''; position:absolute; left:-22px; bottom:28px; width:28px; height:28px; background:var(--panel); border-left:3px solid var(--ink); border-bottom:3px solid var(--ink); transform:skewY(-35deg); }
+  .C3 .bubble p { margin:0; font-size:clamp(1.35rem, 3vw, 1.8rem); font-weight:700; line-height:1.4; }
+  .C3 .tag { display:inline-block; font-family:'Fredoka', sans-serif; font-weight:600; background:var(--mint); color:#232323; border:3px solid var(--ink); border-radius:999px; padding:.1rem .8rem; margin-bottom:1rem; font-size:.9rem; }
+  .C3 .row { display:flex; gap:.75rem; flex-wrap:wrap; }
+  .C3 .btn { font-family:'Fredoka', sans-serif; font-weight:600; border:3px solid var(--ink); border-radius:999px; background:var(--panel); color:var(--ink); padding:.55rem 1.25rem; min-height:44px; box-shadow:4px 4px 0 var(--ink); }
+  .C3 .btn.primary { background:var(--coral); color:#232323; } .C3 .btn.alt { background:var(--sky); color:#232323; }
+  .C3 .search { display:flex; gap:.75rem; margin-top:2.5rem; }
+  .C3 .search input { flex:1; min-width:0; border:3px solid var(--ink); border-radius:999px; padding:.6rem 1.2rem; background:var(--panel); color:var(--ink); }
+  .C3 .faves { display:grid; grid-template-columns:repeat(auto-fill, minmax(15rem, 1fr)); gap:1.25rem; }
+  .C3 .faves div { background:var(--panel); border:3px solid var(--ink); border-radius:20px; padding:1.1rem 1.25rem; box-shadow:4px 4px 0 var(--ink); font-weight:700; }
+  .C3 .faves div:nth-child(3n+1) { border-top:12px solid var(--sun); } .C3 .faves div:nth-child(3n+2) { border-top:12px solid var(--mint); } .C3 .faves div:nth-child(3n) { border-top:12px solid var(--sky); }
+  .C3 footer { padding:1.5rem 1.25rem; text-align:center; color:var(--muted); font-weight:700; }
+  @media (max-width: 40rem) { .C3 .scene { grid-template-columns:1fr; } .C3 .dad { width:6rem; order:2; } .C3 .bubble { margin-bottom:1rem; } .C3 .bubble::before { left:2rem; bottom:-19px; transform:rotate(-45deg); border-left:3px solid var(--ink); border-bottom:3px solid var(--ink); } }
+
+  /* ───────────── prototype switcher (not part of any design) ───────────── */
+  #proto { position:fixed; left:50%; bottom:1rem; transform:translateX(-50%); z-index:99; display:flex; gap:.25rem; align-items:center; padding:.35rem;
+           background:#111; color:#fff; border-radius:999px; box-shadow:0 6px 24px rgba(0,0,0,.4); font:13px/1 system-ui, sans-serif; max-width:calc(100vw - 1rem); flex-wrap:wrap; justify-content:center; }
+  #proto button { background:transparent; color:#fff; border:0; border-radius:999px; padding:.5rem .7rem; }
+  #proto button[aria-pressed=true] { background:#fff; color:#111; }
+  #proto .label { padding:0 .6rem; font-weight:600; min-width:11rem; text-align:center; }
+  #proto .sep { width:1px; height:1.4rem; background:#444; margin:0 .2rem; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="proto" role="toolbar" aria-label="Prototype controls"></div>
+<script>
+const jokes = [
+  { id: 'daaUfibh', joke: 'Why was the big cat disqualified from the race? Because it was a cheetah.' },
+  { id: 'BI699EY08Ed', joke: 'Bad at golf? Join the club.' },
+  { id: 'ORKmyAIYvzd', joke: 'No matter how kind you are, German children are kinder.' },
+  { id: 'xXg3LZLZDd', joke: '*Reversing the car* "Ah, this takes me back"' },
+]
+const VARIANTS = { C1: 'Tidy zine', C2: 'Sunday funnies', C3: 'Dad says' }
+const PAGES = { home: 'Home', joke: 'Joke detail', 404: '404' }
+
+const params = new URLSearchParams(location.search)
+const state = {
+  variant: VARIANTS[params.get('variant')] ? params.get('variant') : 'C1',
+  page: PAGES[params.get('page')] ? params.get('page') : 'home',
+  theme: params.get('theme') === 'dark' ? 'dark' : 'light',
+}
+
+const nav = (p) => {
+  const cur = (k) => (p === k ? ' aria-current="page"' : '')
+  return `<a href="#"${cur('home')}>Home</a><a href="#">Search</a><a href="#"${cur('random')}>Random</a><a href="#">Favorites</a><a href="#">About</a>`
+}
+const [j0, ...favs] = jokes
+
+const burst = (cls) => `<svg class="${cls}" viewBox="0 0 300 220" role="img" aria-label="A comic explosion reading 404">
+  <polygon points="150,5 175,60 235,20 215,80 295,75 235,115 290,160 215,150 230,215 165,170 140,215 120,165 55,205 80,145 5,150 65,110 10,60 85,75 70,15 125,60"
+    fill="var(--sun)" stroke="var(--ink)" stroke-width="5"/>
+  <text x="150" y="132" text-anchor="middle" font-family="Bangers" font-size="74" fill="var(--pop)" stroke="#1b1b1b" stroke-width="3">404!</text>
+</svg>`
+
+const C1 = {
+  home: () => `
+    <div class="panel"><span class="cap">Joke of the moment</span><p class="joke">${j0.joke}</p><span class="sticker">Ba-dum-tss!</span></div>
+    <div class="row"><button class="btn primary">Another one</button><button class="btn">Open this joke</button></div>
+    <h2>Search the Dadabase</h2>
+    <form class="search" onsubmit="return false"><input placeholder="Cats, golf, dads…" aria-label="Search jokes"><button class="btn primary">Search</button></form>
+    <h2>Your favorites</h2>
+    <div class="grid">${favs.map((j) => `<div class="panel">${j.joke}</div>`).join('')}</div>`,
+  joke: () => `
+    <h1>Joke #${j0.id}</h1>
+    <div class="panel"><span class="cap">Exhibit A</span><p class="joke">${j0.joke}</p><span class="sticker">Ba-dum-tss!</span></div>
+    <div class="row"><button class="btn primary">Copy</button><button class="btn">Share</button><button class="btn">♥ Favorite</button></div>`,
+  404: () => `
+    <div class="err">${burst('burst')}
+      <div><h1>This page got punchlined</h1>
+        <p>Nothing lives at this address. The link may be mistyped, or the joke may never have existed.</p>
+        <div class="row"><button class="btn primary">Back home</button><button class="btn">Search jokes</button></div></div>
+    </div>`,
+  chrome: (body, p) => `
+    <header><div class="in"><a class="logo" href="#">Dadabase</a><nav aria-label="Main">${nav(p)}</nav></div></header>
+    <div class="halftone" aria-hidden="true"></div>
+    <main><div class="wrap">${body}</div></main>
+    <footer><div class="in"><span>Jokes from icanhazdadjoke.com</span><span>No dads were harmed.</span></div></footer>`,
+}
+
+const C2 = {
+  home: () => `
+    <div class="cols">
+      <article>
+        <p class="kicker">Today's top story</p>
+        <h1>Local dad says the thing again</h1>
+        <figure style="margin:0"><div class="frame"><p>${j0.joke}</p></div>
+          <figcaption>Witnesses report groaning. Joke #${j0.id}.</figcaption></figure>
+        <div class="row"><button class="btn primary">Another one</button><button class="btn">Open this joke</button></div>
+      </article>
+      <aside>
+        <section><h2>Search the archives</h2><input placeholder="Cats, golf, dads…" aria-label="Search jokes"><button class="btn">Search</button></section>
+        <section><h2>Readers' favorites</h2><ol>${favs.map((j) => `<li>${j.joke}</li>`).join('')}</ol></section>
+      </aside>
+    </div>`,
+  joke: () => `
+    <p class="kicker">From the archives · Joke #${j0.id}</p>
+    <figure style="margin:0;max-width:44rem"><div class="frame"><p>${j0.joke}</p></div>
+      <figcaption>Reprinted with permission of every dad, everywhere.</figcaption></figure>
+    <div class="row"><button class="btn primary">Copy</button><button class="btn">Share</button><button class="btn">♥ Favorite</button></div>`,
+  404: () => `
+    <div class="correction">
+      <p class="kicker">Correction</p>
+      <h1>This page does not exist</h1>
+      <p>An earlier link said there was something here. There isn't: the address may be mistyped, or the joke may never have existed. The Dadabase regrets the error.</p>
+      <div class="row"><button class="btn primary">Front page</button><button class="btn">Search the archives</button></div>
+    </div>`,
+  chrome: (body, p) => `
+    <header><a class="masthead" href="#">The <span>Dada</span>base</a>
+      <div class="dateline"><span>Vol. 1 · No. 404</span><span>All the jokes that are fit to groan</span><span>Free, like Dad's advice</span></div>
+      <nav aria-label="Main">${nav(p)}</nav></header>
+    <main><div class="wrap">${body}</div></main>
+    <footer>Jokes syndicated from icanhazdadjoke.com</footer>`,
+}
+
+const dad = (cls, mood = 'happy') => `<svg class="${cls}" viewBox="0 0 120 140" role="img" aria-label="${mood === 'happy' ? 'A grinning cartoon dad with glasses and a moustache' : 'A puzzled cartoon dad with glasses and a moustache'}">
+  <path d="M20 140 q0-38 40-38 q40 0 40 38z" fill="var(--sky)" stroke="var(--ink)" stroke-width="4"/>
+  <circle cx="60" cy="58" r="38" fill="var(--skin)" stroke="var(--ink)" stroke-width="4"/>
+  <path d="M24 46 q4-28 36-28 q32 0 36 28 q-14-10-36-10 q-22 0-36 10z" fill="var(--hair)"/>
+  <circle cx="46" cy="58" r="9" fill="none" stroke="var(--ink)" stroke-width="4"/><circle cx="74" cy="58" r="9" fill="none" stroke="var(--ink)" stroke-width="4"/>
+  <path d="M55 58 h10" stroke="var(--ink)" stroke-width="4"/>
+  <circle cx="46" cy="58" r="2.5" fill="var(--ink)"/><circle cx="74" cy="58" r="2.5" fill="var(--ink)"/>
+  <path d="M42 76 q18-10 36 0 q-18 6-36 0z" fill="var(--hair)"/>
+  ${mood === 'happy' ? '<path d="M48 84 q12 10 24 0" stroke="var(--ink)" stroke-width="4" fill="none" stroke-linecap="round"/>' : '<path d="M50 86 h20" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/><text x="98" y="26" font-family="Fredoka" font-weight="700" font-size="28" fill="var(--coral)">?</text>'}
+</svg>`
+
+const C3 = {
+  home: () => `
+    <span class="tag">Joke of the moment</span>
+    <div class="scene">${dad('dad')}<div class="bubble"><p>${j0.joke}</p></div></div>
+    <div class="row"><button class="btn primary">Another one</button><button class="btn">Open this joke</button></div>
+    <form class="search" onsubmit="return false"><input placeholder="Ask Dad about… cats? golf?" aria-label="Search jokes"><button class="btn alt">Search</button></form>
+    <h2>Your favorites</h2>
+    <div class="faves">${favs.map((j) => `<div>${j.joke}</div>`).join('')}</div>`,
+  joke: () => `
+    <span class="tag">Joke #${j0.id}</span>
+    <div class="scene">${dad('dad')}<div class="bubble"><p>${j0.joke}</p></div></div>
+    <div class="row"><button class="btn primary">Copy</button><button class="btn alt">Share</button><button class="btn">♥ Favorite</button></div>`,
+  404: () => `
+    <div class="scene">${dad('dad', 'puzzled')}<div class="bubble"><h1 style="margin:0 0 .5rem">Hi Lost, I'm Dad.</h1>
+      <p style="font-size:1.1rem;font-weight:400">Nothing lives at this address. The link may be mistyped, or the joke may never have existed.</p></div></div>
+    <div class="row"><button class="btn primary">Back home</button><button class="btn alt">Search jokes</button></div>`,
+  chrome: (body, p) => `
+    <header><div class="in"><a class="logo" href="#">Dada<span>base</span></a><nav aria-label="Main">${nav(p)}</nav></div></header>
+    <main><div class="wrap">${body}</div></main>
+    <footer>Jokes from icanhazdadjoke.com · Dad will be here all week</footer>`,
+}
+
+const designs = { C1, C2, C3 }
+
+function render() {
+  const d = designs[state.variant]
+  const root = document.getElementById('root')
+  root.className = state.variant
+  root.dataset.theme = state.theme
+  root.innerHTML = d.chrome(d[state.page](), state.page === 'joke' ? 'random' : state.page)
+
+  const keys = Object.keys(VARIANTS)
+  const proto = document.getElementById('proto')
+  proto.innerHTML = `
+    <button data-act="prev" aria-label="Previous variation">◀</button>
+    <span class="label">${state.variant} · ${VARIANTS[state.variant]}</span>
+    <button data-act="next" aria-label="Next variation">▶</button>
+    <span class="sep"></span>
+    ${Object.entries(PAGES).map(([k, v]) => `<button data-page="${k}" aria-pressed="${state.page === k}">${v}</button>`).join('')}
+    <span class="sep"></span>
+    <button data-act="theme" aria-pressed="${state.theme === 'dark'}">${state.theme === 'dark' ? '☾ Dark' : '☀ Light'}</button>`
+  proto.onclick = (e) => {
+    const b = e.target.closest('button'); if (!b) return
+    const i = keys.indexOf(state.variant)
+    if (b.dataset.act === 'prev') state.variant = keys[(i + keys.length - 1) % keys.length]
+    if (b.dataset.act === 'next') state.variant = keys[(i + 1) % keys.length]
+    if (b.dataset.act === 'theme') state.theme = state.theme === 'dark' ? 'light' : 'dark'
+    if (b.dataset.page) state.page = b.dataset.page
+    sync()
+  }
+  document.title = `${state.variant} ${PAGES[state.page]} ${state.theme} · Dadabase prototype`
+  console.log('prototype state', { ...state })
+}
+
+function sync() {
+  history.replaceState(null, '', `?variant=${state.variant}&page=${state.page}&theme=${state.theme}`)
+  render()
+}
+
+addEventListener('keydown', (e) => {
+  if (e.target.closest('input, textarea, [contenteditable]')) return
+  const keys = Object.keys(VARIANTS), i = keys.indexOf(state.variant)
+  if (e.key === 'ArrowLeft') { state.variant = keys[(i + keys.length - 1) % keys.length]; sync() }
+  if (e.key === 'ArrowRight') { state.variant = keys[(i + 1) % keys.length]; sync() }
+})
+
+sync()
+</script>
+</body>
+</html>

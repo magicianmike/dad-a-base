@@ -1,0 +1,319 @@
+<!doctype html>
+<!--
+  PROTOTYPE, throw away. Milestone 1 of Dadabase.
+  Three visual directions, switchable via ?variant=A|B|C, each showing ?page=home|joke|404 in ?theme=light|dark.
+  A: retro database terminal (dense, tabular). B: 70s dad den (one centred joke). C: comic zine (setup/punchline panels).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dadabase · visual direction prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=VT323&family=Shrikhand&family=Work+Sans:wght@400;600;700&family=Bangers&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  #root { min-height: 100dvh; display: flex; flex-direction: column; }
+  main { flex: 1; }
+  button { font: inherit; cursor: pointer; }
+  a { color: inherit; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+  /* ───────────── A · retro database terminal ───────────── */
+  .A { --bg:#f6f3e8; --bar:#dfeedd; --ink:#1d2a1f; --dim:#5d6b5f; --accent:#0f7a3a; --warn:#b3261e; --line:#b9c9b9;
+       font-family:'IBM Plex Mono', monospace; background:var(--bg); color:var(--ink); font-size:15px; }
+  .A[data-theme=dark] { --bg:#0b0f0b; --bar:#0f1a10; --ink:#b8f5b0; --dim:#5f8a5b; --accent:#ffb000; --warn:#ff6b5e; --line:#24402a;
+       text-shadow:0 0 6px rgba(120,255,120,.25); }
+  .A[data-theme=light] main { background: repeating-linear-gradient(var(--bg) 0 2.4em, var(--bar) 2.4em 4.8em); }
+  .A[data-theme=dark] main { background: repeating-linear-gradient(transparent 0 2px, rgba(0,0,0,.25) 2px 3px); }
+  .A header { display:flex; flex-wrap:wrap; gap:1.5rem; align-items:center; padding:.6rem 1rem; border-bottom:2px solid var(--ink); }
+  .A .logo { font-family:'VT323', monospace; font-size:2rem; color:var(--accent); text-decoration:none; }
+  .A .logo::before { content:'▌'; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity:0 } }
+  .A nav { display:flex; flex-wrap:wrap; gap:.25rem 1rem; }
+  .A nav a { text-decoration:none; } .A nav a::before { content:'['; color:var(--dim) } .A nav a::after { content:']'; color:var(--dim) }
+  .A nav a[aria-current] { color:var(--accent); font-weight:600; }
+  .A .wrap { max-width:62rem; margin:0 auto; padding:1.5rem 1rem 3rem; }
+  .A .prompt { color:var(--dim); margin:0 0 .5rem; } .A .prompt b { color:var(--accent); font-weight:600; }
+  .A .search { display:flex; align-items:center; gap:.5rem; border:2px solid var(--ink); padding:.6rem .8rem; background:var(--bg); }
+  .A .search span { color:var(--accent); }
+  .A .search input { flex:1; border:0; background:transparent; color:var(--ink); font:inherit; outline:none; }
+  .A table { width:100%; border-collapse:collapse; margin:1rem 0; background:var(--bg); }
+  .A th, .A td { text-align:left; padding:.5rem .7rem; border:1px solid var(--line); vertical-align:top; }
+  .A th { color:var(--dim); font-weight:400; text-transform:uppercase; font-size:.8rem; letter-spacing:.08em; }
+  .A td.id { color:var(--dim); white-space:nowrap; } .A td.groan { color:var(--accent); white-space:nowrap; }
+  .A .meta { color:var(--dim); font-size:.85rem; }
+  .A .btn { background:transparent; color:var(--ink); border:2px solid var(--ink); padding:.45rem .9rem; min-height:44px; }
+  .A .btn.primary { background:var(--ink); color:var(--bg); text-shadow:none; }
+  .A .record { border:2px solid var(--ink); background:var(--bg); }
+  .A .record div { display:grid; grid-template-columns:8rem 1fr; border-bottom:1px solid var(--line); }
+  .A .record dt { padding:.7rem; color:var(--dim); } .A .record dd { margin:0; padding:.7rem; }
+  .A .record .big { font-size:1.5rem; line-height:1.4; }
+  .A .row { display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1rem; }
+  .A .err { color:var(--warn); font-family:'VT323', monospace; font-size:3rem; margin:.5rem 0; line-height:1; }
+  .A pre { white-space:pre-wrap; margin:0; }
+  .A footer { border-top:2px solid var(--ink); padding:.5rem 1rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; font-size:.85rem; color:var(--dim); }
+  .A footer b { color:var(--accent); font-weight:600; }
+
+  /* ───────────── B · 70s dad den ───────────── */
+  .B { --bg:#f4e4c1; --panel:#8a4b22; --panel2:#6b3818; --ink:#3a1f0e; --cream:#fff4dc; --orange:#e2711d; --mustard:#d9a520; --avocado:#6b7f2a; --muted:#7a5a3e;
+       font-family:'Work Sans', sans-serif; background:var(--bg); color:var(--ink); font-size:17px; }
+  .B[data-theme=dark] { --bg:#22140b; --panel:#3b2213; --panel2:#2c190d; --ink:#f7e6c6; --cream:#3a2516; --orange:#ff8f3d; --mustard:#f2c14e; --avocado:#a7bb5a; --muted:#c7a888; }
+  .B header { background: repeating-linear-gradient(90deg, var(--panel) 0 46px, var(--panel2) 46px 50px); color:#fff4dc; padding:1rem 1.25rem;
+              display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; border-bottom:8px solid var(--orange); box-shadow:0 4px 0 var(--mustard), 0 8px 0 var(--avocado); }
+  .B .logo { font-family:'Shrikhand', serif; font-size:2rem; color:#fff4dc; text-decoration:none; text-shadow:3px 3px 0 var(--orange); }
+  .B nav { display:flex; gap:.5rem; flex-wrap:wrap; }
+  .B nav a { text-decoration:none; color:#fff4dc; padding:.5rem 1rem; border-radius:999px; border:2px solid rgba(255,244,220,.5); min-height:44px; display:inline-flex; align-items:center; }
+  .B nav a[aria-current] { background:var(--mustard); color:#3a1f0e; border-color:var(--mustard); }
+  .B .wrap { max-width:44rem; margin:0 auto; padding:3rem 1.25rem 4rem; text-align:center; }
+  .B h1 { font-family:'Shrikhand', serif; font-weight:400; font-size:clamp(2rem, 6vw, 3.4rem); line-height:1.05; margin:0 0 .5rem; color:var(--orange); }
+  .B .kicker { color:var(--muted); margin:0 0 2rem; font-size:1.1rem; }
+  .B .plaque { position:relative; background:var(--cream); border:14px solid var(--panel); border-radius:24px; padding:2.5rem 2rem; box-shadow: inset 0 0 0 4px var(--mustard), 0 10px 0 var(--panel2);
+               font-size:clamp(1.3rem, 3.5vw, 1.8rem); line-height:1.4; font-weight:600; }
+  .B .plaque::before { content:'Joke of the moment'; position:absolute; top:-1.6rem; left:50%; transform:translateX(-50%); background:var(--orange); color:#fff4dc; font-size:.8rem; letter-spacing:.12em; text-transform:uppercase; padding:.4rem 1rem; border-radius:999px; white-space:nowrap; }
+  .B .plaque.detail::before { content:'Joke #' attr(data-id); }
+  .B .knobs { display:flex; justify-content:center; gap:.75rem; flex-wrap:wrap; margin-top:2rem; }
+  .B .knob { border:0; border-radius:999px; padding:.75rem 1.4rem; min-height:44px; background:var(--orange); color:#fff4dc; font-weight:700; box-shadow:0 5px 0 var(--panel); }
+  .B .knob.alt { background:var(--avocado); } .B .knob.ghost { background:transparent; color:var(--ink); box-shadow:inset 0 0 0 3px var(--muted); }
+  .B .search { display:flex; gap:.5rem; margin:3rem auto 0; max-width:30rem; }
+  .B .search input { flex:1; border:3px solid var(--panel); border-radius:999px; padding:.75rem 1.2rem; font:inherit; background:var(--cream); color:var(--ink); }
+  .B .faves { margin-top:3rem; text-align:left; } .B .faves h2 { font-family:'Shrikhand', serif; font-weight:400; color:var(--avocado); text-align:center; }
+  .B .faves li { background:var(--cream); border-left:8px solid var(--mustard); padding:.8rem 1rem; margin:.5rem 0; list-style:none; border-radius:0 12px 12px 0; }
+  .B .faves ul { padding:0; }
+  .B .carton { width:140px; margin:0 auto 1rem; display:block; }
+  .B footer { background:var(--panel2); color:#f7e6c6; padding:1.25rem; text-align:center; font-size:.9rem; }
+
+  /* ───────────── C · comic zine ───────────── */
+  .C { --paper:#fffdf5; --ink:#111; --pop:#ff2e63; --sun:#ffd400; --sky:#00b3ff; --dot:rgba(0,0,0,.14); --muted:#444;
+       font-family:'Comic Neue', sans-serif; background:var(--paper); color:var(--ink); font-size:18px; }
+  .C[data-theme=dark] { --paper:#15121f; --ink:#f4f1ff; --pop:#ff4f81; --sun:#ffe14d; --sky:#3dd2ff; --dot:rgba(255,255,255,.12); --muted:#bdb7d6; }
+  .C main { background-image: radial-gradient(var(--dot) 1.5px, transparent 1.6px); background-size: 12px 12px; }
+  .C header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; padding:1rem 1.25rem; border-bottom:5px solid var(--ink); background:var(--sun); color:#111; }
+  .C .logo { font-family:'Bangers', cursive; font-size:2.4rem; letter-spacing:.04em; text-decoration:none; color:#111; transform:rotate(-3deg); display:inline-block;
+             text-shadow:3px 3px 0 var(--pop); }
+  .C nav { display:flex; gap:.5rem; flex-wrap:wrap; }
+  .C nav a { font-family:'Bangers', cursive; letter-spacing:.06em; font-size:1.2rem; text-decoration:none; color:#111; background:#fff; border:3px solid #111; padding:.35rem .9rem; box-shadow:4px 4px 0 #111; min-height:44px; display:inline-flex; align-items:center; }
+  .C nav a[aria-current] { background:var(--pop); color:#fff; }
+  .C .wrap { max-width:64rem; margin:0 auto; padding:2rem 1.25rem 4rem; }
+  .C .strip { display:grid; grid-template-columns: 1.1fr 1fr; gap:1rem; }
+  .C .panel { position:relative; background:var(--paper); border:4px solid var(--ink); box-shadow:8px 8px 0 var(--ink); padding:1.5rem; }
+  .C .panel.tilt { transform:rotate(-1deg); } .C .panel.tilt2 { transform:rotate(1.2deg); }
+  .C .cap { position:absolute; top:-1rem; left:1rem; background:var(--sky); color:#111; border:3px solid var(--ink); font-family:'Bangers', cursive; letter-spacing:.06em; padding:.1rem .6rem; }
+  .C .bubble { position:relative; background:#fff; color:#111; border:3px solid #111; border-radius:24px; padding:1rem 1.2rem; font-size:1.35rem; font-weight:700; line-height:1.35; }
+  .C .bubble::after { content:''; position:absolute; left:2rem; bottom:-18px; border:9px solid transparent; border-top:12px solid #111; }
+  .C .punch { font-family:'Bangers', cursive; font-size:clamp(1.8rem, 4.5vw, 2.6rem); letter-spacing:.03em; line-height:1.1; color:var(--pop); }
+  .C .reveal { background:var(--sun); border:3px solid #111; outline:2px solid var(--ink); font-family:'Bangers', cursive; letter-spacing:.08em; font-size:1.3rem; padding:.6rem 1.2rem; box-shadow:5px 5px 0 var(--pop); color:#111; min-height:44px; }
+  .C .sticker { position:absolute; right:-1rem; bottom:-1.2rem; background:var(--pop); color:#fff; font-family:'Bangers', cursive; letter-spacing:.06em; padding:.5rem .8rem; border:3px solid var(--ink); transform:rotate(8deg); font-size:1.1rem; }
+  .C .row { display:flex; gap:.8rem; flex-wrap:wrap; margin-top:2rem; }
+  .C .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(15rem, 1fr)); gap:1.25rem; margin-top:2.5rem; }
+  .C .grid .panel { font-weight:700; }
+  .C .grid h2 { grid-column:1/-1; font-family:'Bangers', cursive; letter-spacing:.05em; font-weight:400; margin:0; font-size:1.8rem; }
+  .C .search { display:flex; gap:.6rem; margin-top:2.5rem; }
+  .C .search input { flex:1; border:4px solid var(--ink); padding:.7rem 1rem; font:inherit; font-weight:700; background:var(--paper); color:var(--ink); box-shadow:5px 5px 0 var(--ink); }
+  .C .burst { width:min(22rem, 90%); margin:0 auto; display:block; }
+  .C footer { border-top:5px solid var(--ink); padding:1rem 1.25rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; font-weight:700; background:var(--paper); }
+  @media (max-width: 40rem) { .C .strip { grid-template-columns:1fr; } }
+
+  /* ───────────── prototype switcher (not part of any design) ───────────── */
+  #proto { position:fixed; left:50%; bottom:1rem; transform:translateX(-50%); z-index:99; display:flex; gap:.25rem; align-items:center; padding:.35rem;
+           background:#111; color:#fff; border-radius:999px; box-shadow:0 6px 24px rgba(0,0,0,.4); font:13px/1 system-ui, sans-serif; text-shadow:none; max-width:calc(100vw - 1rem); flex-wrap:wrap; justify-content:center; }
+  #proto button { background:transparent; color:#fff; border:0; border-radius:999px; padding:.5rem .7rem; }
+  #proto button[aria-pressed=true] { background:#fff; color:#111; }
+  #proto .label { padding:0 .6rem; font-weight:600; min-width:11rem; text-align:center; }
+  #proto .sep { width:1px; height:1.4rem; background:#444; margin:0 .2rem; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="proto" role="toolbar" aria-label="Prototype controls"></div>
+<script>
+const jokes = [
+  { id: 'daaUfibh', joke: 'Why was the big cat disqualified from the race? Because it was a cheetah.', groan: 9.1 },
+  { id: 'BI699EY08Ed', joke: 'Bad at golf? Join the club.', groan: 7.4 },
+  { id: 'ORKmyAIYvzd', joke: 'No matter how kind you are, German children are kinder.', groan: 8.8 },
+  { id: 'xXg3LZLZDd', joke: '*Reversing the car* "Ah, this takes me back"', groan: 9.6 },
+  { id: 'R7UfaahVfFd', joke: "My dog used to chase people on a bike a lot. It got so bad I had to take his bike away.", groan: 8.2 },
+]
+const VARIANTS = { A: 'Retro database terminal', B: '70s dad den', C: 'Comic zine' }
+const PAGES = { home: 'Home', joke: 'Joke detail', 404: '404' }
+
+const params = new URLSearchParams(location.search)
+const state = {
+  variant: VARIANTS[params.get('variant')] ? params.get('variant') : 'A',
+  page: PAGES[params.get('page')] ? params.get('page') : 'home',
+  theme: params.get('theme') === 'dark' ? 'dark' : 'light',
+}
+
+// Setup and punchline, for the zine's two panels.
+function split(text) {
+  const q = text.indexOf('?')
+  if (q > 0 && q < text.length - 1) return [text.slice(0, q + 1), text.slice(q + 1).trim()]
+  const parts = text.match(/^(.*?[.!"]) (.*)$/)
+  return parts ? [parts[1], parts[2]] : [text, 'Ba-dum-tss.']
+}
+
+const nav = (p) => {
+  const cur = (k) => (p === k ? ' aria-current="page"' : '')
+  return `<a href="#"${cur('home')}>Home</a><a href="#">Search</a><a href="#"${cur('random')}>Random</a><a href="#">Favorites</a><a href="#">About</a>`
+}
+
+const A = {
+  home: () => `
+    <p class="prompt">dadabase&gt; <b>SELECT</b> * <b>FROM</b> jokes <b>ORDER BY</b> random() <b>LIMIT</b> 1;</p>
+    <table><thead><tr><th>id</th><th>joke</th><th>groan</th></tr></thead>
+      <tbody><tr><td class="id">${jokes[0].id}</td><td>${jokes[0].joke}</td><td class="groan">${jokes[0].groan}/10</td></tr></tbody></table>
+    <p class="meta">1 row in set (0.02 sec) · <button class="btn">↻ Another one</button></p>
+    <h2 class="prompt" style="margin-top:2.5rem">dadabase&gt; <b>SEARCH</b></h2>
+    <label class="search"><span>WHERE joke ILIKE</span><input value="'%cat%'" aria-label="Search jokes"></label>
+    <h2 class="prompt" style="margin-top:2.5rem">dadabase&gt; <b>SELECT</b> * <b>FROM</b> favorites;</h2>
+    <table><thead><tr><th>id</th><th>joke</th><th>groan</th></tr></thead><tbody>
+      ${jokes.slice(1, 4).map((j) => `<tr><td class="id">${j.id}</td><td>${j.joke}</td><td class="groan">${j.groan}/10</td></tr>`).join('')}
+    </tbody></table>
+    <p class="meta">3 rows in set (0.01 sec)</p>`,
+  joke: () => `
+    <p class="prompt">dadabase&gt; <b>SELECT</b> * <b>FROM</b> jokes <b>WHERE</b> id = '${jokes[0].id}';</p>
+    <dl class="record">
+      <div><dt>id</dt><dd>${jokes[0].id}</dd></div>
+      <div><dt>joke</dt><dd class="big">${jokes[0].joke}</dd></div>
+      <div><dt>groan</dt><dd>${'█'.repeat(9)}░ ${jokes[0].groan}/10</dd></div>
+      <div style="border:0"><dt>source</dt><dd>icanhazdadjoke.com/j/${jokes[0].id}</dd></div>
+    </dl>
+    <div class="row"><button class="btn primary">COPY</button><button class="btn">SHARE</button><button class="btn">★ FAVORITE</button></div>`,
+  404: () => `
+    <p class="prompt">dadabase&gt; <b>SELECT</b> * <b>FROM</b> jokes <b>WHERE</b> id = 'nope';</p>
+    <p class="err">ERROR 404</p>
+    <pre>relation "joke" does not exist.
+HINT: This joke went out for milk. We've checked the garage.
+
+Nothing here matches that address. It may have been mistyped, or the joke never existed.</pre>
+    <div class="row"><button class="btn primary">Search the Dadabase</button><button class="btn">Random joke</button></div>`,
+  chrome: (body, p) => `
+    <header><a class="logo" href="#">dadabase</a><nav aria-label="Main">${nav(p)}</nav></header>
+    <main><div class="wrap">${body}</div></main>
+    <footer><span><b>●</b> connected to icanhazdadjoke.com</span><span>Favorites: 3 · Groan index: 8.6</span></footer>`,
+}
+
+const carton = `<svg class="carton" viewBox="0 0 140 180" role="img" aria-label="A milk carton with MISSING on it">
+  <path d="M30 40 L70 10 L110 40 Z" fill="var(--mustard)" stroke="var(--ink)" stroke-width="4"/>
+  <rect x="30" y="40" width="80" height="130" rx="6" fill="var(--cream)" stroke="var(--ink)" stroke-width="4"/>
+  <text x="70" y="70" text-anchor="middle" font-family="Shrikhand" font-size="15" fill="var(--orange)">MISSING</text>
+  <circle cx="70" cy="105" r="18" fill="var(--bg)" stroke="var(--ink)" stroke-width="3"/>
+  <path d="M58 113 q12 8 24 0" stroke="var(--ink)" stroke-width="3" fill="none"/>
+  <text x="70" y="150" text-anchor="middle" font-family="Work Sans" font-weight="700" font-size="12" fill="var(--ink)">PAGE 404</text>
+</svg>`
+
+const B = {
+  home: () => `
+    <h1>Welcome to the Dadabase</h1>
+    <p class="kicker">Pull up a recliner. The jokes are terrible, and that's the point.</p>
+    <figure class="plaque" style="margin:2rem 0 0">${jokes[0].joke}</figure>
+    <div class="knobs"><button class="knob">Another one</button><button class="knob ghost">Open this joke</button></div>
+    <form class="search" onsubmit="return false"><input placeholder="Find a joke about…" aria-label="Search jokes"><button class="knob alt">Search</button></form>
+    <section class="faves"><h2>Dad's favorites</h2><ul>${jokes.slice(1, 4).map((j) => `<li>${j.joke}</li>`).join('')}</ul></section>`,
+  joke: () => `
+    <figure class="plaque detail" data-id="${jokes[0].id}" style="margin:1.5rem 0 0">${jokes[0].joke}</figure>
+    <div class="knobs"><button class="knob">Copy it</button><button class="knob alt">Share it</button><button class="knob ghost">♥ Favorite</button></div>
+    <p class="kicker" style="margin-top:2rem">Groan rating: ★★★★½</p>`,
+  404: () => `
+    ${carton}
+    <h1>Dad went out for milk</h1>
+    <p class="kicker">…and this page went with him. Nothing lives at this address: the link may be mistyped, or the joke may never have existed.</p>
+    <div class="knobs"><button class="knob">Back home</button><button class="knob alt">Search jokes</button></div>`,
+  chrome: (body, p) => `
+    <header><a class="logo" href="#">Dadabase</a><nav aria-label="Main">${nav(p)}</nav></header>
+    <main><div class="wrap">${body}</div></main>
+    <footer>Jokes from icanhazdadjoke.com · Made in the den, with a cardigan on</footer>`,
+}
+
+const burst = `<svg class="burst" viewBox="0 0 300 220" role="img" aria-label="A comic explosion reading 404">
+  <polygon points="150,5 175,60 235,20 215,80 295,75 235,115 290,160 215,150 230,215 165,170 140,215 120,165 55,205 80,145 5,150 65,110 10,60 85,75 70,15 125,60"
+    fill="var(--sun)" stroke="var(--ink)" stroke-width="5"/>
+  <text x="150" y="132" text-anchor="middle" font-family="Bangers" font-size="74" fill="var(--pop)" stroke="#111" stroke-width="3">404!</text>
+</svg>`
+
+const C = {
+  home: () => {
+    const [setup, punch] = split(jokes[0].joke)
+    return `
+    <div class="strip">
+      <div class="panel tilt"><span class="cap">The setup</span><p class="bubble">${setup}</p></div>
+      <div class="panel tilt2"><span class="cap">The punchline</span><p class="punch">${punch}</p><span class="sticker">BA-DUM-TSS!</span></div>
+    </div>
+    <div class="row"><button class="reveal">Another one!</button><button class="reveal" style="background:#fff">Open this joke</button></div>
+    <form class="search" onsubmit="return false"><input placeholder="Search for… cats? golf? dads?" aria-label="Search jokes"><button class="reveal">Zap!</button></form>
+    <div class="grid"><h2>Your favorites</h2>${jokes.slice(1, 4).map((j) => `<div class="panel">${j.joke}</div>`).join('')}</div>`
+  },
+  joke: () => {
+    const [setup, punch] = split(jokes[0].joke)
+    return `
+    <div class="strip">
+      <div class="panel tilt"><span class="cap">Joke #${jokes[0].id}</span><p class="bubble">${setup}</p></div>
+      <div class="panel tilt2"><span class="cap">And then…</span><p class="punch">${punch}</p><span class="sticker">GROAN 9/10</span></div>
+    </div>
+    <div class="row"><button class="reveal">Copy!</button><button class="reveal" style="background:var(--sky)">Share!</button><button class="reveal" style="background:#fff">♥ Favorite</button></div>`
+  },
+  404: () => `
+    ${burst}
+    <div class="panel" style="max-width:36rem;margin:2rem auto 0;text-align:center">
+      <p class="punch" style="margin-top:0">This page got punchlined.</p>
+      <p>Nothing lives at this address. The link may be mistyped, or the joke never existed.</p>
+      <div class="row" style="justify-content:center"><button class="reveal">Back home</button><button class="reveal" style="background:var(--sky)">Search jokes</button></div>
+    </div>`,
+  chrome: (body, p) => `
+    <header><a class="logo" href="#">Dadabase!</a><nav aria-label="Main">${nav(p)}</nav></header>
+    <main><div class="wrap">${body}</div></main>
+    <footer><span>Issue #1 · Jokes from icanhazdadjoke.com</span><span>No dads were harmed.</span></footer>`,
+}
+
+const designs = { A, B, C }
+
+function render() {
+  const d = designs[state.variant]
+  const navPage = state.page === 'joke' ? 'random' : state.page
+  document.body.className = state.variant
+  document.body.dataset.theme = state.theme
+  document.getElementById('root').innerHTML = d.chrome(d[state.page](), navPage)
+
+  const keys = Object.keys(VARIANTS)
+  const proto = document.getElementById('proto')
+  proto.innerHTML = `
+    <button data-act="prev" aria-label="Previous direction">◀</button>
+    <span class="label">${state.variant} · ${VARIANTS[state.variant]}</span>
+    <button data-act="next" aria-label="Next direction">▶</button>
+    <span class="sep"></span>
+    ${Object.entries(PAGES).map(([k, v]) => `<button data-page="${k}" aria-pressed="${state.page === k}">${v}</button>`).join('')}
+    <span class="sep"></span>
+    <button data-act="theme" aria-pressed="${state.theme === 'dark'}">${state.theme === 'dark' ? '☾ Dark' : '☀ Light'}</button>`
+  proto.onclick = (e) => {
+    const b = e.target.closest('button'); if (!b) return
+    const i = keys.indexOf(state.variant)
+    if (b.dataset.act === 'prev') state.variant = keys[(i + keys.length - 1) % keys.length]
+    if (b.dataset.act === 'next') state.variant = keys[(i + 1) % keys.length]
+    if (b.dataset.act === 'theme') state.theme = state.theme === 'dark' ? 'light' : 'dark'
+    if (b.dataset.page) state.page = b.dataset.page
+    sync()
+  }
+
+  // Surface the state.
+  document.title = `${state.variant} ${PAGES[state.page]} ${state.theme} · Dadabase prototype`
+  console.log('prototype state', { ...state })
+}
+
+function sync() {
+  history.replaceState(null, '', `?variant=${state.variant}&page=${state.page}&theme=${state.theme}`)
+  render()
+}
+
+addEventListener('keydown', (e) => {
+  if (e.target.closest('input, textarea, [contenteditable]')) return
+  const keys = Object.keys(VARIANTS), i = keys.indexOf(state.variant)
+  if (e.key === 'ArrowLeft') { state.variant = keys[(i + keys.length - 1) % keys.length]; sync() }
+  if (e.key === 'ArrowRight') { state.variant = keys[(i + 1) % keys.length]; sync() }
+})
+
+sync()
+</script>
+</body>
+</html>
