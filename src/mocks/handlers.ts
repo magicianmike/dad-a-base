@@ -27,6 +27,15 @@ function forcedFailure() {
 }
 
 export const handlers = [
+  // Like the real API, an unknown id answers HTTP 200 with the 404 in the body.
+  http.get(`${API_URL}/j/:id`, ({ params }) => {
+    const failure = forcedFailure()
+    if (failure) return failure
+    const joke = jokes.find(({ id }) => id === params.id)
+    if (!joke)
+      return HttpResponse.json({ message: `Joke with id "${params.id}" not found`, status: 404 })
+    return HttpResponse.json({ ...joke, status: 200 })
+  }),
   http.get(`${API_URL}/`, () => {
     const failure = forcedFailure()
     if (failure) return failure

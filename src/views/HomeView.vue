@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { useHead } from '@unhead/vue'
-import StoryHeading from '@/components/StoryHeading.vue'
+import RandomJokeStory from '@/components/RandomJokeStory.vue'
 
 useHead({ title: '' })
 </script>
 
 <template>
-  <StoryHeading kicker="Today's top story">Local dad says the thing again</StoryHeading>
-  <p>All the jokes that are fit to groan.</p>
-  <RouterLink to="/random">Get a random joke</RouterLink>
+  <RandomJokeStory
+    kicker="Today's top story"
+    headline="Local dad says the thing again"
+    caption="Witnesses report groaning."
+  />
 </template>

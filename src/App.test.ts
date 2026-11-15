@@ -29,9 +29,14 @@ describe('App', () => {
     ).toBeInTheDocument()
     await waitFor(() => expect(document.title).toBe('The Dad-a-base'))
 
-    await userEvent.click(screen.getByRole('link', { name: 'Get a random joke' }))
-
     expect(await screen.findByText(jokes[0]!.joke)).toBeInTheDocument()
+    await userEvent.click(
+      within(screen.getByRole('navigation', { name: 'Main' })).getByRole('link', {
+        name: 'Random',
+      }),
+    )
+
+    expect(await screen.findByText(jokes[1]!.joke)).toBeInTheDocument()
     await waitFor(() => expect(document.title).toBe('A random joke · Dad-a-base'))
     await waitFor(() => expect(screen.getByRole('heading', { level: 1 })).toHaveFocus())
   })
@@ -54,6 +59,13 @@ describe('App', () => {
         name: 'Design system',
       }),
     ).toBeInTheDocument()
+  })
+
+  it('opens a Joke’s page from the random Joke, from the cache', async () => {
+    await renderApp('/random')
+    await userEvent.click(await screen.findByRole('link', { name: 'Open this joke' }))
+    expect(await screen.findByText(/From the archives/)).toBeInTheDocument()
+    expect(router.currentRoute.value.path).toMatch(/^\/jokes\//)
   })
 
   it('shows a 404 in place for an unknown address', async () => {

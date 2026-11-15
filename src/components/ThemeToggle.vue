@@ -85,15 +85,6 @@ const dark = computed(() => store.theme === 'dark')
   stroke: var(--color-surface);
 }
 
-.visually-hidden {
-  position: absolute;
-  width: 1px; /* stylelint-disable-line unit-disallowed-list -- the standard visually-hidden pattern */
-  height: 1px; /* stylelint-disable-line unit-disallowed-list */
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .thumb {
     transition: none;

@@ -11,7 +11,13 @@ export default mergeConfig(
       coverage: {
         provider: 'v8',
         include: ['src/**/*.{ts,vue}'],
-        exclude: ['src/**/*.stories.ts', 'src/**/*.test.ts', 'src/mocks/**', 'src/main.ts'],
+        exclude: [
+          'src/**/*.stories.ts',
+          'src/**/*.test.ts',
+          'src/mocks/**',
+          'src/test/**',
+          'src/main.ts',
+        ],
         thresholds: { lines: 90, branches: 90, functions: 90, statements: 90 },
       },
       projects: [
@@ -42,7 +48,7 @@ export default mergeConfig(
             storybookTest({ configDir: fileURLToPath(new URL('./.storybook', import.meta.url)) }),
           ],
           // On a cold cache, Vite finds these late and reloads mid-run, failing the run (as in CI). Pre-bundle them.
-          optimizeDeps: { include: ['vue', 'vue-router', 'pinia', '@unhead/vue/client'] },
+          optimizeDeps: { include: ['vue', 'vue-router', 'pinia', '@unhead/vue/client', 'zod'] },
           test: {
             name: 'storybook',
             browser: {

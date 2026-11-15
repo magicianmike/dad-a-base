@@ -1,16 +1,19 @@
 import { expect, test } from '@playwright/test'
 
-test('from home, open a random joke and get another one', async ({ page }) => {
+test('home shows a Joke of the moment; Random shows another, and another one on request', async ({
+  page,
+}) => {
   await page.goto('/')
-  await page.getByRole('link', { name: 'Get a random joke' }).click()
+  await expect(page.getByRole('blockquote')).toHaveText(/cheetah/)
+  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Random' }).click()
 
   await expect(page).toHaveURL('/random')
   await expect(page).toHaveTitle('A random joke · Dad-a-base')
   const joke = page.getByRole('blockquote')
-  await expect(joke).toHaveText(/cheetah/)
+  await expect(joke).toHaveText(/golf/)
 
   await page.getByRole('button', { name: 'Another one' }).click()
-  await expect(joke).toHaveText(/golf/)
+  await expect(joke).toHaveText(/kinder/)
   await expect(page).toHaveURL('/random')
 })
 

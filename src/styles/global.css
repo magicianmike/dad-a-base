@@ -59,3 +59,13 @@ a {
   outline: var(--focus-ring-width) solid var(--color-focus);
   outline-offset: var(--focus-ring-width);
 }
+
+/* Hidden on screen, read by screen readers. */
+.visually-hidden {
+  position: absolute;
+  width: 1px; /* stylelint-disable-line unit-disallowed-list -- the standard visually-hidden pattern */
+  height: 1px; /* stylelint-disable-line unit-disallowed-list */
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

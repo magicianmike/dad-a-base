@@ -4,6 +4,12 @@ export const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: () => import('./views/HomeView.vue') },
   { path: '/random', name: 'random', component: () => import('./views/RandomView.vue') },
   {
+    path: '/jokes/:id',
+    name: 'joke',
+    component: () => import('./views/JokeView.vue'),
+    props: true,
+  },
+  {
     path: '/design-system',
     name: 'design-system',
     component: () => import('./views/DesignSystemView.vue'),

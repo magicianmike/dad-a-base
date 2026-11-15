@@ -10,3 +10,12 @@ export const RANDOM_JOKE: TypedDocumentNode<{ randomJoke: Joke }, Record<string,
     }
   }
 `
+
+export const JOKE: TypedDocumentNode<{ joke: Joke }, { id: string }> = gql`
+  query Joke($id: ID!) {
+    joke(id: $id) @rest(type: "Joke", path: "/j/{args.id}") {
+      id
+      joke
+    }
+  }
+`

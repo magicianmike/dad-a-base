@@ -28,6 +28,17 @@ export function createApolloClient(uri = API_URL): ApolloClient<NormalizedCacheO
       headers: { Accept: 'application/json' },
       responseTransformer: parseResponse,
     }),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            // A Joke already in the cache, from random or search, opens without a fetch.
+            joke: {
+              read: (_, { args, toReference }) => toReference({ __typename: 'Joke', id: args?.id }),
+            },
+          },
+        },
+      },
+    }),
   })
 }

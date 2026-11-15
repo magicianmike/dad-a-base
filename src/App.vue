@@ -2,6 +2,7 @@
 import { useHead } from '@unhead/vue'
 import SiteFooter from '@/components/SiteFooter.vue'
 import SiteHeader from '@/components/SiteHeader.vue'
+import ToastRegion from '@/components/ToastRegion.vue'
 
 useHead({ titleTemplate: (title) => (title ? `${title} · Dad-a-base` : 'The Dad-a-base') })
 </script>
@@ -13,6 +14,7 @@ useHead({ titleTemplate: (title) => (title ? `${title} · Dad-a-base` : 'The Dad
       <RouterView />
     </main>
     <SiteFooter />
+    <ToastRegion />
   </div>
 </template>
 
