@@ -1,0 +1,4 @@
+:root {
+  --joke-card-bg: var(--color-surface-raised);
+  --joke-text-size: var(--font-size-joke);
+}

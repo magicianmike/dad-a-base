@@ -1,0 +1,35 @@
+# Dadabase
+
+A dad-joke site, alongside a Case Study that explains how and why it was built.
+
+## Language
+
+**Joke**:
+One joke from icanhazdadjoke: an `id` and its text. Jokes have no titles.
+_Avoid_: Post, item
+
+**Joke of the moment**:
+The random Joke shown on the home page, replaced with "Another one".
+_Avoid_: Joke of the day (it isn't daily)
+
+**Search**:
+Looking up Jokes by a term, shown a page of 10 at a time.
+
+**Pagination window**:
+The 11 page numbers shown around the current page, 5 on each side, kept full at both ends.
+_Avoid_: Pager
+
+**Favorite**:
+A Joke the visitor saved in this browser. It's stored as the whole Joke, so Favorites need no API calls.
+_Avoid_: Bookmark, like
+
+**Error state**:
+One of `ErrorView`'s codes: `404`, `403`, `429`, `500`, `offline` or `unknown`. Each has a pun headline, a plain explanation and a way to recover. No results is not an Error state.
+
+**Case Study**:
+The write-up of the product, design and engineering decisions, aimed at hiring managers, at `/case-study` on the same site.
+_Avoid_: About page (it's only the link's name), portfolio
+
+**Visitor**:
+The person using Dadabase.
+_Avoid_: User (ambiguous with the Case Study's reader)

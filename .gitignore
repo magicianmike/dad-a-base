@@ -1,0 +1,12 @@
+node_modules
+dist
+coverage
+storybook-static
+playwright-report
+test-results
+.vercel
+*.tsbuildinfo
+.DS_Store
+*.log
+dist-e2e
+.env*.local

@@ -1,0 +1,12 @@
+/* Placeholder primitives for the tracer. Milestone 1 replaces them with the chosen direction. */
+:root {
+  --gray-0: #fff;
+  --gray-100: #f3f3f3;
+  --gray-700: #444;
+  --gray-900: #151515;
+  --space-2: 0.5rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --font-size-joke: 1.5rem;
+  --measure: 40rem;
+}

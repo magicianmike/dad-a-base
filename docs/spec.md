@@ -1,0 +1,168 @@
+# Dadabase: spec
+
+Dadabase is a quirky, comedic dad-joke site built on the [icanhazdadjoke](https://icanhazdadjoke.com/api) REST API, for the brief in [`brief.md`](brief.md). It's a take-home interview project. Beyond the brief, it aims to show depth in the Vue ecosystem, product ownership, and UX and design craft. A Case Study inside the app explains how and why it was built.
+
+## Brief, and what it becomes
+
+| Brief                                          | Dadabase                                                                         |
+| ---------------------------------------------- | -------------------------------------------------------------------------------- |
+| Search for a joke                              | `/search`: search as you type, with the query and page in the URL                |
+| Pagination, nice to have                       | Numbered pagination with an 11-number window                                     |
+| Handle no results gracefully                   | An inline empty state with suggestions                                           |
+| A random joke                                  | `/random`, plus a joke of the moment on `/`                                      |
+| An individual joke page with copy to clipboard | `/jokes/:id`: copy, share and favorite                                           |
+| A header and footer with navigation            | A site shell with skip links and a theme toggle                                  |
+| Nicely laid out                                | A design system built from tokens, light and dark, accessible by construction    |
+| Additional pages                               | Favorites, the Case Study (About), the design system, and a dedicated error page |
+
+## Stack
+
+- **Vue 3** (Composition API, `<script setup>`), **TypeScript** 5.9, **Vite**.
+- **vue-router**. Every route's code loads on first visit, and each route sets its own title with `@unhead/vue`. Changing routes scrolls to the top, and back and forward restore the previous position.
+- **Apollo Client 3** with **`apollo-link-rest`** 0.9 and **`@vue/apollo-composable`** 4, with no GraphQL server ([ADR 0002](adr/0002-apollo-over-rest.md)). We use the stable Apollo 3 line, not the Apollo 4 prereleases.
+- **Pinia** for app state: favorites (saved to localStorage), theme, toasts and recent searches.
+- **Zod** is the single source of truth for API types. A `responseTransformer` checks every response at runtime, and the static types come from `z.infer`.
+- Plain CSS and CSS Modules over a design system built from tokens ([ADR 0004](adr/0004-design-tokens.md)).
+- npm and Node 22 (`.nvmrc`). ESLint (flat config, Vue and TypeScript) with Prettier. Stylelint bans raw `px` and colour values outside the token files.
+
+## Data
+
+The API is called straight from the browser: it allows CORS on GET, and every request sends `Accept: application/json`.
+
+| Need          | Endpoint                         | Operation                                        |
+| ------------- | -------------------------------- | ------------------------------------------------ |
+| A random joke | `GET /`                          | `RandomJoke`, with `fetchPolicy: 'network-only'` |
+| One joke      | `GET /j/{id}`                    | `Joke($id)`, where a 404 means an unknown joke   |
+| Search        | `GET /search?term&page&limit=10` | `SearchJokes($term, $page)`                      |
+
+- Jokes are normalised as `Joke:id`, so a joke opened from search, random or favorites is one cache entry. A search result you click opens its detail page from the cache straight away.
+- Search pages are cached by term and page number.
+- An error link maps HTTP statuses and network failures to a typed `AppError` with a `code`. The views give that code to `ErrorView`.
+- We don't use the upstream GraphQL endpoint, because it has no search list and no pagination ([ADR 0002](adr/0002-apollo-over-rest.md)).
+
+## Routes
+
+### `/` Home
+
+- A pun hero.
+- The joke of the moment, with "Another one".
+- A search box that goes to `/search?q=…`.
+- A peek at your favorites, when you have some.
+
+### `/search?q&page`
+
+- Search runs as you type, debounced. Typing replaces the history entry instead of adding one, and a new query resets to page 1.
+- An empty query shows recent searches and suggested searches.
+- No results is an inline empty state, not an error.
+- Pagination is a Previous button, an 11-number window, and a Next button:
+  - The window is the current page with 5 on each side. It stays full at both ends: page 2 of 40 shows 1–11, page 8 shows 3–13, and page 38 shows 30–40. With 11 pages or fewer, every page is shown.
+  - Previous and Next are disabled on the first and last pages.
+  - A `?page` past the end, or one that isn't a number, is replaced with the nearest valid page.
+  - A summary reads "Jokes 11–20 of 43", and focus moves to the results heading when the page changes.
+- Results are joke cards, and each card links to `/jokes/:id`.
+
+### `/random`
+
+- "Another one", or the `r` key, fetches a new joke without changing the URL.
+- "Open this joke" goes to `/jokes/:id`.
+
+### `/jokes/:id`
+
+- **Copy:** the button reads "Copied!" for about 2 seconds, and a toast announces it in an `aria-live` region. If the clipboard is denied, the joke's text is selected and the toast asks you to press ⌘C or Ctrl+C.
+- **Share:** uses the Web Share API, or copies the link where that isn't available.
+- **Favorite:** a toggle.
+- An unknown id shows `ErrorView` with a 404.
+
+### `/favorites`
+
+- Shows the jokes saved in the Pinia store, which holds full joke objects so the page makes no API calls.
+- Has its own empty state.
+
+### `/case-study`, linked as "About"
+
+See [Case Study](#case-study).
+
+### `/design-system`
+
+- The tokens, shown live in both themes, with links to Storybook.
+
+### `/error/:code`, and the catch-all
+
+- `ErrorView` normally renders in place and keeps the URL, so retry works and the address stays correct. `/error/:code` also exists so Storybook, Playwright and the Case Study can link to each state.
+- Its codes:
+  - `404` for a bad route or an unknown joke;
+  - `403`;
+  - `429`, rate limited, with "Try again";
+  - `500` and other server errors;
+  - `offline`, a network failure, with retry;
+  - `unknown`, for anything else.
+- Each code has a pun headline, a plain explanation and a real way to recover.
+
+## Design
+
+- **Brand:** Dadabase, quirky and comedic.
+- **Visual direction:** chosen from three throwaway prototypes: a retro database terminal, a 70s dad den, and a comic zine.
+- **Tokens** in three layers: primitive (the raw palette, the type scale, spacing), semantic (`--color-surface`, `--color-text-muted`) and domain (`--joke-card-bg`, `--punchline-color`). Components use only semantic and domain tokens.
+- **Themes:** light and dark. The default follows the system setting, the toggle overrides it and is saved, and the theme is applied before first paint so it doesn't flash.
+- **Voice:** [`voice.md`](voice.md). Copy is punny, but an error always says plainly what happened. A test checks that every error state has both.
+- **Extras:** keyboard shortcuts (`/` focuses search, `r` gets a new random joke), and page transitions with `<Transition>` that turn off under `prefers-reduced-motion`.
+
+## Accessibility
+
+Enforced in Playwright on every route and every error state:
+
+- axe in both themes;
+- reflow at 320px and at 200% zoom, with no sideways scrolling;
+- touch targets of at least 44px;
+- visible focus rings;
+- skip links.
+
+The author does a VoiceOver pass on a Mac and an iPhone for each milestone, recorded in its journal entry.
+
+## Testing
+
+- **Vitest:** the stores, the Zod schemas, the Apollo cache policies, the pagination window, the error mapping and composables. CI enforces 90% of lines and branches.
+- **Storybook:** every component has stories, and every story has a `play` function, run as a component test through `@storybook/addon-vitest` in Chromium.
+- **Playwright:** every route end to end, on desktop Chromium, mobile WebKit and mobile Chrome, plus the accessibility checks.
+- **MSW** mocks the API in Storybook, Vitest and Playwright. One smoke test hits the real API.
+- Storybook is built and served at `/storybook`, marked `noindex`.
+
+## Case Study
+
+`/case-study` is an MDX page with live components in fixed states, inline SVG diagrams, a "View the code on GitHub" button that stays visible, and an Open Graph image made at build time ([ADR 0003](adr/0003-case-study-in-app.md)). It gives more weight to engineering, while still showing product ownership and UX skill.
+
+1. **In 60 seconds**
+2. **Product and UX**
+   - Owning the brief
+   - Designing the flows
+   - Look, voice and accessibility
+3. **Engineering**
+   - The stack, and why
+   - Apollo over REST
+   - Three homes for state: the Apollo cache, Pinia and the URL
+   - A design system built from tokens
+   - The testing approach
+   - Building with Claude
+4. **What I rejected:** the upstream GraphQL endpoint, a backend for the frontend, infinite scroll, component libraries and the Apollo 4 prereleases.
+
+Its live embeds are a joke card, the pagination window in fixed states, each error state, and the theme tokens.
+
+## Process
+
+- [`CLAUDE.md`](../CLAUDE.md), [`GLOSSARY.md`](../GLOSSARY.md), ADRs in `docs/adr/`, and a journal entry per milestone in `docs/journal/`, with screenshots and a VoiceOver pass.
+- Work happens as issues and PRs on `onX-Hiring/interview-project-mike-mccormick`. The hiring team can see everything there, so it's part of the submission.
+- GitHub Actions runs CI: lint, typecheck, Vitest with coverage, the build, Storybook tests and Playwright.
+- Deploys run from the author's machine with the Vercel CLI (`vercel` for a preview, `vercel --prod` for production), because the org repo can't have Vercel's GitHub app installed.
+- The README is written for reviewers. The original brief is in [`brief.md`](brief.md).
+
+## Milestones
+
+0. **Tracer bullet:** scaffold, tooling, CI, the Vercel deploy, and a random joke fetched through Apollo.
+1. **Visual direction:** the prototypes, then the tokens and `/design-system`.
+2. **The app shell:** header, footer, navigation, theme toggle, skip links and `ErrorView`.
+3. **Random and joke detail:** copy, share and favorite toggle.
+4. **Search and pagination.**
+5. **Favorites.**
+6. **Keyboard shortcuts and transitions.**
+7. **The Case Study.**
+8. **The README and polish.**
