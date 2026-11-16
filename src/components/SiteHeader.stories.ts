@@ -13,7 +13,8 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   play: async ({ canvas, userEvent }) => {
     await expect(canvas.getByText('Saturday, November 14, 2026')).toBeInTheDocument()
-    await expect(canvas.getByRole('navigation', { name: 'Main' })).toBeInTheDocument()
+    // Hidden behind the Sections button at phone width, where the tests run.
+    await expect(canvas.getByRole('navigation', { name: 'Main', hidden: true })).toBeInTheDocument()
 
     // The skip link is first, and shows itself when focused.
     await userEvent.tab()
@@ -25,4 +26,9 @@ export const Default: Story = {
 
 export const Phone: Story = {
   globals: { viewport: { value: 'mobile1' } },
+  play: async ({ canvas }) => {
+    // The sections are behind the Sections button, at the top left.
+    await expect(canvas.getByRole('button', { name: 'Sections' })).toBeVisible()
+    await expect(canvas.queryByRole('navigation', { name: 'Main' })).toBeNull()
+  },
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { mainNavigation } from '@/navigation'
+import SectionsMenu from './SectionsMenu.vue'
 import SiteMasthead from './SiteMasthead.vue'
 import ThemeToggle from './ThemeToggle.vue'
 
@@ -33,6 +34,7 @@ const dateline = computed(() =>
       <RouterLink v-if="slim" to="/" class="back">
         <span aria-hidden="true">←</span> Back to the Dad-a-base
       </RouterLink>
+      <SectionsMenu v-else class="sections" />
       <ThemeToggle />
     </div>
     <SiteMasthead />
@@ -83,12 +85,16 @@ const dateline = computed(() =>
   margin-bottom: var(--space-1);
 }
 
+.back,
+.sections {
+  margin-right: auto;
+}
+
 .back {
   display: inline-flex;
   gap: var(--space-2);
   align-items: center;
   min-height: var(--target-min);
-  margin-right: auto;
   font-weight: 700;
 }
 
@@ -140,7 +146,7 @@ const dateline = computed(() =>
   color: var(--color-accent);
 }
 
-/* On a phone, the date alone, and the main navigation closer together, so the story starts sooner. */
+/* On a phone, the date alone, and the sections in a drawer, so the story starts sooner. */
 @media (width < 40rem) {
   .dateline {
     justify-content: center;
@@ -150,8 +156,9 @@ const dateline = computed(() =>
     display: none;
   }
 
+  /* The sections are in the Sections menu, at the top left. */
   .nav {
-    gap: var(--space-1) var(--space-4);
+    display: none;
   }
 }
 </style>

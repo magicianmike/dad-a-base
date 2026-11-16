@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 import { settled } from './settled'
+import { goToSection } from './sections'
 
 const joke = {
   id: 'daaUfibh',
@@ -28,10 +29,7 @@ test('a Joke saved on home is on home and Favorites, and opens from there', asyn
   const peek = page.getByRole('region', { name: 'From your fridge' })
   await expect(peek.getByRole('link', { name: joke.text })).toBeVisible()
 
-  await page
-    .getByRole('navigation', { name: 'Main' })
-    .getByRole('link', { name: 'Favorites' })
-    .click()
+  await goToSection(page, 'Favorites')
   await expect(page).toHaveURL('/favorites')
   await expect(page.getByRole('heading', { level: 1, name: 'Stuck to the fridge' })).toBeFocused()
   await expect(page.getByRole('heading', { level: 2 })).toHaveText('1 saved joke')

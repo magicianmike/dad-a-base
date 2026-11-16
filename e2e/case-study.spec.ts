@@ -12,11 +12,13 @@ test('the footer opens the Case Study, with a slim header', async ({ page }) => 
   await expect(page).toHaveURL('/case-study')
   await expect(page.getByRole('heading', { level: 1, name: title })).toBeFocused()
   await expect(page).toHaveTitle(`${title} · Dad-a-base`)
-  await expect(page.getByRole('navigation', { name: 'Main' })).toHaveCount(0)
+  await expect(page.getByRole('navigation', { name: 'Main', includeHidden: true })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Sections' })).toHaveCount(0)
 
   await page.getByRole('link', { name: 'Back to the Dad-a-base' }).click()
   await expect(page).toHaveURL('/')
-  await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible()
+  // On a phone, the main navigation is there but behind the Sections button.
+  await expect(page.getByRole('navigation', { name: 'Main', includeHidden: true })).toHaveCount(1)
 })
 
 test('a chapter link scrolls there and moves focus there, and Back to top returns', async ({

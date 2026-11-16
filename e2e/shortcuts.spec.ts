@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 import { settled } from './settled'
+import { goToSection } from './sections'
 
 const cheetah = 'Why was the big cat disqualified from the race? Because it was a cheetah.'
 
@@ -65,11 +66,12 @@ test('a new page fades up as it arrives, except with reduced motion', async ({ p
           .getAnimations()
           .filter((a) => a instanceof CSSAnimation && a.animationName.startsWith('arrive')).length,
     )
-  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Search' }).click()
+  await goToSection(page, 'Search')
+  await expect(page).toHaveURL('/search')
   expect(await arrivals()).toBeGreaterThan(0)
 
   await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Random' }).click()
+  await goToSection(page, 'Random')
   await expect(page.getByRole('heading', { level: 1, name: 'A random joke' })).toBeVisible()
   expect(await arrivals()).toBe(0)
 })

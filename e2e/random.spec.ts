@@ -1,11 +1,12 @@
 import { expect, test } from '@playwright/test'
+import { goToSection } from './sections'
 
 test('home shows a Joke of the moment; Random shows another, and another one on request', async ({
   page,
 }) => {
   await page.goto('/')
   await expect(page.getByRole('blockquote')).toHaveText(/cheetah/)
-  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Random' }).click()
+  await goToSection(page, 'Random')
 
   await expect(page).toHaveURL('/random')
   await expect(page).toHaveTitle('A random joke · Dad-a-base')

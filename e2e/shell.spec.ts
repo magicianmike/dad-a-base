@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 import { settled } from './settled'
+import { goToSection } from './sections'
 
 const FAILURE_KEY = 'dadabase:mock-failure'
 
@@ -55,11 +56,119 @@ test('navigating moves focus to the new page’s headline and marks the current 
   page,
 }) => {
   await page.goto('/')
-  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Random' }).click()
+  await goToSection(page, 'Random')
   await expect(page.getByRole('heading', { level: 1, name: 'A random joke' })).toBeFocused()
+  // On a phone the header's row is hidden behind the Sections menu, but still marked.
   await expect(
-    page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Random' }),
+    page
+      .getByRole('navigation', { name: 'Main', includeHidden: true })
+      .getByRole('link', { name: 'Random', includeHidden: true }),
   ).toHaveAttribute('aria-current', 'page')
+})
+
+test.describe('the Sections menu', () => {
+  type Page = import('@playwright/test').Page
+  const menu = (page: Page) => page.getByRole('button', { name: 'Sections' })
+  const drawer = (page: Page) => page.getByRole('dialog', { name: 'Sections' })
+  const nav = (page: Page) => page.getByRole('navigation', { name: 'Main' })
+
+  test('is only on a phone; wider, the sections show in a row', async ({ page, isMobile }) => {
+    await page.goto('/')
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+    if (isMobile) {
+      await expect(menu(page)).toBeVisible()
+      await expect(nav(page)).toHaveCount(0)
+    } else {
+      await expect(menu(page)).toBeHidden()
+      await expect(nav(page).getByRole('link', { name: 'Random' })).toBeVisible()
+    }
+  })
+
+  test.describe('on a phone', () => {
+    test.skip(({ isMobile }) => !isMobile, 'The Sections menu is only on a phone')
+
+    test('sits at the top left, and opens a drawer from the left edge', async ({ page }) => {
+      await page.goto('/')
+      const button = (await menu(page).boundingBox())!
+      const toggle = (await page.getByRole('button', { name: 'Dark theme' }).boundingBox())!
+      expect(button.x).toBeLessThan(toggle.x)
+      expect(button.y).toBeLessThan(100)
+
+      await menu(page).click()
+      await expect(drawer(page)).toBeVisible()
+      await settled(page)
+      expect((await drawer(page).boundingBox())!.x).toBe(0)
+    })
+
+    test('lists every section, marks the current one, and closes when one is chosen', async ({
+      page,
+    }) => {
+      await page.goto('/random')
+      await menu(page).click()
+      await expect(nav(page).getByRole('link')).toHaveText([
+        'Home',
+        'Search',
+        'Random',
+        'Favorites',
+      ])
+      await expect(nav(page).getByRole('link', { name: 'Random' })).toHaveAttribute(
+        'aria-current',
+        'page',
+      )
+
+      await nav(page).getByRole('link', { name: 'Search' }).click()
+      await expect(page).toHaveURL('/search')
+      await expect(drawer(page)).toBeHidden()
+      await expect(
+        page.getByRole('heading', { level: 1, name: 'Search the archives' }),
+      ).toBeFocused()
+    })
+
+    test('Escape closes it and returns focus to the button', async ({ page }) => {
+      await page.goto('/')
+      await menu(page).click()
+      await expect(drawer(page)).toBeVisible()
+      await page.keyboard.press('Escape')
+      await expect(drawer(page)).toBeHidden()
+      await expect(menu(page)).toBeFocused()
+    })
+
+    test('Close, or a tap on the page beside it, closes it', async ({ page }) => {
+      await page.goto('/')
+      await menu(page).click()
+      await page.getByRole('button', { name: 'Close' }).click()
+      await expect(drawer(page)).toBeHidden()
+
+      await menu(page).click()
+      await expect(drawer(page)).toBeVisible()
+      const viewport = page.viewportSize()!
+      await page.mouse.click(viewport.width - 10, viewport.height / 2)
+      await expect(drawer(page)).toBeHidden()
+    })
+
+    for (const colorScheme of ['light', 'dark'] as const) {
+      test(`open, it has no axe violations, ${colorScheme}`, async ({ page }) => {
+        await page.emulateMedia({ colorScheme })
+        await page.goto('/')
+        await menu(page).click()
+        await settled(page)
+        const { violations } = await new AxeBuilder({ page }).analyze()
+        expect(violations).toEqual([])
+      })
+    }
+
+    test('open at 320px, every link is a full touch target', async ({ page }) => {
+      await page.setViewportSize({ width: 320, height: 640 })
+      await page.goto('/')
+      await menu(page).click()
+      for (const target of [menu(page), ...(await nav(page).getByRole('link').all())]) {
+        const box = (await target.boundingBox())!
+        expect(box.height).toBeGreaterThanOrEqual(44)
+      }
+      const scroll = await page.evaluate(() => document.documentElement.scrollWidth)
+      expect(scroll).toBeLessThanOrEqual(320)
+    })
+  })
 })
 
 test('an unknown address shows the 404 in place, keeping the address', async ({ page }) => {
