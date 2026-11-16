@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw'
 import { API_URL } from '@/api/client'
-import { jokes } from './fixtures'
+import { archive, jokes } from './fixtures'
 
 let next = 0
 
@@ -27,6 +27,28 @@ function forcedFailure() {
 }
 
 export const handlers = [
+  // Like the real API: a page past the end has no results, and an empty Search still has one page.
+  http.get(`${API_URL}/search`, ({ request }) => {
+    const failure = forcedFailure()
+    if (failure) return failure
+    const params = new URL(request.url).searchParams
+    const term = params.get('term') ?? ''
+    const page = Number(params.get('page') ?? 1)
+    const limit = Number(params.get('limit') ?? 20)
+    const matches = archive.filter(({ joke }) => joke.toLowerCase().includes(term.toLowerCase()))
+    const totalPages = Math.max(1, Math.ceil(matches.length / limit))
+    return HttpResponse.json({
+      current_page: page,
+      limit,
+      next_page: Math.min(page + 1, totalPages),
+      previous_page: Math.max(1, page - 1),
+      results: matches.slice((page - 1) * limit, page * limit),
+      search_term: term,
+      status: 200,
+      total_jokes: matches.length,
+      total_pages: totalPages,
+    })
+  }),
   // Like the real API, an unknown id answers HTTP 200 with the 404 in the body.
   http.get(`${API_URL}/j/:id`, ({ params }) => {
     const failure = forcedFailure()

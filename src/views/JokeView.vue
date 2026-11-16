@@ -31,11 +31,10 @@ useHead({ title })
     <StoryHeading kicker="From the archives">A joke, reprinted</StoryHeading>
     <div class="story" aria-live="polite" :aria-busy="loading">
       <template v-if="joke">
-        <!-- The id goes in the caption, not the kicker: kickers are set in capitals, and ids are case-sensitive. -->
         <JokeCard
           ref="card"
           :joke="joke"
-          :caption="`Joke #${joke.id}. Reprinted with permission of every dad, everywhere.`"
+          caption="Reprinted with permission of every dad, everywhere."
         />
         <div class="actions">
           <CopyButton

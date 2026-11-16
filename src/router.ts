@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
 export const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: () => import('./views/HomeView.vue') },
+  { path: '/search', name: 'search', component: () => import('./views/SearchView.vue') },
   { path: '/random', name: 'random', component: () => import('./views/RandomView.vue') },
   {
     path: '/jokes/:id',
@@ -32,5 +33,6 @@ export const routes: RouteRecordRaw[] = [
 export const router = createRouter({
   history: createWebHistory(),
   routes,
-  scrollBehavior: (_to, _from, saved) => saved ?? { top: 0 },
+  // A new page starts at the top. A new query on the same page, such as typing a Search, stays where it is.
+  scrollBehavior: (to, from, saved) => saved ?? (to.path === from.path ? false : { top: 0 }),
 })

@@ -64,7 +64,7 @@ The API is called straight from the browser: it allows CORS on GET, and every re
 ### `/random`
 
 - "Another one", or the `r` key, fetches a new joke without changing the URL.
-- "Open this joke" goes to `/jokes/:id`.
+- The joke card links to `/jokes/:id`, on home too.
 
 ### `/jokes/:id`
 
@@ -105,7 +105,7 @@ See [Case Study](#case-study).
   - a blackletter masthead with a dad peeking over his newspaper as its crest;
   - newsprint colours in light, and a "night edition" in dark;
   - Oswald headlines, Comic Neue kickers and captions, and Atkinson Hyperlegible for everything else;
-  - each Joke in a halftone comic frame, with a caption.
+  - each Joke in a halftone comic frame, with an optional caption.
 - **No ratings.** The API has no rating for a Joke, so none is invented.
 - **Tokens** in three layers: primitive (the raw palette, type and steps), semantic (`--color-surface`, `--space-4`) and domain (`--masthead-font`, `--joke-frame-halftone`). Components use only semantic and domain tokens, and a test enforces it.
 - **Themes:** light and dark. The page follows the system setting until the visitor presses the theme toggle, a small sun-and-moon switch, a toggle button named "Dark theme". Their choice is saved and applied before first paint, so it doesn't flash. There's no "Auto" option.

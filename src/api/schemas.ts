@@ -18,9 +18,29 @@ export const JokeSchema = z.object({
 
 export type Joke = z.infer<typeof JokeSchema>
 
+/** One page of a Search, renamed from the API's snake_case. An empty Search still has one page. */
+export const SearchPageSchema = z
+  .object({
+    search_term: z.string(),
+    current_page: z.number().int(),
+    total_jokes: z.number().int().nonnegative(),
+    total_pages: z.number().int().positive(),
+    results: z.array(JokeSchema),
+  })
+  .transform((page) => ({
+    term: page.search_term,
+    page: page.current_page,
+    totalJokes: page.total_jokes,
+    totalPages: page.total_pages,
+    jokes: page.results,
+  }))
+
+export type SearchPage = z.infer<typeof SearchPageSchema>
+
 /** Schemas by the `type` named in each `@rest` directive. */
 export const schemasByType = {
   Joke: JokeSchema,
+  SearchPage: SearchPageSchema,
 } as const
 
 export type RestType = keyof typeof schemasByType

@@ -15,6 +15,12 @@ _Avoid_: Joke of the day (it isn't daily)
 **Search**:
 Looking up Jokes by a term, shown a page of 10 at a time.
 
+**Recent searches**:
+The visitor's last five Search terms, saved in this browser. A term is remembered when the visitor presses Enter, turns a page or opens a Joke, not on every keystroke.
+
+**Suggested searches**:
+A fixed set of terms offered when the search box is empty or a Search finds nothing.
+
 **Pagination window**:
 The 11 page numbers shown around the current page, 5 on each side, kept full at both ends.
 _Avoid_: Pager

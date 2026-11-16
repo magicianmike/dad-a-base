@@ -17,15 +17,12 @@ const { joke, loading, error, next } = useRandomJoke()
   <template v-else>
     <StoryHeading :kicker="kicker">{{ headline }}</StoryHeading>
     <div class="story" aria-live="polite" :aria-busy="loading">
-      <JokeCard v-if="joke" :joke="joke" :caption="caption" />
+      <JokeCard v-if="joke" :joke="joke" :caption="caption" :to="`/jokes/${joke.id}`" />
       <p v-else>Loading a joke…</p>
     </div>
     <div class="actions">
       <AppButton variant="primary" :disabled="loading" @click="next">Another one</AppButton>
-      <template v-if="joke">
-        <FavoriteButton :joke="joke" />
-        <RouterLink :to="`/jokes/${joke.id}`" class="open">Open this joke</RouterLink>
-      </template>
+      <FavoriteButton v-if="joke" :joke="joke" />
     </div>
   </template>
 </template>
@@ -41,12 +38,5 @@ const { joke, loading, error, next } = useRandomJoke()
   flex-wrap: wrap;
   gap: var(--space-3) var(--space-4);
   align-items: center;
-}
-
-.open {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--target-min);
-  font-weight: 700;
 }
 </style>

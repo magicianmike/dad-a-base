@@ -17,7 +17,7 @@ describe('JokeView', () => {
     await renderPage(JokeView, { props: { id: joke.id } })
     expect(await screen.findByText(joke.joke)).toBeInTheDocument()
     expect(
-      screen.getByText(`Joke #${joke.id}. Reprinted with permission of every dad, everywhere.`),
+      screen.getByText('Reprinted with permission of every dad, everywhere.'),
     ).toBeInTheDocument()
     await waitFor(() =>
       expect(document.title).toBe('Why was the big cat disqualified from the race? Because…'),

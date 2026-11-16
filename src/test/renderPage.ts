@@ -13,13 +13,13 @@ import ToastRegion from '@/components/ToastRegion.vue'
  */
 export async function renderPage(
   page: Component,
-  { props = {}, client = createApolloClient() } = {},
+  { props = {}, client = createApolloClient(), path = '/' } = {},
 ) {
   const router = createRouter({
     history: createMemoryHistory(),
     routes: [{ path: '/:any(.*)*', component: { render: () => null } }],
   })
-  await router.push('/')
+  await router.push(path)
   const Harness = defineComponent({ render: () => [h(page, props), h(ToastRegion)] })
   const utils = render(Harness, {
     global: {

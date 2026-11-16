@@ -41,6 +41,33 @@ describe('App', () => {
     await waitFor(() => expect(screen.getByRole('heading', { level: 1 })).toHaveFocus())
   })
 
+  it('searches from home, with focus on the search page’s headline and the term kept', async () => {
+    await renderApp('/')
+    await userEvent.type(await screen.findByRole('searchbox', { name: 'Search the jokes' }), 'golf')
+    await userEvent.click(screen.getByRole('button', { name: 'Search' }))
+
+    expect(await screen.findByRole('link', { name: 'Bad at golf? Join the club.' })).toBeVisible()
+    expect(router.currentRoute.value.fullPath).toBe('/search?q=golf')
+    expect(screen.getByRole('heading', { level: 1, name: 'Search the archives' })).toHaveFocus()
+    expect(screen.getByRole('searchbox')).toHaveValue('golf')
+  })
+
+  it('keeps focus in the search box while typing, though the address changes', async () => {
+    await renderApp('/search')
+    const box = await screen.findByRole('searchbox')
+    await userEvent.type(box, 'dog')
+    await waitFor(() => expect(router.currentRoute.value.fullPath).toBe('/search?q=dog'))
+    expect(await screen.findByRole('heading', { name: 'Jokes 1–10 of 43' })).toBeInTheDocument()
+    expect(box).toHaveFocus()
+  })
+
+  it('opens a Search result from the cache', async () => {
+    await renderApp('/search?q=golf')
+    await userEvent.click(await screen.findByRole('link', { name: 'Bad at golf? Join the club.' }))
+    expect(await screen.findByText(/From the archives/)).toBeInTheDocument()
+    expect(router.currentRoute.value.path).toBe('/jokes/BI699EY08Ed')
+  })
+
   it('has a skip link to the main story, a main navigation and a colophon', async () => {
     await renderApp('/')
     expect(screen.getByRole('link', { name: 'Skip to the main story' })).toHaveAttribute(
@@ -53,7 +80,7 @@ describe('App', () => {
       within(nav)
         .getAllByRole('link')
         .map((link) => link.textContent),
-    ).toEqual(['Home', 'Random'])
+    ).toEqual(['Home', 'Search', 'Random'])
     expect(
       within(screen.getByRole('navigation', { name: 'Colophon' })).getByRole('link', {
         name: 'Design system',
@@ -63,7 +90,7 @@ describe('App', () => {
 
   it('opens a Joke’s page from the random Joke, from the cache', async () => {
     await renderApp('/random')
-    await userEvent.click(await screen.findByRole('link', { name: 'Open this joke' }))
+    await userEvent.click(within(await screen.findByRole('figure')).getByRole('link'))
     expect(await screen.findByText(/From the archives/)).toBeInTheDocument()
     expect(router.currentRoute.value.path).toMatch(/^\/jokes\//)
   })
@@ -105,6 +132,10 @@ describe('scrollBehavior', () => {
   })
 
   it('starts a new page at the top', () => {
-    expect(scroll(route, route, null)).toEqual({ top: 0 })
+    expect(scroll({ ...route, path: '/random' }, { ...route, path: '/' }, null)).toEqual({ top: 0 })
+  })
+
+  it('stays put for a new query on the same page, such as typing a Search', () => {
+    expect(scroll({ ...route, path: '/search' }, { ...route, path: '/search' }, null)).toBe(false)
   })
 })

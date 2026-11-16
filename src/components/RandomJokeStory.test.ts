@@ -13,7 +13,7 @@ describe('RandomJokeStory', () => {
   it('shows a Joke, links to its page, and shows another one on request', async () => {
     await renderPage(RandomJokeStory, { props })
     expect(await screen.findByText(jokes[0]!.joke)).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Open this joke' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: jokes[0]!.joke })).toHaveAttribute(
       'href',
       `/jokes/${jokes[0]!.id}`,
     )
@@ -21,7 +21,7 @@ describe('RandomJokeStory', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Another one' }))
 
     expect(await screen.findByText(jokes[1]!.joke)).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Open this joke' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: jokes[1]!.joke })).toHaveAttribute(
       'href',
       `/jokes/${jokes[1]!.id}`,
     )

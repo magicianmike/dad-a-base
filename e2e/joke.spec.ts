@@ -8,7 +8,7 @@ const joke = {
 test('the random Joke opens its own page, titled by its opening words', async ({ page }) => {
   await page.goto('/random')
   await expect(page.getByRole('blockquote')).toHaveText(joke.text)
-  await page.getByRole('link', { name: 'Open this joke' }).click()
+  await page.getByRole('link', { name: joke.text }).click()
 
   await expect(page).toHaveURL(`/jokes/${joke.id}`)
   await expect(page.getByRole('blockquote')).toHaveText(joke.text)
@@ -21,9 +21,7 @@ test('the random Joke opens its own page, titled by its opening words', async ({
 test('a Joke’s page loads from its address', async ({ page }) => {
   await page.goto(`/jokes/${joke.id}`)
   await expect(page.getByRole('blockquote')).toHaveText(joke.text)
-  await expect(
-    page.getByText(`Joke #${joke.id}. Reprinted with permission of every dad, everywhere.`),
-  ).toBeVisible()
+  await expect(page.getByText('Reprinted with permission of every dad, everywhere.')).toBeVisible()
 })
 
 test('Copy puts the Joke on the clipboard and says so', async ({ page, context, browserName }) => {

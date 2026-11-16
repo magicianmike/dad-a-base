@@ -12,9 +12,9 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  play: async ({ canvas, args }) => {
+  play: async ({ canvas, canvasElement, args }) => {
     await expect(canvas.getByRole('blockquote')).toHaveTextContent(args.joke.joke)
-    await expect(canvas.getByText(`Joke #${args.joke.id}`)).toBeInTheDocument()
+    await expect(canvasElement.querySelector('figcaption')).toBeNull()
   },
 }
 
@@ -31,5 +31,16 @@ export const Long: Story = {
       id: 'long',
       joke: 'I used to hate facial hair, but then it grew on me. And then it grew on my chin, my cheeks and, frankly, somewhere near my ears, which nobody asked for.',
     },
+  },
+}
+
+/** In a list of results: compact, with the Joke's text linking to its page. */
+export const Linked: Story = {
+  args: { compact: true, to: `/jokes/${jokes[0]!.id}` },
+  play: async ({ canvas, args }) => {
+    await expect(canvas.getByRole('link', { name: args.joke.joke })).toHaveAttribute(
+      'href',
+      `/jokes/${args.joke.id}`,
+    )
   },
 }
