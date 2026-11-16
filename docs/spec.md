@@ -142,20 +142,22 @@ The author does a VoiceOver pass on a Mac and an iPhone for each milestone, reco
 `/case-study` is an MDX page with live components in fixed states, inline SVG diagrams, and an Open Graph image made at build time ([ADR 0003](adr/0003-case-study-in-app.md)). It gives more weight to engineering, while still showing product ownership and UX skill. It doesn't link to the code: the repo is internal to onX.
 
 1. **In 60 seconds**
-2. **Product and UX**
-   - Owning the brief
-   - Designing the flows
-   - Look, voice and accessibility
-3. **Engineering**
+2. **Engineering**
    - The stack, and why
    - Apollo over REST
    - Three homes for state: the Apollo cache, Pinia and the URL
    - A design system built from tokens
    - The testing approach
    - Building with Claude
+3. **Product and UX**
+   - Owning the brief
+   - Designing the flows
+   - Look, voice and accessibility
 4. **What I rejected:** the upstream GraphQL endpoint, a backend for the frontend, infinite scroll, component libraries and the Apollo 4 prereleases.
 
 Its live embeds are a joke card, the pagination window in fixed states, each error state, and the theme tokens.
+
+It stands apart from the paper: a slim header with the masthead and a link back to the app, no dateline or main navigation, and its chapters in a sticky column beside the text, marking the one being read, with smooth scrolling between them and a link back to the top. It's linked as "About" in the main navigation and "Case study" in the footer.
 
 ## Process
 

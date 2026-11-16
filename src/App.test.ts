@@ -81,12 +81,12 @@ describe('App', () => {
       within(nav)
         .getAllByRole('link')
         .map((link) => link.textContent),
-    ).toEqual(['Home', 'Search', 'Random', 'Favorites'])
+    ).toEqual(['Home', 'Search', 'Random', 'Favorites', 'About'])
     expect(
-      within(screen.getByRole('navigation', { name: 'Colophon' })).getByRole('link', {
-        name: 'Design system',
-      }),
-    ).toBeInTheDocument()
+      within(screen.getByRole('navigation', { name: 'Colophon' }))
+        .getAllByRole('link')
+        .map((link) => link.textContent),
+    ).toEqual(['Case study', 'Design system', 'Storybook'])
   })
 
   it('opens a Joke’s page from the random Joke, from the cache', async () => {
@@ -118,6 +118,18 @@ describe('App', () => {
     expect(await screen.findByText(/From the archives/)).toBeInTheDocument()
     expect(fetched).toBe(0)
     server.events.removeAllListeners()
+  })
+
+  it('gives the Case Study a slim header: the Masthead and a way back, with no main navigation', async () => {
+    await renderApp('/case-study')
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'How the Dad-a-base was built' }),
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('navigation', { name: 'Main' })).toBeNull()
+    expect(screen.getByRole('link', { name: 'The Dad-a-base' })).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('link', { name: /Back to the Dad-a-base/ }))
+    await waitFor(() => expect(router.currentRoute.value.path).toBe('/'))
+    expect(screen.getByRole('navigation', { name: 'Main' })).toBeInTheDocument()
   })
 
   describe('keyboard shortcuts', () => {

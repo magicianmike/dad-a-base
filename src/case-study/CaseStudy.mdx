@@ -1,0 +1,202 @@
+import AppButton from '@/components/AppButton.vue'
+import JokeCard from '@/components/JokeCard.vue'
+import ThemeSpread from '@/components/ThemeSpread.vue'
+import ErrorStates from './ErrorStates.vue'
+import FlowDiagram from './FlowDiagram.vue'
+import LiveFigure from './LiveFigure.vue'
+import PaginationStates from './PaginationStates.vue'
+
+## In 60 seconds
+
+The brief asked for a site on the icanhazdadjoke API: search, a random joke, a page per joke with a copy button, a header and footer, and a tidy layout. I built that as **The Dad-a-base**, a dad-joke paper styled as a newspaper's Sunday funnies, and then took it further: Favorites, Share, keyboard shortcuts, a design system, and an Error state for every way the API can fail.
+
+- **Stack:** Vue 3 with `<script setup>` and TypeScript, Vite, vue-router and Pinia. All API data goes through Apollo Client, talking to the REST API through `apollo-link-rest`, with Zod checking every response.
+- **Quality:** every route runs end to end on three browsers, with axe in both themes and reflow at 320px. Unit and component tests cover over 95% of statements, against a 90% gate.
+- **Process:** nine milestones, each with a GitHub issue, a pull request and a journal entry with screenshots. From the app shell on, each also had a VoiceOver pass that I ran on a Mac and an iPhone.
+
+The boxes marked **Live** on this page are the app's own components, given fixed props, not screenshots of them.
+
+## Engineering
+
+### The stack, and why
+
+Vue 3, TypeScript and Vite, with plain CSS. The brief judges how the components are laid out, so I wrote the layout myself rather than reaching for a component library. Nuxt would have brought server rendering this app doesn't need, and hidden the routing and data wiring I wanted to show. Tailwind's utility classes can't express the semantic and domain tokens the design system is built on.
+
+### Apollo over REST
+
+The role asks for Apollo and GraphQL, but icanhazdadjoke's own GraphQL endpoint can't build this app. Its schema has one field, which returns one random match for a search, so there's no search list and no pagination. The REST API has everything. So every request is a GraphQL document with an `@rest` directive, which `apollo-link-rest` turns into a REST call. There's no GraphQL server to run.
+
+<FlowDiagram
+  title="How a Search reaches the API and comes back"
+  description="A view calls useSearch with a term and a page. Apollo Client answers from its cache if it can. If not, apollo-link-rest turns the query into GET /search with the term encoded. parseResponse reads the status in the response body first, then checks the response with its Zod schema. The typed result is cached by term and page, with each Joke stored once as Joke:id."
+  steps={[
+    { title: 'SearchView', detail: ['useSearch(term, page)'] },
+    {
+      title: 'Apollo Client',
+      detail: ['Cached: each Joke as Joke:id,', 'each page by its term and page'],
+      accent: true,
+    },
+    { title: 'apollo-link-rest', detail: ['@rest(path: "/search?{args}&limit=10")'] },
+    { title: 'parseResponse', detail: ['The body’s status first, then Zod'] },
+    { title: 'icanhazdadjoke', detail: ['GET /, /j/{id}, /search'] },
+  ]}
+  arrows={['a query', 'not cached', 'the response', 'HTTP']}
+/>
+
+- **Zod is the single source of truth for types.** With no schema, there's nothing for a code generator to read, so each response is parsed by a Zod schema at runtime, and the static types come from the same schemas.
+- **Each Joke is stored once,** as `Joke:id`, whether it came from Search, Random or Favorites. Opening a Joke you've already seen makes no request, and tests check that.
+- **I chose Apollo 3, not Apollo 4's prereleases.** Version 4 would have needed a release candidate of `apollo-link-rest` and a beta of `@vue/apollo-composable`, which is too much risk with a deadline.
+
+### Three homes for state
+
+Every piece of state lives in exactly one place, chosen by one question each:
+
+- **Can someone link to it? Then it's in the URL:** the search term and page, a Joke's id, and the Favorites filter. Reload, Back and sharing all just work.
+- **Did the API say it? Then it's in Apollo's cache:** Jokes and pages of search results, normalised so one Joke is one entry.
+- **Did the visitor choose it? Then it's in Pinia:** Favorites, recent searches, the theme, the shortcuts switch and toasts. What should outlive a visit is saved in the browser and checked with Zod when it's read back, so bad data starts empty rather than breaking the page.
+
+### A design system built from tokens
+
+Styles use custom properties in three layers. **Primitives** are the raw palette and scales. **Semantic** tokens say what a value is for. **Domain** tokens are the Dad-a-base's own parts. Components may only use the last two, and dark mode only changes the semantic layer.
+
+<FlowDiagram
+  title="One colour through the three token layers"
+  description="The primitive --red-700 is the hex value a9442e. The semantic token --color-accent uses red-700 in the light theme and red-300 in the dark theme. The domain token --button-primary-bg uses --color-accent. AppButton uses --button-primary-bg, and never knows which theme is on."
+  steps={[
+    { title: 'Primitive: --red-700', detail: ['#a9442e'] },
+    {
+      title: 'Semantic: --color-accent',
+      detail: ['Light: --red-700. Dark: --red-300.'],
+      accent: true,
+    },
+    { title: 'Domain: --button-primary-bg', detail: ['var(--color-accent)'] },
+    { title: 'AppButton', detail: ['Never knows which theme is on'] },
+  ]}
+  arrows={['named for a purpose', 'given a part', 'used by']}
+/>
+
+Tests enforce the rules: semantic tokens only reference primitives, domain tokens only semantic ones, no component touches a primitive, and every text and border pairing meets WCAG AA in both themes. Stylelint bans raw `px` and colour values outside the token files. The `/design-system` page reads the tokens from the same stylesheets, so its documentation can't drift from the code.
+
+<LiveFigure caption="ThemeSpread, rendering the same components in both themes at once, whatever this page's theme.">
+  <ThemeSpread>
+    <AppButton variant="primary">Another one</AppButton>
+  </ThemeSpread>
+</LiveFigure>
+
+One bug taught me how custom properties really work. A `var()` resolves where the property is declared, not where it's used, so domain tokens declared only on `:root` stayed light inside a dark panel. axe caught the contrast failure, and domain tokens are now declared again on every themed element.
+
+### The testing approach
+
+- **Vitest** covers the logic and the views: stores, schemas, cache policies, the Pagination window, the error mapping, composables, and each page rendered as the visitor sees it.
+- **Storybook** has stories for every component, each with a play test run in Chromium, and axe failing a story on any violation.
+- **Playwright** runs every route end to end on desktop Chromium, mobile WebKit and mobile Chrome, with axe in both themes and reflow at 320px.
+- **MSW** answers the API in all three, from one set of handlers. One smoke test calls the real API, in its own CI job that can't block a merge, because the API isn't mine.
+
+The tests earned their keep. They caught a cache write that silently stored empty Jokes, a WebKit race in how tests saved data before loading a page, axe measuring contrast while a page was still fading in, and a Storybook story that passed alone but failed after another story left data behind.
+
+### Building with Claude
+
+I built this with Claude Code, Anthropic's coding agent, and I'd rather show how than hide it.
+
+- **I wrote the plan first.** The spec, the domain glossary, the voice guide and the architecture decision records came before the code, and a `CLAUDE.md` file holds the project's rules, such as "Zod schemas are the single source of truth" and "ask before pushing".
+- **Claude built each milestone to the spec,** with its tests, and recorded every decision it made by default in the journal, under "Defaults, not asked", so I could see which choices were mine.
+- **I reviewed each milestone running,** locally or on a preview deploy, and asked for changes. Milestone 5 alone took more than a dozen changes: the Remove button pinned over the card, the broken-heart icon, the falling animation, search and pages on Favorites, and a heart on every Favorite.
+- **Some of my requests had accessibility catches, and Claude flagged them** with the accessible version. "Favorited" meant dropping the toggle-button role. A centred tooltip would have run off a phone's screen, so it stays right-aligned there. A disabled button needed to keep its focus.
+- **I kept the outward-facing steps.** Claude asked before every push, issue and pull request, and I ran every VoiceOver pass myself.
+
+## Product and UX
+
+### Owning the brief
+
+I treated each line of the brief as a goal rather than a checklist.
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">The brief</th>
+      <th scope="col">What it became</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Search for a joke</td>
+      <td>Search as you type, with the term and page in the address</td>
+    </tr>
+    <tr>
+      <td>Pagination would be nice</td>
+      <td>A Pagination window that stays 11 pages wide, and pages you can link to</td>
+    </tr>
+    <tr>
+      <td>Handle no results</td>
+      <td>An inline state with suggestions, distinct from an error</td>
+    </tr>
+    <tr>
+      <td>A random joke</td>
+      <td>
+        "Another one", or the <kbd>r</kbd> key, and a Joke of the moment on the front page
+      </td>
+    </tr>
+    <tr>
+      <td>A joke's own page, with copy</td>
+      <td>Copy, with a fallback when the clipboard is blocked, plus Share and Favorite</td>
+    </tr>
+    <tr>
+      <td>Header, footer and navigation</td>
+      <td>A masthead, a dateline, skip links and a theme toggle</td>
+    </tr>
+    <tr>
+      <td>Nicely laid out</td>
+      <td>A design system built from tokens, in light and dark</td>
+    </tr>
+  </tbody>
+</table>
+
+Owning it also meant leaving things out. Early prototypes showed a "groan rating" on every Joke, but the API has none, and inventing one would put made-up numbers on real content. So there isn't one.
+
+### Designing the flows
+
+**Search** runs as you type, and the address follows: the term is `?q` and the page is `?page`. Typing replaces the history entry rather than adding one, so Back skips your keystrokes, while turning a page adds one, so Back returns to the page before. A recent search is remembered when you press Enter, turn a page or open a Joke, not on every pause, which would save "c", "ca" and "cat". A bad or out-of-range `?page` is quietly replaced with the nearest real one.
+
+The Pagination window keeps 11 numbers in view and stays full at both ends, so the controls never shift under your pointer as you page through.
+
+<PaginationStates />
+
+**When the API fails,** the page becomes a correction notice, in place: the address doesn't change, and "Try again" really tries again. Each code has its own notice, with a pun in the headline and a plain explanation under it. Being rate-limited (429) isn't the same as the server being down, so it says so. The API reports some errors with HTTP 200 and the real status in the body, so the client reads the body before it trusts the status.
+
+<ErrorStates />
+
+**Favorites** are kept as whole Jokes in the browser, so the Favorites page needs no API calls. They're written into Apollo's cache too, so opening one is instant. They can be searched and paged like Search. Removing one plays a short "falls off the fridge" animation and moves focus to the next Joke's button, so a keyboard user doesn't lose their place.
+
+### Look, voice and accessibility
+
+The look came from four rounds of throwaway prototypes: a retro terminal, a 70s den and a comic zine first, then calmer versions of the zine, then mastheads, then headline fonts. I chose the **Sunday funnies**: a blackletter masthead with a dad peeking over his newspaper as its crest, Oswald headlines, newsprint colours, and each Joke in a halftone comic frame.
+
+<LiveFigure caption="JokeCard, given a Joke as a prop. Linked cards lift and their dots drift on hover.">
+  <JokeCard
+    joke={{
+      id: 'daaUfibh',
+      joke: 'Why was the big cat disqualified from the race? Because it was a cheetah.',
+    }}
+    caption="Reprinted with permission of every dad, everywhere."
+    to="/jokes/daaUfibh"
+  />
+</LiveFigure>
+
+The voice has rules, written down so they hold: the joke goes in the headline, and plain words go underneath. Controls are never puns: the theme toggle is "Dark theme", not "Night edition". There are no exclamation marks outside the Jokes themselves.
+
+Accessibility is built in rather than checked at the end, and the details changed the design more than once:
+
+- **Focus follows navigation** to each new page's headline, as a page load would, and a skip link is the first stop on every page.
+- **The Favorite button reads "Favorited" once a Joke is saved,** so it isn't also a toggle button: a toggle's name must stay the same in both states, or a screen reader announces the state twice.
+- **Busy buttons keep their focus.** "Another one" ignores presses while it loads instead of using the `disabled` attribute, which would throw a keyboard user back to the top of the page every time.
+- **The single-key shortcuts can be turned off** (WCAG 2.1.4), because speech input can press them by accident.
+- **Tooltips can be dismissed** with Escape and stay while the pointer is over them (WCAG 1.4.13).
+- **Motion is optional.** Every animation stops under reduced motion.
+
+## What I rejected
+
+- **The upstream GraphQL endpoint.** It has no search list and no pagination, so it can't do what the brief asks.
+- **A backend for the frontend.** A small GraphQL server could have bridged the REST API into a proper paginated schema and shown schema design, but it would have added a server, its deploys and its tests, for a gain a visitor would never notice.
+- **Infinite scroll.** Pages you can link to, Back that works, a footer you can reach, and a screen reader that knows where it is all matter more than saving a click.
+- **Component libraries.** The brief asks how I lay out components, so a library would have answered the question for me.
+- **Apollo 4's prereleases.** They're current, but a release candidate and a beta are a risk I didn't need to take with a deadline.

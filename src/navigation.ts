@@ -4,4 +4,5 @@ export const mainNavigation = [
   { to: '/search', label: 'Search' },
   { to: '/random', label: 'Random' },
   { to: '/favorites', label: 'Favorites' },
+  { to: '/case-study', label: 'About' },
 ] as const

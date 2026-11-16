@@ -29,7 +29,7 @@ export default mergeConfig(
             // Vitest empties CSS by default, even `?raw` imports. The token files are read as data.
             css: { include: [/src\/styles\/tokens\/.+\.css/] },
             globals: true,
-            include: ['src/**/*.test.ts'],
+            include: ['src/**/*.test.ts', 'build/**/*.test.ts'],
             setupFiles: ['src/test/setup.ts'],
           },
         },

@@ -12,6 +12,7 @@ const storybookUrl = import.meta.env.DEV ? 'http://localhost:6006' : '/storybook
       Dad-a-base regrets every one of them.
     </p>
     <nav aria-label="Colophon" class="links">
+      <RouterLink to="/case-study">Case study</RouterLink>
       <RouterLink to="/design-system">Design system</RouterLink>
       <a :href="storybookUrl">Storybook</a>
       <button type="button" class="shortcuts" @click="shortcuts.listOpen = true">
@@ -40,7 +41,8 @@ const storybookUrl = import.meta.env.DEV ? 'http://localhost:6006' : '/storybook
 
 .links {
   display: flex;
-  gap: var(--space-4);
+  flex-wrap: wrap;
+  gap: 0 var(--space-4);
 }
 
 .links a,

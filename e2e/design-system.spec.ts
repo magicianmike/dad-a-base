@@ -10,6 +10,7 @@ const routes = [
   '/random',
   '/favorites',
   '/favorites?q=xyzzy',
+  '/case-study',
   '/jokes/daaUfibh',
   '/design-system',
   '/error/500',

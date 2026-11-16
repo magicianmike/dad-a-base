@@ -1,28 +1,38 @@
 <script setup lang="ts">
 import { useHead } from '@unhead/vue'
+import { computed, useId } from 'vue'
 import type { ErrorCode } from '@/api/errors'
 import { errorCopy } from '@/errors/copy'
 import AppButton from './AppButton.vue'
 
-const props = defineProps<{
-  code: ErrorCode
-  /** Given, and the error is one that trying again could fix, a "Try again" button calls it. */
-  onRetry?: () => void
-}>()
+const props = withDefaults(
+  defineProps<{
+    code: ErrorCode
+    /** Given, and the error is one that trying again could fix, a "Try again" button calls it. */
+    onRetry?: () => void
+    /**
+     * Its headline's level. At 1, the default, it's the page, and titles it. Shown inside another page, such as the
+     * Case Study, it's a lower heading and leaves the title alone.
+     */
+    level?: 1 | 2 | 3 | 4
+  }>(),
+  { onRetry: undefined, level: 1 },
+)
 
-const copy = errorCopy[props.code]
-useHead({ title: copy.title })
+const copy = computed(() => errorCopy[props.code])
+const headlineId = useId()
+useHead(computed(() => (props.level === 1 ? { title: copy.value.title } : {})))
 </script>
 
 <template>
-  <article class="correction" aria-labelledby="error-headline">
+  <article class="correction" :aria-labelledby="headlineId">
     <p class="kicker">
       {{ copy.kicker }}
       <span class="code"
         >· {{ code === 'offline' || code === 'unknown' ? copy.title : `Error ${code}` }}</span
       >
     </p>
-    <h1 id="error-headline">{{ copy.headline }}</h1>
+    <component :is="`h${level}`" :id="headlineId" class="headline">{{ copy.headline }}</component>
     <p class="explanation">{{ copy.explanation }}</p>
     <div class="actions">
       <AppButton v-if="copy.retryable && onRetry" variant="primary" @click="onRetry"
@@ -36,6 +46,13 @@ useHead({ title: copy.title })
 </template>
 
 <style scoped>
+/* The notice looks the same at any heading level: a front-page headline. */
+.headline {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
 .correction {
   max-width: var(--measure-reading);
   margin: var(--space-4) auto;

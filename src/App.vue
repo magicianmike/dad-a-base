@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useHead } from '@unhead/vue'
+import { useRoute } from 'vue-router'
 import SiteFooter from '@/components/SiteFooter.vue'
 import ShortcutsDialog from '@/components/ShortcutsDialog.vue'
 import SiteHeader from '@/components/SiteHeader.vue'
@@ -8,16 +9,18 @@ import { useShortcuts } from '@/shortcuts/useShortcuts'
 
 useHead({ titleTemplate: (title) => (title ? `${title} · Dad-a-base` : 'The Dad-a-base') })
 useShortcuts()
+
+const route = useRoute()
 </script>
 
 <template>
   <div class="page">
-    <SiteHeader />
+    <SiteHeader :slim="route.meta.slim" />
     <main id="main" tabindex="-1" class="main">
       <!-- Each new page arrives with a short fade up. Keyed by path, so a new query on the same page, such as typing
       a Search, doesn't replay it. -->
-      <RouterView v-slot="{ Component, route }">
-        <div :key="route.path" class="arrive">
+      <RouterView v-slot="{ Component, route: shown }">
+        <div :key="shown.path" class="arrive">
           <component :is="Component" />
         </div>
       </RouterView>

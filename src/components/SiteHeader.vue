@@ -4,7 +4,17 @@ import { mainNavigation } from '@/navigation'
 import SiteMasthead from './SiteMasthead.vue'
 import ThemeToggle from './ThemeToggle.vue'
 
-const props = withDefaults(defineProps<{ date?: Date }>(), { date: () => new Date() })
+const props = withDefaults(
+  defineProps<{
+    date?: Date
+    /**
+     * For a page that stands apart from the paper, such as the Case Study: the Masthead and a way back to the app,
+     * without the dateline or the main navigation.
+     */
+    slim?: boolean
+  }>(),
+  { date: () => new Date(), slim: false },
+)
 
 const dateline = computed(() =>
   props.date.toLocaleDateString('en-US', {
@@ -20,19 +30,25 @@ const dateline = computed(() =>
   <header class="site-header">
     <a href="#main" class="skip-link">Skip to the main story</a>
     <div class="top">
+      <RouterLink v-if="slim" to="/" class="back">
+        <span aria-hidden="true">←</span> Back to the Dad-a-base
+      </RouterLink>
       <ThemeToggle />
     </div>
     <SiteMasthead />
-    <p class="dateline">
-      <span>{{ dateline }}</span>
-      <span>All the jokes that are fit to groan</span>
-      <span>Free, like Dad's advice</span>
-    </p>
-    <nav aria-label="Main" class="nav">
-      <RouterLink v-for="item in mainNavigation" :key="item.to" :to="item.to">{{
-        item.label
-      }}</RouterLink>
-    </nav>
+    <hr v-if="slim" class="rule" />
+    <template v-else>
+      <p class="dateline">
+        <span>{{ dateline }}</span>
+        <span>All the jokes that are fit to groan</span>
+        <span>Free, like Dad's advice</span>
+      </p>
+      <nav aria-label="Main" class="nav">
+        <RouterLink v-for="item in mainNavigation" :key="item.to" :to="item.to">{{
+          item.label
+        }}</RouterLink>
+      </nav>
+    </template>
   </header>
 </template>
 
@@ -61,8 +77,25 @@ const dateline = computed(() =>
 
 .top {
   display: flex;
+  gap: var(--space-4);
+  align-items: center;
   justify-content: flex-end;
   margin-bottom: var(--space-1);
+}
+
+.back {
+  display: inline-flex;
+  gap: var(--space-2);
+  align-items: center;
+  min-height: var(--target-min);
+  margin-right: auto;
+  font-weight: 700;
+}
+
+.rule {
+  margin: var(--space-3) 0 0;
+  border: 0;
+  border-top: var(--masthead-rule);
 }
 
 .dateline {
