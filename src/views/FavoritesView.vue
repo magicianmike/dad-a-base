@@ -104,7 +104,8 @@ watch([term, page], async ([q, p], [oldQ, oldP]) => {
   if (q !== oldQ && q === draft.value.trim()) return
   if (q !== oldQ) draft.value = q
   await nextTick()
-  resultsHeading.value?.focus()
+  // Without scrolling: turning a page has already sent the page back to the top.
+  resultsHeading.value?.focus({ preventScroll: true })
 })
 
 /** Announced once typing pauses: how many Favorites the term finds. */

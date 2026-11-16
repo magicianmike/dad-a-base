@@ -75,6 +75,17 @@ const saved = computed(() => favorites.isFavorite(props.joke.id))
   padding: var(--space-5);
 }
 
+/* Less frame on a phone, so the Joke has more of the width. */
+@media (width < 40rem) {
+  .frame {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .compact .frame {
+    padding: var(--space-4);
+  }
+}
+
 /* Clear of the corner's control, which straddles the border. */
 .frame:has(.corner) {
   padding-right: calc(var(--target-min) + var(--space-2));

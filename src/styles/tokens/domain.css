@@ -42,6 +42,10 @@
   --button-primary-bg: var(--color-accent);
   --button-primary-text: var(--color-on-accent);
 
+  /* A toast, floating over the page in the text colour, a little see-through */
+  --toast-bg: color-mix(in srgb, var(--color-text) 75%, transparent);
+  --toast-text: var(--color-surface);
+
   /* A correction notice, the Error states */
   --correction-shadow: var(--shadow-offset-large) var(--shadow-offset-large) 0
     var(--color-highlight);

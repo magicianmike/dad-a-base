@@ -21,7 +21,9 @@ test('home searches, then typing searches again, replacing the history entry', a
   await expect(page).toHaveURL('/')
 })
 
-test('the Pagination window turns pages, with focus on the results heading', async ({ page }) => {
+test('the Pagination window turns pages, back at the top with focus on the results heading', async ({
+  page,
+}) => {
   await page.goto('/search?q=pun&page=8')
   const pages = page.getByRole('navigation', { name: 'Pages' })
   await expect(pages.getByRole('listitem')).toHaveText(
@@ -33,6 +35,7 @@ test('the Pagination window turns pages, with focus on the results heading', asy
   await expect(page).toHaveURL('/search?q=pun&page=9')
   await expect(page.getByRole('heading', { level: 2 })).toHaveText('Jokes 81–90 of 400')
   await expect(page.getByRole('heading', { level: 2 })).toBeFocused()
+  await expect.poll(() => page.evaluate(() => scrollY)).toBe(0)
   await expect(pages.getByRole('listitem').first()).toHaveText('4')
 
   await page.goBack()

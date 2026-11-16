@@ -115,7 +115,9 @@ onScopeDispose(() => {
 
 <template>
   <header id="top" tabindex="-1" class="intro">
-    <StoryHeading kicker="About">How the Dad-a-base was built</StoryHeading>
+    <StoryHeading kicker="About"
+      >How the <span class="name">Dad-a-base</span> was built</StoryHeading
+    >
     <p class="standfirst">
       A case study of the product, design and engineering decisions behind this site, for the people
       reviewing it.
@@ -156,6 +158,11 @@ onScopeDispose(() => {
 
 .intro:focus {
   outline: none;
+}
+
+/* The name never breaks at its hyphens. */
+.name {
+  white-space: nowrap;
 }
 
 .standfirst {

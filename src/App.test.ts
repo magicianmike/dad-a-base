@@ -81,7 +81,7 @@ describe('App', () => {
       within(nav)
         .getAllByRole('link')
         .map((link) => link.textContent),
-    ).toEqual(['Home', 'Search', 'Random', 'Favorites', 'About'])
+    ).toEqual(['Home', 'Search', 'Random', 'Favorites'])
     expect(
       within(screen.getByRole('navigation', { name: 'Colophon' }))
         .getAllByRole('link')

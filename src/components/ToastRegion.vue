@@ -34,17 +34,19 @@ const store = useToastsStore()
 
 .toast {
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-1);
   align-items: center;
   max-width: var(--measure-reading);
   margin: 0;
-  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
-  border: var(--border-width-strong) solid var(--color-border);
-  background: var(--color-text);
-  color: var(--color-surface);
-  box-shadow: var(--button-shadow);
+  padding: 0 0 0 var(--space-3);
+  background: var(--toast-bg);
+  color: var(--toast-text);
+  font-size: var(--text-sm);
   font-weight: 700;
   pointer-events: auto;
+
+  /* Blurs what scrolls behind it, so the text stays easy to read. */
+  backdrop-filter: blur(var(--space-1));
 }
 
 .dismiss {
@@ -56,7 +58,7 @@ const store = useToastsStore()
   background: none;
   color: inherit;
   font: inherit;
-  font-size: var(--text-xl);
+  font-size: var(--text-lg);
   cursor: pointer;
 }
 

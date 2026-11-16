@@ -4,16 +4,16 @@ Dad-a-base is a quirky, comedic dad-joke site built on the [icanhazdadjoke](http
 
 ## Brief, and what it becomes
 
-| Brief                                          | Dad-a-base                                                                       |
-| ---------------------------------------------- | -------------------------------------------------------------------------------- |
-| Search for a joke                              | `/search`: search as you type, with the query and page in the URL                |
-| Pagination, nice to have                       | Numbered pagination with an 11-number window                                     |
-| Handle no results gracefully                   | An inline empty state with suggestions                                           |
-| A random joke                                  | `/random`, plus a joke of the moment on `/`                                      |
-| An individual joke page with copy to clipboard | `/jokes/:id`: copy, share and favorite                                           |
-| A header and footer with navigation            | A site shell with skip links and a theme toggle                                  |
-| Nicely laid out                                | A design system built from tokens, light and dark, accessible by construction    |
-| Additional pages                               | Favorites, the Case Study (About), the design system, and a dedicated error page |
+| Brief                                          | Dad-a-base                                                                    |
+| ---------------------------------------------- | ----------------------------------------------------------------------------- |
+| Search for a joke                              | `/search`: search as you type, with the query and page in the URL             |
+| Pagination, nice to have                       | Numbered pagination with an 11-number window                                  |
+| Handle no results gracefully                   | An inline empty state with suggestions                                        |
+| A random joke                                  | `/random`, plus a joke of the moment on `/`                                   |
+| An individual joke page with copy to clipboard | `/jokes/:id`: copy, share and favorite                                        |
+| A header and footer with navigation            | A site shell with skip links and a theme toggle                               |
+| Nicely laid out                                | A design system built from tokens, light and dark, accessible by construction |
+| Additional pages                               | Favorites, the Case Study, the design system, and a dedicated error page      |
 
 ## Stack
 
@@ -82,7 +82,7 @@ The API is called straight from the browser: it allows CORS on GET, and every re
 - Ten a page, with Search's pagination and `?page`.
 - Has its own empty state.
 
-### `/case-study`, linked as "About"
+### `/case-study`, linked from the footer
 
 See [Case Study](#case-study).
 
@@ -157,7 +157,7 @@ The author does a VoiceOver pass on a Mac and an iPhone for each milestone, reco
 
 Its live embeds are a joke card, the pagination window in fixed states, each error state, and the theme tokens.
 
-It stands apart from the paper: a slim header with the masthead and a link back to the app, no dateline or main navigation, and its chapters in a sticky column beside the text, marking the one being read, with smooth scrolling between them and a link back to the top. It's linked as "About" in the main navigation and "Case study" in the footer.
+It stands apart from the paper: a slim header with the masthead and a link back to the app, no dateline or main navigation, and its chapters in a sticky column beside the text, marking the one being read, with smooth scrolling between them and a link back to the top. It's linked as "Case study" in the footer, beside the design system and Storybook.
 
 ## Process
 

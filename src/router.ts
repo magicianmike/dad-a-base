@@ -52,7 +52,13 @@ export const router = createRouter({
   // chapters, which a jump from here would cut short.
   scrollBehavior: (to, from, saved) => {
     if (saved) return saved
-    if (to.path === from.path) return false
+    if (to.path === from.path) {
+      // Turning a page glides back to the top, unless motion is reduced. Anything else on the same page stays put.
+      if (to.query.q !== from.query.q || to.query.page === from.query.page) return false
+      const reduced =
+        typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
+      return { top: 0, behavior: reduced ? 'instant' : 'smooth' }
+    }
     return to.hash ? { el: to.hash, top: 16 } : { top: 0 }
   },
 })

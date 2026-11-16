@@ -88,5 +88,19 @@ import DadIllustration from './DadIllustration.vue'
   .ear {
     display: none;
   }
+
+  /* The Dad above the name, so each can be larger in a narrow column, without pushing the page too far down. */
+  .name-link {
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .crest {
+    width: clamp(5rem, 26cqi, 7rem);
+  }
+
+  .name {
+    font-size: clamp(var(--masthead-size), 15cqi, 4.5rem);
+  }
 }
 </style>

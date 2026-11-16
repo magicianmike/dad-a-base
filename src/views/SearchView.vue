@@ -89,7 +89,8 @@ watch([focusPending, settled], async () => {
   if (!focusPending.value || !settled.value) return
   focusPending.value = false
   await nextTick()
-  resultsHeading.value?.focus()
+  // Without scrolling: turning a page has already sent the page back to the top.
+  resultsHeading.value?.focus({ preventScroll: true })
 })
 
 /**

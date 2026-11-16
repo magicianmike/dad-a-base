@@ -2,10 +2,13 @@ import { expect, test } from '@playwright/test'
 
 const title = 'How the Dad-a-base was built'
 
-test('About in the main navigation opens the Case Study, with a slim header', async ({ page }) => {
+test('the footer opens the Case Study, with a slim header', async ({ page }) => {
   await page.goto('/')
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'About' }).click()
+  await page
+    .getByRole('navigation', { name: 'Colophon' })
+    .getByRole('link', { name: 'Case study' })
+    .click()
   await expect(page).toHaveURL('/case-study')
   await expect(page.getByRole('heading', { level: 1, name: title })).toBeFocused()
   await expect(page).toHaveTitle(`${title} · Dad-a-base`)
@@ -14,15 +17,6 @@ test('About in the main navigation opens the Case Study, with a slim header', as
   await page.getByRole('link', { name: 'Back to the Dad-a-base' }).click()
   await expect(page).toHaveURL('/')
   await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible()
-})
-
-test('the footer links to the Case Study', async ({ page }) => {
-  await page.goto('/random')
-  await page
-    .getByRole('navigation', { name: 'Colophon' })
-    .getByRole('link', { name: 'Case study' })
-    .click()
-  await expect(page).toHaveURL('/case-study')
 })
 
 test('a chapter link scrolls there and moves focus there, and Back to top returns', async ({

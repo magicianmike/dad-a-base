@@ -40,8 +40,8 @@ const dateline = computed(() =>
     <template v-else>
       <p class="dateline">
         <span>{{ dateline }}</span>
-        <span>All the jokes that are fit to groan</span>
-        <span>Free, like Dad's advice</span>
+        <span class="motto">All the jokes that are fit to groan</span>
+        <span class="motto">Free, like Dad's advice</span>
       </p>
       <nav aria-label="Main" class="nav">
         <RouterLink v-for="item in mainNavigation" :key="item.to" :to="item.to">{{
@@ -140,11 +140,18 @@ const dateline = computed(() =>
   color: var(--color-accent);
 }
 
+/* On a phone, the date alone, and the main navigation closer together, so the story starts sooner. */
 @media (width < 40rem) {
   .dateline {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+    justify-content: center;
+  }
+
+  .motto {
+    display: none;
+  }
+
+  .nav {
+    gap: var(--space-1) var(--space-4);
   }
 }
 </style>

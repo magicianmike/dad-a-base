@@ -34,7 +34,7 @@ One of `ErrorView`'s codes: `404`, `403`, `429`, `500`, `offline` or `unknown`. 
 
 **Case Study**:
 The write-up of the product, design and engineering decisions, aimed at hiring managers, at `/case-study` on the same site.
-_Avoid_: About page (it's only the link's name), portfolio
+_Avoid_: About page, portfolio
 
 **Masthead**:
 The paper's name at the top of every page: "The Dad-a-base" in blackletter, with the dad as its crest.

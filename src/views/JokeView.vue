@@ -63,6 +63,14 @@ useHead({ title })
   margin-block: var(--space-5) var(--space-6);
 }
 
+/* On a phone, the buttons fill each line they wrap onto, rather than leaving one stranded. */
+@media (width < 40rem) {
+  .actions > * {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
 .more {
   display: inline-flex;
   align-items: center;
