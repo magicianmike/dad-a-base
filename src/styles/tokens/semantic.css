@@ -18,6 +18,9 @@
   --color-dots: var(--dots-red-light);
   --color-skin: var(--skin-light);
   --color-hair: var(--hair-brown);
+
+  /* Behind a modal dialog: dark in both themes, so the page always recedes. */
+  --color-scrim: var(--black);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -35,6 +38,9 @@
     --color-dots: var(--dots-red-dark);
     --color-skin: var(--skin-dark);
     --color-hair: var(--hair-brown);
+
+    /* Behind a modal dialog: dark in both themes, so the page always recedes. */
+    --color-scrim: var(--black);
   }
 }
 
@@ -52,6 +58,9 @@
   --color-dots: var(--dots-red-dark);
   --color-skin: var(--skin-dark);
   --color-hair: var(--hair-brown);
+
+  /* Behind a modal dialog: dark in both themes, so the page always recedes. */
+  --color-scrim: var(--black);
 }
 
 :root {

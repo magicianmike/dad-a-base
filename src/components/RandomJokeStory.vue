@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRandomJoke } from '@/api/useRandomJoke'
+import { useShortcut } from '@/shortcuts/useShortcut'
 import { useMinimumBusy } from '@/useMinimumBusy'
 import AppButton from './AppButton.vue'
 import ErrorView from './ErrorView.vue'
@@ -14,6 +15,12 @@ const { joke, loading, error, next } = useRandomJoke()
 
 /** "Another one" stays busy for at least half a second, so a quick answer doesn't make it flicker. */
 const busy = useMinimumBusy(loading, 500)
+
+/** "Another one", by button or by the `r` shortcut. Ignored while it's busy, as the button is. */
+function another() {
+  if (!busy.value) next()
+}
+useShortcut('r', another)
 </script>
 
 <template>
@@ -21,11 +28,19 @@ const busy = useMinimumBusy(loading, 500)
   <template v-else>
     <StoryHeading :kicker="kicker">{{ headline }}</StoryHeading>
     <div class="story" aria-live="polite" :aria-busy="loading">
-      <JokeCard v-if="joke" :joke="joke" :caption="caption" :to="`/jokes/${joke.id}`" />
+      <!-- Keyed by the Joke, so each new one arrives with the page's fade up. -->
+      <JokeCard
+        v-if="joke"
+        :key="joke.id"
+        class="arrive"
+        :joke="joke"
+        :caption="caption"
+        :to="`/jokes/${joke.id}`"
+      />
       <p v-else>Loading a joke…</p>
     </div>
     <div class="actions">
-      <AppButton variant="primary" class="another" :disabled="busy" @click="next">
+      <AppButton variant="primary" class="another" :disabled="busy" @click="another">
         <!-- Two arrows chasing each other round: another one. -->
         <svg
           class="icon"
@@ -79,6 +94,23 @@ const busy = useMinimumBusy(loading, 500)
 
 @media (prefers-reduced-motion: reduce) {
   .spinning {
+    animation: none;
+  }
+}
+
+.arrive {
+  animation: arrive 250ms ease-out;
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+    translate: 0 var(--space-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrive {
     animation: none;
   }
 }

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useShortcutsStore } from '@/shortcuts/store'
+
+const shortcuts = useShortcutsStore()
 const storybookUrl = import.meta.env.DEV ? 'http://localhost:6006' : '/storybook/'
 </script>
 
@@ -11,6 +14,9 @@ const storybookUrl = import.meta.env.DEV ? 'http://localhost:6006' : '/storybook
     <nav aria-label="Colophon" class="links">
       <RouterLink to="/design-system">Design system</RouterLink>
       <a :href="storybookUrl">Storybook</a>
+      <button type="button" class="shortcuts" @click="shortcuts.listOpen = true">
+        Keyboard shortcuts
+      </button>
     </nav>
   </footer>
 </template>
@@ -37,9 +43,21 @@ const storybookUrl = import.meta.env.DEV ? 'http://localhost:6006' : '/storybook
   gap: var(--space-4);
 }
 
-.links a {
+.links a,
+.shortcuts {
   display: inline-flex;
   align-items: center;
   min-height: var(--target-min);
+}
+
+/* A button, since it opens a dialog, but set like the links beside it. */
+.shortcuts {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
 }
 </style>

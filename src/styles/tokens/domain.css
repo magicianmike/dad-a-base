@@ -21,9 +21,15 @@
   /* A Joke, framed like a comic panel */
   --joke-frame-bg: var(--color-surface-raised);
 
-  /* Halftone: 1.6px dots on an 8px pitch. On hover a linked frame's dots drift one pitch, on a loop. */
-  --joke-frame-halftone: radial-gradient(var(--color-dots) 1.6px, transparent 1.7px) 0 0 / 8px 8px;
-  --joke-frame-halftone-pitch: 8px; /* the halftone's pitch, above */
+  /*
+   * Halftone: 1.6px dots, softened to 1.7px, on an 8px pitch. On hover a linked frame's dots drift one pitch, on a
+   * loop, and warm to the accent.
+   */
+  --joke-frame-dots: var(--color-dots);
+  --joke-frame-dots-hover: color-mix(in srgb, var(--color-accent) 40%, transparent);
+  --joke-frame-dot-size: 1.6px;
+  --joke-frame-dot-edge: 1.7px;
+  --joke-frame-halftone-pitch: 8px;
   --joke-frame-drift-duration: 1.2s;
   --joke-frame-border: var(--border-width-strong) solid var(--color-border);
   --joke-frame-hover-shadow: var(--shadow-offset-large) var(--shadow-offset-large) 0

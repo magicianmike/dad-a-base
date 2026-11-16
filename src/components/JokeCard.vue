@@ -49,10 +49,26 @@ const saved = computed(() => favorites.isFavorite(props.joke.id))
   position: relative;
   padding: var(--space-7) var(--space-6);
   border: var(--joke-frame-border);
-  background: var(--joke-frame-bg) var(--joke-frame-halftone);
+
+  /* Drawn from a registered colour, below, so hovering can fade the dots from one colour to another. */
+  --joke-frame-dot-color: var(--joke-frame-dots);
+
+  background-color: var(--joke-frame-bg);
+  background-image: radial-gradient(
+    var(--joke-frame-dot-color) var(--joke-frame-dot-size),
+    transparent var(--joke-frame-dot-edge)
+  );
+  background-size: var(--joke-frame-halftone-pitch) var(--joke-frame-halftone-pitch);
   transition:
     transform 150ms ease,
-    box-shadow 150ms ease;
+    box-shadow 150ms ease,
+    --joke-frame-dot-color 300ms ease;
+}
+
+@property --joke-frame-dot-color {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: transparent;
 }
 
 .compact .frame {
@@ -113,6 +129,8 @@ const saved = computed(() => favorites.isFavorite(props.joke.id))
 
 /* Hovered, a linked panel lifts off the page and its dots drift. */
 .frame:has(.joke-link:hover) {
+  --joke-frame-dot-color: var(--joke-frame-dots-hover);
+
   box-shadow: var(--joke-frame-hover-shadow);
   transform: translate(calc(-1 * var(--shadow-offset)), calc(-1 * var(--shadow-offset)));
   animation: halftone-drift var(--joke-frame-drift-duration) linear infinite;

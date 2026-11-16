@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useId } from 'vue'
+import { useId, useTemplateRef } from 'vue'
+import { useShortcut } from '@/shortcuts/useShortcut'
 import AppButton from './AppButton.vue'
 
 /** A labelled search field with a Search button. Pressing Enter or the button emits `submit`. */
@@ -7,6 +8,10 @@ withDefaults(defineProps<{ label?: string }>(), { label: 'Search the jokes' })
 const term = defineModel<string>({ default: '' })
 const emit = defineEmits<{ submit: [term: string] }>()
 const id = useId()
+
+// The `/` shortcut comes here, wherever there's a search box on the page.
+const input = useTemplateRef<HTMLInputElement>('input')
+useShortcut('/', () => input.value?.focus())
 </script>
 
 <template>
@@ -15,6 +20,7 @@ const id = useId()
     <div class="row">
       <input
         :id="id"
+        ref="input"
         v-model="term"
         type="search"
         name="q"

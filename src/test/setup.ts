@@ -17,5 +17,14 @@ afterAll(() => server.close())
 // has left. jsdom runs no CSS transitions, so they finish on the next frame.
 config.global.stubs = { ...config.global.stubs, transition: false, 'transition-group': false }
 
+// jsdom has no modal dialogs. These stand in for what the app uses: opening, closing, and the close event.
+HTMLDialogElement.prototype.showModal = function (this: HTMLDialogElement) {
+  this.open = true
+}
+HTMLDialogElement.prototype.close = function (this: HTMLDialogElement) {
+  this.open = false
+  this.dispatchEvent(new Event('close'))
+}
+
 // jsdom has no layout, so the router's scrollBehavior has nowhere to scroll.
 window.scrollTo = () => {}

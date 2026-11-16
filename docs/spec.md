@@ -111,11 +111,11 @@ See [Case Study](#case-study).
   - Oswald headlines, Comic Neue kickers and captions, and Atkinson Hyperlegible for everything else;
   - each Joke in a halftone comic frame, with an optional caption.
 - **No ratings.** The API has no rating for a Joke, so none is invented.
-- **Tokens** in three layers: primitive (the raw palette, type and steps), semantic (`--color-surface`, `--space-4`) and domain (`--masthead-font`, `--joke-frame-halftone`). Components use only semantic and domain tokens, and a test enforces it.
+- **Tokens** in three layers: primitive (the raw palette, type and steps), semantic (`--color-surface`, `--space-4`) and domain (`--masthead-font`, `--joke-frame-dots`). Components use only semantic and domain tokens, and a test enforces it.
 - **Themes:** light and dark. The page follows the system setting until the visitor presses the theme toggle, a small sun-and-moon switch, a toggle button named "Dark theme". Their choice is saved and applied before first paint, so it doesn't flash. There's no "Auto" option.
 - **Navigation** lists only built pages. Each milestone adds its own (`src/navigation.ts`).
 - **Voice:** [`voice.md`](voice.md). Copy is punny, but an error always says plainly what happened. A test checks that every error state has both.
-- **Extras:** keyboard shortcuts (`/` focuses search, `r` gets a new random joke), and page transitions with `<Transition>` that turn off under `prefers-reduced-motion`.
+- **Extras:** keyboard shortcuts (`/` focuses search, `r` gets a new random joke, `?` lists them), which can be turned off from that list or the footer (WCAG 2.1.4); and pages and new jokes that fade up as they arrive, turned off under `prefers-reduced-motion`.
 
 ## Accessibility
 

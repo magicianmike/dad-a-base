@@ -120,6 +120,73 @@ describe('App', () => {
     server.events.removeAllListeners()
   })
 
+  describe('keyboard shortcuts', () => {
+    it('/ focuses the search box on a page with one', async () => {
+      await renderApp('/')
+      const box = await screen.findByRole('searchbox', { name: 'Search the jokes' })
+      await userEvent.keyboard('/')
+      expect(box).toHaveFocus()
+      expect(box).toHaveValue('')
+      expect(router.currentRoute.value.path).toBe('/')
+    })
+
+    it('/ goes to Search from a page without one, ready to type', async () => {
+      await renderApp('/random')
+      await screen.findByText(jokes[0]!.joke)
+      await userEvent.keyboard('/')
+      await waitFor(() => expect(router.currentRoute.value.path).toBe('/search'))
+      await waitFor(() => expect(screen.getByRole('searchbox')).toHaveFocus())
+    })
+
+    it('r shows another Joke where there is one, without changing the address', async () => {
+      await renderApp('/random')
+      await screen.findByText(jokes[0]!.joke)
+      await userEvent.keyboard('r')
+      expect(await screen.findByText(jokes[1]!.joke)).toBeInTheDocument()
+      expect(router.currentRoute.value.path).toBe('/random')
+    })
+
+    it('r goes to Random from anywhere else', async () => {
+      await renderApp(`/jokes/${jokes[2]!.id}`)
+      await screen.findByText(jokes[2]!.joke)
+      await userEvent.keyboard('r')
+      await waitFor(() => expect(router.currentRoute.value.path).toBe('/random'))
+      expect(
+        await screen.findByRole('heading', { level: 1, name: 'A random joke' }),
+      ).toBeInTheDocument()
+    })
+
+    it('r is just a letter in the search box', async () => {
+      await renderApp('/search')
+      const box = await screen.findByRole('searchbox')
+      await userEvent.type(box, 'r')
+      expect(box).toHaveValue('r')
+      expect(router.currentRoute.value.path).toBe('/search')
+    })
+
+    it('? lists them, and they can be turned off there, and opened again from the footer', async () => {
+      await renderApp('/random')
+      await screen.findByText(jokes[0]!.joke)
+      await userEvent.keyboard('?')
+      const list = await screen.findByRole('dialog', { name: 'Keyboard shortcuts' })
+      const toggle = within(list).getByRole('checkbox', { name: 'Use these shortcuts' })
+      expect(toggle).toBeChecked()
+
+      await userEvent.click(toggle)
+      expect(toggle).not.toBeChecked()
+      await userEvent.click(within(list).getByRole('button', { name: 'Close' }))
+      expect(list).not.toHaveAttribute('open')
+
+      await userEvent.keyboard('r?')
+      expect(screen.queryByText(jokes[1]!.joke)).toBeNull()
+      expect(list).not.toHaveAttribute('open')
+      expect(localStorage.getItem('dadabase:shortcuts')).toBe('off')
+
+      await userEvent.click(screen.getByRole('button', { name: 'Keyboard shortcuts' }))
+      expect(list).toHaveAttribute('open')
+    })
+  })
+
   it('shows a 404 in place for an unknown address', async () => {
     await renderApp('/no/such/page')
     expect(

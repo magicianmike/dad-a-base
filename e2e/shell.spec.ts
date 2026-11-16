@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
+import { settled } from './settled'
 
 const FAILURE_KEY = 'dadabase:mock-failure'
 
@@ -120,7 +121,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
       test(`/error/${code} has no axe violations`, async ({ page }) => {
         await page.goto(`/error/${code}`)
         await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-        await page.evaluate(() => document.fonts.ready)
+        await settled(page)
         const { violations } = await new AxeBuilder({ page }).analyze()
         expect(violations).toEqual([])
       })

@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
+import { settled } from './settled'
 
 const joke = {
   id: 'daaUfibh',
@@ -112,7 +113,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
     await seed(page, [golf, { id: joke.id, joke: joke.text }])
     await page.goto('/favorites')
     await expect(page.getByRole('heading', { level: 2 })).toHaveText('2 saved jokes')
-    await page.evaluate(() => document.fonts.ready)
+    await settled(page)
     const { violations } = await new AxeBuilder({ page }).analyze()
     expect(violations).toEqual([])
   })

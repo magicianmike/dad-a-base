@@ -26,6 +26,7 @@
   --skin-dark: #d9a77f;
   --hair-brown: #4a3426;
   --white: #fff;
+  --black: #000;
 
   /* Halftone dots, the red at low opacity */
   --dots-red-light: rgb(169 68 46 / 16%);
