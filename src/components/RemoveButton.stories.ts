@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { expect, fn } from 'storybook/test'
-import RemoveFavoriteButton from './RemoveFavoriteButton.vue'
+import RemoveButton from './RemoveButton.vue'
 
 const meta = {
-  component: RemoveFavoriteButton,
-  args: { onClick: fn() },
+  component: RemoveButton,
+  args: { label: 'Remove from favorites', icon: 'heart', onClick: fn() },
   // Room above for the tooltip.
   decorators: [() => ({ template: '<div style="padding-top: 3rem"><story /></div>' })],
-} satisfies Meta<typeof RemoveFavoriteButton>
+} satisfies Meta<typeof RemoveButton>
 
 export default meta
 type Story = StoryObj<typeof meta>

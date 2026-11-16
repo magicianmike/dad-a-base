@@ -20,7 +20,7 @@ Dad-a-base is a quirky, comedic dad-joke site built on the [icanhazdadjoke](http
 - **Vue 3** (Composition API, `<script setup>`), **TypeScript** 5.9, **Vite**.
 - **vue-router**. Every route's code loads on first visit, and each route sets its own title with `@unhead/vue`. Changing routes scrolls to the top, and back and forward restore the previous position.
 - **Apollo Client 3** with **`apollo-link-rest`** 0.9 and **`@vue/apollo-composable`** 4, with no GraphQL server ([ADR 0002](adr/0002-apollo-over-rest.md)). We use the stable Apollo 3 line, not the Apollo 4 prereleases.
-- **Pinia** for app state: favorites (saved to localStorage), theme, toasts and recent searches.
+- **Pinia** for app state: favorites, groans, theme, toasts and recent searches. What's saved goes to localStorage through one helper, `useStoredRef`, and stays in this browser ([ADR 0005](adr/0005-visitor-data-in-the-browser.md)).
 - **Zod** is the single source of truth for API types. A `responseTransformer` checks every response at runtime, and the static types come from `z.infer`.
 - Plain CSS and CSS Modules over a design system built from tokens ([ADR 0004](adr/0004-design-tokens.md)).
 - npm and Node 22 (`.nvmrc`). ESLint (flat config, Vue and TypeScript) with Prettier. Stylelint bans raw `px` and colour values outside the token files.

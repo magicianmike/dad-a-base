@@ -33,9 +33,7 @@ describe('groanScore', () => {
     expect(groanScore(0.1)).toBe('1.0')
   })
 
-  it('is none for a tap, under 300ms', () => {
-    expect(groanScore(0)).toBeNull()
-    expect(groanScore(groanFraction(299))).toBeNull()
+  it('is 1.0 at a tap’s length, the shortest a Groan can be', () => {
     expect(groanScore(groanFraction(300))).toBe('1.0')
   })
 })
@@ -61,8 +59,7 @@ describe('groanLabel', () => {
 })
 
 describe('groanAnnouncement', () => {
-  it('says the score out of 10, or that it was a groan', () => {
+  it('says the score out of 10', () => {
     expect(groanAnnouncement(0.72)).toBe('Groan score 7.2 out of 10.')
-    expect(groanAnnouncement(0.02)).toBe('Groaned.')
   })
 })

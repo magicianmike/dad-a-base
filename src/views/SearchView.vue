@@ -9,7 +9,7 @@ import SearchBox from '@/components/SearchBox.vue'
 import SearchPagination from '@/components/SearchPagination.vue'
 import SearchSuggestions from '@/components/SearchSuggestions.vue'
 import StoryHeading from '@/components/StoryHeading.vue'
-import { parsePage, resultsSummary } from '@/search/pagination'
+import { parsePage, resultsSummary } from '@/lists/pagination'
 import { useRecentSearchesStore } from '@/stores/recentSearches'
 
 /** How long typing pauses before the Search runs. */

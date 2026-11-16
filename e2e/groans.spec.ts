@@ -216,7 +216,7 @@ test.describe('the Groan Leaderboard', () => {
     { joke: { id: 'BI699EY08Ed', joke: 'Bad at golf? Join the club.' }, score: 0.9 },
     {
       joke: { id: 'ORKmyAIYvzd', joke: 'No matter how kind you are, German children are kinder.' },
-      score: 0.03,
+      score: 0.12,
     },
   ].map((groan) => ({ ...groan, groanedAt: '2026-11-16T12:00:00.000Z' }))
   const withGroans = (page: Page) =>
@@ -245,7 +245,7 @@ test.describe('the Groan Leaderboard', () => {
     await expect(rows.nth(0)).toContainText('Bad at golf?')
     await expect(rows.nth(0)).toContainText('9.0/10')
     await expect(rows.nth(1)).toContainText('cheetah')
-    await expect(rows.nth(2)).toContainText(/Groan$/)
+    await expect(rows.nth(2)).toContainText('1.2/10')
 
     await rows.nth(1).getByRole('link').click()
     await expect(page).toHaveURL(`/jokes/${cheetah}`)

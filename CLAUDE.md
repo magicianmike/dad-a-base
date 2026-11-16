@@ -11,7 +11,7 @@ A dad-joke site on the icanhazdadjoke REST API, with a Case Study explaining how
 
 ## Code
 
-- Vue 3 with `<script setup lang="ts">`. All API data goes through Apollo and `apollo-link-rest` (`src/api/`). App state is in Pinia (`src/stores/`). State you can link to is in the URL.
+- Vue 3 with `<script setup lang="ts">`. All API data goes through Apollo and `apollo-link-rest` (`src/api/`). App state is in Pinia (`src/stores/`), and anything saved in the browser goes through `useStoredRef` (ADR 0005). State you can link to is in the URL.
 - Zod schemas in `src/api/schemas.ts` are the single source of truth for API types. Don't write API types by hand.
 - Styles use only semantic and domain tokens (ADR 0004). No raw `px` or colour values outside `src/styles/tokens/`.
 - Tests never call the real API, apart from the one smoke test: MSW handlers in `src/mocks/`.

@@ -70,6 +70,15 @@ describe('useGroansStore', () => {
     expect(useGroansStore().groans).toEqual(saved)
   })
 
+  it('drops a tap saved before a Groan took a long press, and keeps the rest', () => {
+    const kept = { joke: second, score: 0.5, groanedAt: '2026-11-15T10:00:00.000Z' }
+    localStorage.setItem(
+      GROANS_STORAGE_KEY,
+      JSON.stringify([{ joke: first, score: 0.04, groanedAt: '2026-11-15T09:00:00.000Z' }, kept]),
+    )
+    expect(useGroansStore().groans).toEqual([kept])
+  })
+
   it.each([
     ['not JSON', '{oops'],
     ['not a list of Groans', JSON.stringify([{ joke: first, score: 2, groanedAt: 'x' }])],

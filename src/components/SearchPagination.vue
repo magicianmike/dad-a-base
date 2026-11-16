@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
-import { paginationWindow } from '@/search/pagination'
+import { paginationWindow } from '@/lists/pagination'
 
 /**
  * Previous, the Pagination window and Next, as links. `to` gives each page's address. On the first and last pages,

@@ -10,8 +10,8 @@ import AppButton from './AppButton.vue'
 /**
  * Press and hold to Groan at a Joke: the longer the hold, the worse the Joke. It fills with a gradient over 3
  * seconds, its "Ugh" gaining an h every quarter second, and shakes when it's full. Letting go records the Groan,
- * however short, with a comic burst and a toast, and the "Ughhh" stays; sliding off, a scroll taking over, or Escape
- * cancels it. Space and Enter hold it too. Its name is its label, after "Groan: " once it's an "Ughhh", and its
+ * with a comic burst and a toast, and the "Ughhh" stays. A tap records nothing and shows the tooltip instead.
+ * Sliding off, a scroll taking over, or Escape cancels it. Space and Enter hold it too. Its name is its label, after "Groan: " once it's an "Ughhh", and its
  * tooltip, also its description, says how it works.
  */
 const props = defineProps<{ joke: Joke }>()
@@ -29,8 +29,7 @@ let burstTimer: ReturnType<typeof setTimeout> | undefined
 function record(fraction: number) {
   groans.groan(props.joke, fraction)
   toasts.show(groanAnnouncement(fraction))
-  const score = groanScore(fraction)
-  burst.value = { key: bursts++, text: score ? `GROAN! ${score}` : 'GROAN!' }
+  burst.value = { key: bursts++, text: `GROAN! ${groanScore(fraction)}` }
   clearTimeout(burstTimer)
   burstTimer = setTimeout(() => (burst.value = null), 1400)
   try {
@@ -51,8 +50,13 @@ function hint() {
 }
 onScopeDispose(() => clearTimeout(hintTimer))
 
-const { holding, fraction, full, start, release, cancel, pressed } = useGroanHold(record, {
+// Escape hides the tooltip until the pointer or focus comes back (WCAG 1.4.13), and cancels a hold.
+const dismissed = ref(false)
+
+const { holding, fraction, full, handlers } = useGroanHold(record, {
   onTooShort: hint,
+  onPress: () => (hinting.value = false),
+  onEscape: () => (dismissed.value = true),
 })
 
 /** How full it looks: the hold while it's held, else the earlier Groan, else empty. */
@@ -68,89 +72,8 @@ const name = computed(() => (label.value === 'Groan' ? 'Groan' : `Groan: ${label
 const HOW = 'Press and hold to groan, the longer the groan the worse the joke.'
 const tip = computed(() => {
   if (previous.value === undefined) return HOW
-  const score = groanScore(previous.value)
-  return score ? `Your groan: ${score}/10. ${HOW}` : `You groaned. ${HOW}`
+  return `Your groan: ${groanScore(previous.value)}/10. ${HOW}`
 })
-
-// Escape hides the tooltip until the pointer or focus comes back (WCAG 1.4.13), and cancels a hold.
-const dismissed = ref(false)
-
-/*
- * The button grows with its "Ughhh", so it holds on to the pointer while pressed, and a hold is slid off only when
- * the pointer moves away from where it pressed, by more than a touch target, not when the button moves under it.
- * The lift is heard on the whole window, as a pointer or a touch, since Safari on iOS doesn't always send the
- * button its own: a hold that misses its lift would keep going until the next tap.
- */
-let pressedAt = { x: 0, y: 0 }
-
-function onPointerdown(event: PointerEvent) {
-  if (event.button !== 0) return
-  pressedAt = { x: event.clientX, y: event.clientY }
-  hinting.value = false
-  start()
-  listen()
-  try {
-    ;(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId)
-  } catch {
-    // A pointer that can't be captured still holds; only slide-off is less precise.
-  }
-}
-
-function lift() {
-  unlisten()
-  release()
-}
-
-function interrupt() {
-  unlisten()
-  cancel()
-}
-
-function listen() {
-  addEventListener('pointerup', lift)
-  addEventListener('touchend', lift)
-  addEventListener('pointercancel', interrupt)
-  addEventListener('touchcancel', interrupt)
-}
-
-function unlisten() {
-  removeEventListener('pointerup', lift)
-  removeEventListener('touchend', lift)
-  removeEventListener('pointercancel', interrupt)
-  removeEventListener('touchcancel', interrupt)
-}
-onScopeDispose(unlisten)
-
-function onPointermove(event: PointerEvent) {
-  if (!pressed()) return
-  const away = Math.hypot(event.clientX - pressedAt.x, event.clientY - pressedAt.y)
-  if (away > SLIDE_OFF_DISTANCE) interrupt()
-}
-
-/** How far a held pointer can wander before the hold is slid off: a touch target's width, in CSS pixels. */
-const SLIDE_OFF_DISTANCE = 44
-
-const HOLD_KEYS = [' ', 'Enter']
-
-function onKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape') {
-    dismissed.value = true
-    cancel()
-    return
-  }
-  if (!HOLD_KEYS.includes(event.key)) return
-  // The button's own click, on Enter now or Space on release, isn't wanted: the hold is the press.
-  event.preventDefault()
-  if (event.repeat) return
-  hinting.value = false
-  start()
-}
-
-function onKeyup(event: KeyboardEvent) {
-  if (!HOLD_KEYS.includes(event.key)) return
-  event.preventDefault()
-  release()
-}
 </script>
 
 <template>
@@ -172,12 +95,12 @@ function onKeyup(event: KeyboardEvent) {
       <AppButton
         class="press"
         :aria-describedby="tipId"
-        @pointerdown="onPointerdown"
-        @pointermove="onPointermove"
+        @pointerdown="handlers.onPointerdown"
+        @pointermove="handlers.onPointermove"
         @contextmenu.prevent
-        @keydown="onKeydown"
-        @keyup="onKeyup"
-        @blur="interrupt"
+        @keydown="handlers.onKeydown"
+        @keyup="handlers.onKeyup"
+        @blur="handlers.onBlur"
         @pointerenter="dismissed = false"
         @focus="dismissed = false"
       >

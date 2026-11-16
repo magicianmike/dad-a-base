@@ -61,11 +61,11 @@ describe('GroansView', () => {
     server.events.removeAllListeners()
   })
 
-  it('shows a tap as a Groan, without a score', async () => {
-    save(groan(first, 0.05))
+  it('leaves out a tap saved before a Groan took a long press', async () => {
+    save(groan(first, 0.05), groan(second, 0.12))
     await renderPage(GroansView, { path: '/groans' })
     expect(screen.getByRole('heading', { level: 2, name: '1 groaned joke' })).toBeInTheDocument()
-    expect(rows()[0]).toHaveTextContent('Groan score Groan')
+    expect(rows()[0]).toHaveTextContent('Groan score 1.2/10')
   })
 
   it('removes a Groan, moving focus to the next Remove, then the empty state', async () => {

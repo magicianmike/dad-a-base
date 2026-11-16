@@ -25,7 +25,7 @@ describe('FavoritesView', () => {
     expect(
       screen.getByRole('heading', { level: 2, name: 'Nothing on the fridge yet' }),
     ).toBeInTheDocument()
-    expect(screen.getByText(/Press Favorite on any joke/)).toBeInTheDocument()
+    expect(screen.getByText(/Press Fave on any joke/)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Read a random joke' })).toHaveAttribute(
       'href',
       '/random',

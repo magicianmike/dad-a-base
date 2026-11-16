@@ -2,18 +2,16 @@
 import { onScopeDispose, ref } from 'vue'
 
 /**
- * The round button, a broken heart, that takes a Joke off the Favorites page, or the Groan Leaderboard. Its tooltip is also its name, so it's
- * always in the accessibility tree. It shows on hover and keyboard focus, stays while the pointer is over it, and
+ * The round button pinned to a card's corner that takes it off a list: Favorites, with a broken heart, or the Groan
+ * Leaderboard, with a cross. Its tooltip is also its name, so it's always in the accessibility tree. It shows on hover and keyboard focus, stays while the pointer is over it, and
  * Escape hides it until the pointer or focus comes back (WCAG 1.4.13).
  */
-withDefaults(
-  defineProps<{
-    label?: string
-    /** A broken heart, to take off a Favorite, or a cross, for anything else, such as a Groan. */
-    icon?: 'heart' | 'cross'
-  }>(),
-  { label: 'Remove from favorites', icon: 'heart' },
-)
+defineProps<{
+  /** Its name, and its tooltip, such as "Remove from favorites". */
+  label: string
+  /** A broken heart, to take off a Favorite, or a cross, for anything else, such as a Groan. */
+  icon: 'heart' | 'cross'
+}>()
 const emit = defineEmits<{ click: [] }>()
 const dismissed = ref(false)
 

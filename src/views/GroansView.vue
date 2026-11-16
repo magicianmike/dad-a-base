@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import { useHead } from '@unhead/vue'
-import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { computed, nextTick, useTemplateRef, watch } from 'vue'
 import { useCachedJokes } from '@/api/useCachedJokes'
 import JokeCard from '@/components/JokeCard.vue'
-import RemoveFavoriteButton from '@/components/RemoveFavoriteButton.vue'
+import RemoveButton from '@/components/RemoveButton.vue'
 import SearchPagination from '@/components/SearchPagination.vue'
 import StoryHeading from '@/components/StoryHeading.vue'
 import { groanScore } from '@/groans/score'
-import { parsePage, resultsSummary } from '@/search/pagination'
+import FallingList from '@/lists/FallingList.vue'
+import { resultsSummary } from '@/lists/pagination'
+import { useFallingRemoval } from '@/lists/useFallingRemoval'
+import { useLocalPages } from '@/lists/useLocalPages'
 import { useGroansStore, type Groan } from '@/stores/groans'
 import { useToastsStore } from '@/stores/toasts'
 
 /** Ten a page, like Search and Favorites. */
 const PAGE_SIZE = 10
 
-const route = useRoute()
-const router = useRouter()
 const groans = useGroansStore()
 const toasts = useToastsStore()
 
@@ -24,26 +24,11 @@ const toasts = useToastsStore()
 useCachedJokes(() => groans.groans.map(({ joke }) => joke))
 
 const count = computed(() => groans.ranked.length)
-const page = computed(() => parsePage(route.query.page))
-const totalPages = computed(() => Math.max(1, Math.ceil(count.value / PAGE_SIZE)))
-const shownPage = computed(() => Math.min(page.value, totalPages.value))
-const firstRank = computed(() => (shownPage.value - 1) * PAGE_SIZE + 1)
-const onPage = computed(() => groans.ranked.slice(firstRank.value - 1, shownPage.value * PAGE_SIZE))
-
-const pageLink = (p: number) => ({ path: '/groans', query: p > 1 ? { page: String(p) } : {} })
-const onThisPage = () => route.path === '/groans'
-
-// A `?page` that isn't a whole number, or is past the end, becomes the nearest valid page. Removing the last Groan on
-// the last page does the same.
-watch(
-  [() => route.query.page, totalPages],
-  ([raw]) => {
-    if (!onThisPage()) return
-    const canonical = shownPage.value > 1 ? String(shownPage.value) : undefined
-    if (raw !== undefined && raw !== canonical) void router.replace(pageLink(shownPage.value))
-  },
-  { immediate: true },
-)
+const { page, totalPages, shownPage, first, onPage, pageLink, onThisPage } = useLocalPages({
+  path: '/groans',
+  items: () => groans.ranked,
+  pageSize: PAGE_SIZE,
+})
 
 const heading = computed(() => {
   if (totalPages.value === 1) return `${count.value} groaned joke${count.value === 1 ? '' : 's'}`
@@ -56,10 +41,9 @@ useHead({
   ),
 })
 
-/** A Groan's score as shown: "7.2/10", or "Groan" for a tap. */
+/** A Groan's score as shown: "7.2/10". */
 function shownScore({ score }: Groan) {
-  const shown = groanScore(score)
-  return shown ? `${shown}/10` : 'Groan'
+  return `${groanScore(score)}/10`
 }
 
 const ranked = useTemplateRef<HTMLElement>('ranked')
@@ -73,42 +57,17 @@ watch(page, async () => {
   resultsHeading.value?.focus({ preventScroll: true })
 })
 
-// A removed card falls off the board, as on Favorites, before it goes. Until the last one has, the list stays and the
-// empty state waits, so the last card falls too. Only a removal animates: cards a new page takes away just go.
-const falling = ref(0)
-const empty = computed(() => count.value === 0 && falling.value === 0)
+// A removed card falls off the board, as on Favorites, and focus moves on.
+const { falling, empty, remove, fallen } = useFallingRemoval({
+  list: ranked,
+  count: () => count.value,
+  heading: resultsHeading,
+  emptyHeading,
+})
 
-// Removing takes the card away, so focus moves to the next card's Remove button, the previous one's if it was the
-// last on the page, or, once the card has fallen, the heading, or the empty state if there are none. A falling card's
-// button doesn't count.
-let focusAfterFall: 'heading' | 'empty' | null = null
-
-async function remove(groan: Groan, index: number) {
-  falling.value++
+function removeGroan(groan: Groan) {
   groans.remove(groan.joke.id)
   toasts.show('Removed from your groans.')
-  await nextTick()
-  const buttons =
-    ranked.value?.querySelectorAll<HTMLElement>('.list > li:not(.fall-leave-active) .remove') ?? []
-  const next = buttons[Math.min(index, buttons.length - 1)]
-  if (next) next.focus()
-  else focusAfterFall = count.value === 0 ? 'empty' : 'heading'
-}
-
-/** Pins a falling card where it was, so leaving the flow doesn't move it before it falls. */
-function pin(el: Element) {
-  const card = el as HTMLElement
-  card.style.top = `${card.offsetTop}px`
-  card.style.width = `${card.offsetWidth}px`
-}
-
-async function fallen() {
-  falling.value = Math.max(0, falling.value - 1)
-  if (falling.value > 0 || !focusAfterFall) return
-  const target = focusAfterFall
-  focusAfterFall = null
-  await nextTick()
-  ;(target === 'empty' ? emptyHeading : resultsHeading).value?.focus()
 }
 </script>
 
@@ -127,23 +86,22 @@ async function fallen() {
   <section v-else ref="ranked" class="ranked" aria-labelledby="ranked-heading">
     <h2 id="ranked-heading" ref="results-heading" tabindex="-1">{{ heading }}</h2>
     <p class="note">Worst first, by how long you groaned. Saved in this browser.</p>
-    <TransitionGroup
-      tag="ol"
-      name="fall"
-      :css="falling > 0"
-      class="list"
-      @before-leave="pin"
-      @after-leave="fallen"
+    <FallingList
+      v-slot="{ item: groan, index }"
+      :items="onPage"
+      :item-key="(groan) => groan.joke.id"
+      :falling="falling > 0"
+      @fallen="fallen"
     >
-      <li v-for="(groan, index) in onPage" :key="groan.joke.id" class="row">
-        <p class="rank"><span class="visually-hidden">Number </span>{{ firstRank + index }}</p>
+      <div class="row">
+        <p class="rank"><span class="visually-hidden">Number </span>{{ first + index }}</p>
         <div class="entry">
           <JokeCard :joke="groan.joke" :to="`/jokes/${groan.joke.id}`" compact>
             <template #corner>
-              <RemoveFavoriteButton
+              <RemoveButton
                 label="Remove from groans"
                 icon="cross"
-                @click="remove(groan, index)"
+                @click="remove(index, () => removeGroan(groan))"
               />
             </template>
           </JokeCard>
@@ -152,8 +110,8 @@ async function fallen() {
             <span><span class="visually-hidden">Groan score </span>{{ shownScore(groan) }}</span>
           </p>
         </div>
-      </li>
-    </TransitionGroup>
+      </div>
+    </FallingList>
     <SearchPagination
       v-if="totalPages > 1"
       :page="shownPage"
@@ -189,15 +147,6 @@ async function fallen() {
   align-items: center;
   min-height: var(--target-min);
   font-weight: 700;
-}
-
-.list {
-  position: relative;
-  display: grid;
-  gap: var(--space-6);
-  margin: var(--space-5) 0 var(--space-6);
-  padding: 0;
-  list-style: none;
 }
 
 /* The rank, large in the headline face, beside the clipping. */
@@ -245,32 +194,6 @@ async function fallen() {
   inset: 0;
   background: var(--groan-fill);
   clip-path: inset(0 calc((1 - var(--groan-level)) * 100%) 0 0);
-}
-
-/* The cards below a removed one slide up into its place. */
-.fall-move {
-  transition: transform 300ms ease;
-}
-
-/* A removed card, out of the flow and pinned where it was, drops, tilts and fades, as on Favorites. After .fall-move,
-   which a leaving card can also get, so its fade isn't lost. */
-.fall-leave-active {
-  position: absolute;
-  transition:
-    opacity 300ms ease-in,
-    transform 300ms ease-in;
-}
-
-.fall-leave-to {
-  opacity: 0;
-  transform: translateY(var(--space-6)) rotate(-4deg);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .fall-leave-active,
-  .fall-move {
-    transition: none;
-  }
 }
 
 /* On a phone, the rank sits above its clipping, so the Joke keeps the width. */

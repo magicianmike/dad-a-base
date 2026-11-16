@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { z } from 'zod'
 import { JokeSchema, type Joke } from '@/api/schemas'
+import { GROAN_FULL_MS, GROAN_TAP_MS } from '@/groans/score'
+import { useStoredRef } from './useStoredRef'
 
 export const GROANS_STORAGE_KEY = 'dadabase:groans'
 
@@ -14,33 +16,20 @@ const GroanSchema = z.object({
 
 export type Groan = z.infer<typeof GroanSchema>
 
-const StoredGroansSchema = z.array(GroanSchema)
-
-/** Whatever is stored, as Groans, or none if it's missing, unreadable or not valid. */
-function parse(raw: string | null): Groan[] {
-  if (!raw) return []
-  try {
-    const parsed = StoredGroansSchema.safeParse(JSON.parse(raw))
-    return parsed.success ? parsed.data : []
-  } catch {
-    return []
-  }
-}
-
-function read(): Groan[] {
-  try {
-    return parse(localStorage.getItem(GROANS_STORAGE_KEY))
-  } catch {
-    return []
-  }
-}
+/**
+ * What's saved, less any tap: before a Groan took a long press, a tap was a Groan too. Only preview deploys ever
+ * saved one, so they're dropped rather than kept with their own way of showing.
+ */
+const StoredGroansSchema = z
+  .array(GroanSchema)
+  .transform((groans) => groans.filter(({ score }) => score >= GROAN_TAP_MS / GROAN_FULL_MS))
 
 /**
  * The visitor's Groans, one per Joke, with whole Jokes so the Groan Leaderboard needs no API calls. Saved in this
  * browser and kept in step across its tabs.
  */
 export const useGroansStore = defineStore('groans', () => {
-  const groans = ref<Groan[]>(read())
+  const groans = useStoredRef(GROANS_STORAGE_KEY, StoredGroansSchema, () => [])
   const scores = computed(() => new Map(groans.value.map(({ joke, score }) => [joke.id, score])))
 
   /** Highest score first, and the newest first on a tie. */
@@ -66,19 +55,6 @@ export const useGroansStore = defineStore('groans', () => {
   function remove(id: string) {
     groans.value = groans.value.filter(({ joke }) => joke.id !== id)
   }
-
-  watch(groans, (value) => {
-    try {
-      localStorage.setItem(GROANS_STORAGE_KEY, JSON.stringify(value))
-    } catch {
-      // Not remembered beyond this page, but still shown.
-    }
-  })
-
-  // Another tab changed them.
-  addEventListener('storage', (event) => {
-    if (event.key === GROANS_STORAGE_KEY) groans.value = parse(event.newValue)
-  })
 
   return { groans, ranked, scoreOf, groan, remove }
 })
