@@ -7,6 +7,8 @@ const routes = [
   '/search?q=pun&page=8',
   '/search?q=xyzzy',
   '/random',
+  '/favorites',
+  '/favorites?q=xyzzy',
   '/jokes/daaUfibh',
   '/design-system',
   '/error/500',

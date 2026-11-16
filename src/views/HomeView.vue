@@ -2,6 +2,7 @@
 import { useHead } from '@unhead/vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import FavoritesPeek from '@/components/FavoritesPeek.vue'
 import RandomJokeStory from '@/components/RandomJokeStory.vue'
 import SearchBox from '@/components/SearchBox.vue'
 import { useRecentSearchesStore } from '@/stores/recentSearches'
@@ -29,6 +30,7 @@ function search() {
     <h2 id="home-search">Looking for one in particular?</h2>
     <SearchBox v-model="term" @submit="search" />
   </section>
+  <FavoritesPeek />
 </template>
 
 <style scoped>

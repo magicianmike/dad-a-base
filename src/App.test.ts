@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { createPinia } from 'pinia'
 import { createApolloClient } from '@/api/client'
 import { jokes } from '@/mocks/fixtures'
+import { server } from '@/mocks/node'
 import App from './App.vue'
 import { focusOnNavigation } from './focusOnNavigation'
 import { router } from './router'
@@ -80,7 +81,7 @@ describe('App', () => {
       within(nav)
         .getAllByRole('link')
         .map((link) => link.textContent),
-    ).toEqual(['Home', 'Search', 'Random'])
+    ).toEqual(['Home', 'Search', 'Random', 'Favorites'])
     expect(
       within(screen.getByRole('navigation', { name: 'Colophon' })).getByRole('link', {
         name: 'Design system',
@@ -93,6 +94,30 @@ describe('App', () => {
     await userEvent.click(within(await screen.findByRole('figure')).getByRole('link'))
     expect(await screen.findByText(/From the archives/)).toBeInTheDocument()
     expect(router.currentRoute.value.path).toMatch(/^\/jokes\//)
+  })
+
+  it('saves the Joke of the moment, shows it on home and Favorites, and opens it from the cache', async () => {
+    await renderApp('/')
+    const joke = jokes[0]!
+    await screen.findByText(joke.joke)
+    expect(screen.queryByRole('region', { name: 'From your fridge' })).toBeNull()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Favorite' }))
+    const peek = await screen.findByRole('region', { name: 'From your fridge' })
+    expect(within(peek).getByRole('link', { name: joke.joke })).toBeInTheDocument()
+
+    await userEvent.click(within(peek).getByRole('link', { name: 'Go to your favorites' }))
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Stuck to the fridge' }),
+    ).toHaveFocus()
+    expect(screen.getByRole('heading', { level: 2, name: '1 saved joke' })).toBeInTheDocument()
+
+    let fetched = 0
+    server.events.on('request:start', () => fetched++)
+    await userEvent.click(within(screen.getByRole('list')).getByRole('link', { name: joke.joke }))
+    expect(await screen.findByText(/From the archives/)).toBeInTheDocument()
+    expect(fetched).toBe(0)
+    server.events.removeAllListeners()
   })
 
   it('shows a 404 in place for an unknown address', async () => {

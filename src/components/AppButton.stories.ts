@@ -37,3 +37,15 @@ export const Submit: Story = {
     await expect(canvas.getByRole('button')).toHaveAttribute('type', 'submit')
   },
 }
+
+/** Unavailable, as while it's working: it keeps focus but ignores presses. */
+export const Disabled: Story = {
+  args: { variant: 'primary', disabled: true },
+  play: async ({ canvas, args, userEvent }) => {
+    const button = canvas.getByRole('button', { name: 'Another one' })
+    await expect(button).toHaveAttribute('aria-disabled', 'true')
+    await userEvent.click(button)
+    await expect(args.onClick).not.toHaveBeenCalled()
+    await expect(button).toHaveFocus()
+  },
+}

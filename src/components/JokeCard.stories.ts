@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { expect } from 'storybook/test'
 import { jokes } from '@/mocks/fixtures'
+import { FAVORITES_STORAGE_KEY, useFavoritesStore } from '@/stores/favorites'
 import JokeCard from './JokeCard.vue'
 
 const meta = {
@@ -42,5 +43,24 @@ export const Linked: Story = {
       'href',
       `/jokes/${args.joke.id}`,
     )
+  },
+}
+
+/** A Favorite wears a heart on its corner. */
+export const Favorite: Story = {
+  decorators: [
+    () => {
+      const store = useFavoritesStore()
+      store.favorites = [jokes[0]!]
+      return { template: '<story />' }
+    },
+  ],
+  // Storybook shares one Pinia across stories, so the store is emptied too, not just storage.
+  beforeEach: () => () => {
+    useFavoritesStore().favorites = []
+    localStorage.removeItem(FAVORITES_STORAGE_KEY)
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('img', { name: 'One of your favorites' })).toBeVisible()
   },
 }

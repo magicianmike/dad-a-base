@@ -1,14 +1,33 @@
 <script setup lang="ts">
-withDefaults(defineProps<{ variant?: 'primary' | 'secondary'; type?: 'button' | 'submit' }>(), {
-  variant: 'secondary',
-  type: 'button',
-})
+const props = withDefaults(
+  defineProps<{
+    variant?: 'primary' | 'secondary'
+    type?: 'button' | 'submit'
+    disabled?: boolean
+  }>(),
+  { variant: 'secondary', type: 'button', disabled: false },
+)
 
 const emit = defineEmits<{ click: [event: MouseEvent] }>()
+
+/**
+ * A disabled button ignores presses but keeps its focus, so a keyboard user who presses it isn't sent back to the
+ * top of the page, as the `disabled` attribute would. `aria-disabled` tells a screen reader it's unavailable.
+ */
+function press(event: MouseEvent) {
+  if (props.disabled) event.preventDefault()
+  else emit('click', event)
+}
 </script>
 
 <template>
-  <button :type="type" class="button" :class="variant" @click="emit('click', $event)">
+  <button
+    :type="type"
+    class="button"
+    :class="variant"
+    :aria-disabled="disabled || undefined"
+    @click="press"
+  >
     <slot />
   </button>
 </template>
@@ -29,9 +48,14 @@ const emit = defineEmits<{ click: [event: MouseEvent] }>()
   cursor: pointer;
 }
 
-.button:active {
+.button:active:not([aria-disabled='true']) {
   box-shadow: none;
   transform: translate(var(--shadow-offset), var(--shadow-offset));
+}
+
+.button[aria-disabled='true'] {
+  opacity: 0.7;
+  cursor: progress;
 }
 
 .primary {
@@ -40,7 +64,7 @@ const emit = defineEmits<{ click: [event: MouseEvent] }>()
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .button:active {
+  .button:active:not([aria-disabled='true']) {
     transform: none;
   }
 }

@@ -1,5 +1,6 @@
 import { createHead } from '@unhead/vue/client'
 import { render, screen, within } from '@testing-library/vue'
+import { createPinia } from 'pinia'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { tokens } from '@/styles/tokens/tokens'
 import DesignSystemView from './DesignSystemView.vue'
@@ -10,7 +11,7 @@ async function renderView() {
     routes: [{ path: '/', component: DesignSystemView }],
   })
   await router.push('/')
-  return render(DesignSystemView, { global: { plugins: [router, createHead()] } })
+  return render(DesignSystemView, { global: { plugins: [router, createHead(), createPinia()] } })
 }
 
 describe('DesignSystemView', () => {

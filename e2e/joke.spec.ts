@@ -68,23 +68,15 @@ test('Share copies the link where there’s no share sheet', async ({
 
 test('a Favorite is kept across a reload, and shows on the random Joke too', async ({ page }) => {
   await page.goto(`/jokes/${joke.id}`)
-  const favorite = page.getByRole('button', { name: 'Favorite' })
-  await expect(favorite).toHaveAttribute('aria-pressed', 'false')
-  await favorite.click()
+  await page.getByRole('button', { name: 'Favorite', exact: true }).click()
   await expect(page.getByRole('status')).toHaveText(/Saved to your favorites\./)
 
   await page.reload()
-  await expect(page.getByRole('button', { name: 'Favorite' })).toHaveAttribute(
-    'aria-pressed',
-    'true',
-  )
+  await expect(page.getByRole('button', { name: 'Favorited', exact: true })).toBeVisible()
 
   await page.goto('/random')
   await expect(page.getByRole('blockquote')).toHaveText(joke.text)
-  await expect(page.getByRole('button', { name: 'Favorite' })).toHaveAttribute(
-    'aria-pressed',
-    'true',
-  )
+  await expect(page.getByRole('button', { name: 'Favorited', exact: true })).toBeVisible()
 })
 
 test('a Joke that doesn’t exist shows the 404 in place', async ({ page }) => {

@@ -4,6 +4,7 @@ export const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: () => import('./views/HomeView.vue') },
   { path: '/search', name: 'search', component: () => import('./views/SearchView.vue') },
   { path: '/random', name: 'random', component: () => import('./views/RandomView.vue') },
+  { path: '/favorites', name: 'favorites', component: () => import('./views/FavoritesView.vue') },
   {
     path: '/jokes/:id',
     name: 'joke',

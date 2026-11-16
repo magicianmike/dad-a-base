@@ -38,3 +38,11 @@ export const SEARCH_JOKES: TypedDocumentNode<
     }
   }
 `
+
+/** A Joke's fields, for writing a Joke the app already holds, such as a Favorite, into the cache. */
+export const JOKE_FIELDS: TypedDocumentNode<Joke & { __typename: 'Joke' }> = gql`
+  fragment JokeFields on Joke {
+    id
+    joke
+  }
+`

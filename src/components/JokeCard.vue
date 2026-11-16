@@ -1,12 +1,20 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
 import type { Joke } from '@/api/schemas'
+import { useFavoritesStore } from '@/stores/favorites'
 
-/** A Joke in its comic frame. Given `to`, the whole frame links there, named by the Joke's text. */
-withDefaults(
+/**
+ * A Joke in its comic frame. Given `to`, the whole frame links there, named by the Joke's text. A Favorite wears a
+ * heart on the frame's top-right corner. The `corner` slot pins a control there instead, above the link.
+ */
+const props = withDefaults(
   defineProps<{ joke: Joke; caption?: string; to?: RouteLocationRaw; compact?: boolean }>(),
   { caption: undefined, to: undefined, compact: false },
 )
+
+const favorites = useFavoritesStore()
+const saved = computed(() => favorites.isFavorite(props.joke.id))
 </script>
 
 <template>
@@ -18,6 +26,15 @@ withDefaults(
           <template v-else>{{ joke.joke }}</template>
         </p>
       </blockquote>
+      <div v-if="$slots.corner" class="corner"><slot name="corner" /></div>
+      <Transition v-else name="mark">
+        <span v-if="saved" class="saved-mark" role="img" aria-label="One of your favorites">
+          <!-- FavoriteButton's heart. -->
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 20.5 4.6 11.95A4.5 4.5 0 1 1 12 6.94a4.5 4.5 0 1 1 7.4 5.01Z" />
+          </svg>
+        </span>
+      </Transition>
     </div>
     <figcaption v-if="caption" class="caption">{{ caption }}</figcaption>
   </figure>
@@ -40,6 +57,18 @@ withDefaults(
 
 .compact .frame {
   padding: var(--space-5);
+}
+
+/* Clear of the corner's control, which straddles the border. */
+.frame:has(.corner) {
+  padding-right: calc(var(--target-min) + var(--space-2));
+}
+
+.corner {
+  position: absolute;
+  z-index: 1;
+  top: calc(-1 * var(--space-3));
+  right: calc(-1 * var(--space-3));
 }
 
 .joke-text {
@@ -103,6 +132,71 @@ withDefaults(
   .frame:has(.joke-link:hover) {
     transform: none;
     animation: none;
+  }
+}
+
+/*
+ * A Favorite's heart, straddling the corner like the Favorites page's Remove button, but smaller and inside the
+ * frame's padding, so it never covers the Joke. Clicks pass through it to the card's link.
+ */
+.saved-mark {
+  position: absolute;
+  z-index: 1;
+  top: calc(-1 * var(--space-4));
+  right: calc(-1 * var(--space-4));
+  display: grid;
+  place-items: center;
+  width: var(--space-7);
+  height: var(--space-7);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface-raised);
+  box-shadow: var(--button-shadow);
+  pointer-events: none;
+}
+
+.saved-mark svg {
+  width: var(--space-5);
+  height: var(--space-5);
+  fill: var(--color-accent);
+  stroke: var(--color-accent);
+  stroke-linejoin: round;
+  stroke-width: 1;
+}
+
+/* It pops on when the Joke is saved, and fades when it's taken off. */
+.mark-enter-active {
+  animation: mark-pop 400ms ease-out;
+}
+
+.mark-leave-active {
+  transition:
+    opacity 200ms ease-in,
+    scale 200ms ease-in;
+}
+
+.mark-leave-to {
+  opacity: 0;
+  scale: 0.5;
+}
+
+@keyframes mark-pop {
+  0% {
+    scale: 0;
+  }
+
+  60% {
+    scale: 1.2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mark-enter-active {
+    animation: none;
+  }
+
+  .mark-leave-active {
+    transition: none;
   }
 }
 

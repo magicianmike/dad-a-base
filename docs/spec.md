@@ -47,7 +47,7 @@ The API is called straight from the browser: it allows CORS on GET, and every re
 - A pun hero.
 - The joke of the moment, with "Another one".
 - A search box that goes to `/search?q=…`.
-- A peek at your favorites, when you have some.
+- A peek at your favorites, the newest three, when you have some.
 
 ### `/search?q&page`
 
@@ -60,6 +60,7 @@ The API is called straight from the browser: it allows CORS on GET, and every re
   - A `?page` past the end, or one that isn't a number, is replaced with the nearest valid page.
   - A summary reads "Jokes 11–20 of 43", and focus moves to the results heading when the page changes.
 - Results are joke cards, and each card links to `/jokes/:id`.
+- A joke card for a favorite, wherever it shows, wears a heart on its corner.
 
 ### `/random`
 
@@ -70,12 +71,15 @@ The API is called straight from the browser: it allows CORS on GET, and every re
 
 - **Copy:** the button reads "Copied!" for about 2 seconds, and a toast announces it in an `aria-live` region. If the clipboard is denied, the joke's text is selected and the toast asks you to press ⌘C or Ctrl+C.
 - **Share:** uses the Web Share API, or copies the link where that isn't available.
-- **Favorite:** a toggle.
+- **Favorite:** saves or removes the joke, and reads "Favorited" while it's saved.
 - An unknown id shows `ErrorView` with a 404.
 
 ### `/favorites`
 
-- Shows the jokes saved in the Pinia store, which holds full joke objects so the page makes no API calls.
+- Shows the jokes saved in the Pinia store, which holds full joke objects so the page makes no API calls. They're written to the Apollo cache, so opening one makes no call either.
+- Each joke has a Remove button pinned to its card's corner, with a tooltip. A removed joke falls off the list, and focus moves to the next one's button.
+- A search box filters the favorites as you type, in the browser, with the term in the URL as `?q`. No matches is an inline state with links to all favorites and to Search.
+- Ten a page, with Search's pagination and `?page`.
 - Has its own empty state.
 
 ### `/case-study`, linked as "About"
