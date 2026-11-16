@@ -12,7 +12,7 @@ export default defineConfigWithVueTs(
       'storybook-static',
       'playwright-report',
       'test-results',
-      'public',
+      'public-e2e',
     ],
   },
   pluginVue.configs['flat/recommended'],

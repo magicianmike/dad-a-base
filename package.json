@@ -83,7 +83,7 @@
   },
   "msw": {
     "workerDirectory": [
-      "public"
+      "public-e2e"
     ]
   }
 }

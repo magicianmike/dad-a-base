@@ -3,6 +3,6 @@ coverage
 storybook-static
 playwright-report
 test-results
-public/mockServiceWorker.js
+public-e2e/mockServiceWorker.js
 package-lock.json
 dist-e2e

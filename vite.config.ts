@@ -5,7 +5,9 @@ import rehypeSlug from 'rehype-slug'
 import { defineConfig } from 'vite'
 import { ogImage } from './build/ogImage'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  // The only public file is MSW's service worker, for builds that mock the API (`--mode e2e`). Others ship none.
+  publicDir: mode === 'e2e' ? 'public-e2e' : false,
   // MDX first, compiled to Vue's own JSX runtime, so the Case Study's prose can hold the app's components. Its
   // headings get ids from their text, for links to its chapters.
   plugins: [
@@ -16,4 +18,4 @@ export default defineConfig({
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
-})
+}))

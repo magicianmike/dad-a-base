@@ -177,4 +177,4 @@ It stands apart from the paper: a slim header with the masthead and a link back 
 5. **Favorites.**
 6. **Keyboard shortcuts and transitions.**
 7. **The Case Study.**
-8. **The README and polish,** including a "reveal the punchline" interaction for Jokes with a clear setup and punchline.
+8. **The README and polish.** The "reveal the punchline" interaction planned here is dropped: it adds complex UX and code, and many Jokes have no natural break between setup and punchline ([journal 0008](journal/0008-readme-polish.md)).
