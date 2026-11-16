@@ -1,4 +1,5 @@
 import AppButton from '@/components/AppButton.vue'
+import GroanButton from '@/components/GroanButton.vue'
 import JokeCard from '@/components/JokeCard.vue'
 import ThemeSpread from '@/components/ThemeSpread.vue'
 import ErrorStates from './ErrorStates.vue'
@@ -8,7 +9,7 @@ import PaginationStates from './PaginationStates.vue'
 
 ## In 60 seconds
 
-The brief asked for a site on the icanhazdadjoke API: search, a random joke, a page per joke with a copy button, a header and footer, and a tidy layout. I built that as **The Dad-a-base**, a dad-joke paper styled as a newspaper's Sunday funnies, and then took it further: Favorites, Share, keyboard shortcuts, a design system, and an Error state for every way the API can fail.
+The brief asked for a site on the icanhazdadjoke API: search, a random joke, a page per joke with a copy button, a header and footer, and a tidy layout. I built that as **The Dad-a-base**, a dad-joke paper styled as a newspaper's Sunday funnies, and then took it further: Favorites, Share, keyboard shortcuts, a design system, an Error state for every way the API can fail, and a press-and-hold Groan button with its own leaderboard.
 
 - **Stack:** Vue 3 with `<script setup>` and TypeScript, Vite, vue-router and Pinia. All API data goes through Apollo Client, talking to the REST API through `apollo-link-rest`, with Zod checking every response.
 - **Quality:** every route runs end to end on three browsers, with axe in both themes and reflow at 320px. Unit and component tests cover over 95% of statements, against a 90% gate.
@@ -79,7 +80,7 @@ Tests enforce the rules: semantic tokens only reference primitives, domain token
 
 <LiveFigure caption="ThemeSpread, rendering the same components in both themes at once, whatever this page's theme.">
   <ThemeSpread>
-    <AppButton variant="primary">Another one</AppButton>
+    <AppButton variant="primary">Another</AppButton>
   </ThemeSpread>
 </LiveFigure>
 
@@ -101,7 +102,7 @@ I built this with Claude Code, Anthropic's coding agent, and I'd rather show how
 - **I wrote the plan first.** The spec, the domain glossary, the voice guide and the architecture decision records came before the code, and a `CLAUDE.md` file holds the project's rules, such as "Zod schemas are the single source of truth" and "ask before pushing".
 - **Claude built each milestone to the spec,** with its tests, and recorded every decision it made by default in the journal, under "Defaults, not asked", so I could see which choices were mine.
 - **I reviewed each milestone running,** locally or on a preview deploy, and asked for changes. Milestone 5 alone took more than a dozen changes: the Remove button pinned over the card, the broken-heart icon, the falling animation, search and pages on Favorites, and a heart on every Favorite.
-- **Some of my requests had accessibility catches, and Claude flagged them** with the accessible version. "Favorited" meant dropping the toggle-button role. A centred tooltip would have run off a phone's screen, so it stays right-aligned there. A disabled button needed to keep its focus.
+- **Some of my requests had accessibility catches, and Claude flagged them** with the accessible version. "Faved" meant dropping the toggle-button role. A centred tooltip would have run off a phone's screen, so it stays right-aligned there. A disabled button needed to keep its focus.
 - **I kept the outward-facing steps.** Claude asked before every push, issue and pull request, and I ran every VoiceOver pass myself.
 
 ## Product and UX
@@ -133,7 +134,7 @@ I treated each line of the brief as a goal rather than a checklist.
     <tr>
       <td>A random joke</td>
       <td>
-        "Another one", or the <kbd>r</kbd> key, and a Joke of the moment on the front page
+        "Another", or the <kbd>r</kbd> key, and a Joke of the moment on the front page
       </td>
     </tr>
     <tr>
@@ -151,7 +152,7 @@ I treated each line of the brief as a goal rather than a checklist.
   </tbody>
 </table>
 
-Owning it also meant leaving things out. Early prototypes showed a "groan rating" on every Joke, but the API has none, and inventing one would put made-up numbers on real content. So there isn't one.
+Owning it also meant leaving things out. Early prototypes showed a "groan rating" on every Joke, but the API has none, and inventing one would put made-up numbers on real content, so I left it out. Later I brought the idea back the honest way: the only score is your own Groan, below.
 
 ### Designing the flows
 
@@ -166,6 +167,26 @@ The Pagination window keeps 11 numbers in view and stays full at both ends, so t
 <ErrorStates />
 
 **Favorites** are kept as whole Jokes in the browser, so the Favorites page needs no API calls. They're written into Apollo's cache too, so opening one is instant. They can be searched and paged like Search. Removing one plays a short "falls off the fridge" animation and moves focus to the next Joke's button, so a keyboard user doesn't lose their place.
+
+### A moment of delight
+
+The last feature is there for fun. The **Groan button** lets you say how bad a Joke is the way you would at the table: press and hold, and the longer you groan, the worse it was. It fills from sunshine to hot pink over three seconds while its "Ugh" gains an h every quarter second, shakes when it's full, and lets go with a comic "GROAN! 7.2" burst. Every Groan goes on a **Groan Leaderboard**, worst first.
+
+<LiveFigure caption="GroanButton, given a Joke as a prop. Press and hold it: the Groan is real, and goes on your Groan Leaderboard.">
+  <GroanButton
+    joke={{
+      id: 'daaUfibh',
+      joke: 'Why was the big cat disqualified from the race? Because it was a cheetah.',
+    }}
+  />
+</LiveFigure>
+
+- **It reverses an earlier call, and says so.** I'd left ratings out because the API has none. A Groan isn't a rating made up for the Joke: it's your own reaction, saved in your browser. So the board is yours alone. A shared one, with no accounts behind it, would be a leaderboard of whoever held longest.
+- **A hold has to work without a mouse.** Space and Enter hold it as a pointer does, a held key's repeats are ignored, and Escape cancels. On a phone, only a long press groans: a tap shows how it works instead, and a scroll that takes over cancels it.
+- **The name follows the label.** axe caught the first version, where the name stayed "Groan" while the button read "Ughhh" (WCAG 2.5.3, Label in Name). Now it's "Groan: Ughhh", so the words you see are in the name, and speech input can still say "Groan".
+- **The button grows with its "Ughhh",** so it can wrap onto the next line mid-hold. It holds on to the pointer while it's held, and only sliding more than a touch target away cancels, not the button moving under your finger.
+- **The gradient was chosen by the numbers.** The label stays the text colour over all of it, and a test checks it at 4.5:1 against every point along the gradient, in both themes.
+- **Motion is optional here too.** Under reduced motion there's no nudge on hover, no shake and no flying burst, but the fill and the "Ughhh" still show the hold.
 
 ### Look, voice and accessibility
 
@@ -187,8 +208,8 @@ The voice has rules, written down so they hold: the joke goes in the headline, a
 Accessibility is built in rather than checked at the end, and the details changed the design more than once:
 
 - **Focus follows navigation** to each new page's headline, as a page load would, and a skip link is the first stop on every page.
-- **The Favorite button reads "Favorited" once a Joke is saved,** so it isn't also a toggle button: a toggle's name must stay the same in both states, or a screen reader announces the state twice.
-- **Busy buttons keep their focus.** "Another one" ignores presses while it loads instead of using the `disabled` attribute, which would throw a keyboard user back to the top of the page every time.
+- **The Fave button reads "Faved" once a Joke is saved,** so it isn't also a toggle button: a toggle's name must stay the same in both states, or a screen reader announces the state twice.
+- **Busy buttons keep their focus.** "Another" ignores presses while it loads instead of using the `disabled` attribute, which would throw a keyboard user back to the top of the page every time.
 - **The single-key shortcuts can be turned off** (WCAG 2.1.4), because speech input can press them by accident.
 - **Tooltips can be dismissed** with Escape and stay while the pointer is over them (WCAG 1.4.13).
 - **Motion is optional.** Every animation stops under reduced motion.

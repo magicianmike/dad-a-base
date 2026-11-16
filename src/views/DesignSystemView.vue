@@ -102,7 +102,7 @@ const storybookUrl = import.meta.env.DEV ? 'http://localhost:6006' : '/storybook
     <h3>Buttons</h3>
     <ThemeSpread>
       <div class="buttons">
-        <AppButton variant="primary">Another one</AppButton>
+        <AppButton variant="primary">Another</AppButton>
         <AppButton>Open this joke</AppButton>
       </div>
     </ThemeSpread>

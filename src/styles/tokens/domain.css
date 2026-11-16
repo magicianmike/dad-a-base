@@ -50,6 +50,21 @@
   --correction-shadow: var(--shadow-offset-large) var(--shadow-offset-large) 0
     var(--color-highlight);
 
+  /* The room the Groan button keeps beside it: the width of its widest label, "Ughhhhhhhhhhhhh!", with the face. */
+  --groan-room: 18rem;
+
+  /*
+   * The Groan button's fill: sunshine to tangerine to hot pink as the hold goes on (deeper, in dark). The label stays
+   * the text colour over all of it. The fill is a second cue, not the only one: the label's growing "Ughhh" and the
+   * announced score say the same, so it needn't reach 3:1 against the empty button.
+   */
+  --groan-fill: linear-gradient(
+    to right,
+    var(--color-groan-start),
+    var(--color-groan-middle),
+    var(--color-groan-end)
+  );
+
   /* The dad */
   --dad-skin: var(--color-skin);
   --dad-hair: var(--color-hair);

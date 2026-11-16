@@ -7,7 +7,7 @@ The Dad-a-base talks like a small-town newspaper run by dads: warm, punny, a lit
 1. **Joke in the headline, plain words in the body.** A kicker and headline can pun. The sentence under them says what happened and what to do, in plain words.
 2. **Every Error state has three parts:** a pun headline, a plain explanation, and a real way to recover: try again, the front page, or a random joke. A test checks all three (`src/errors/copy.test.ts`).
 3. **Say what happened, not whose fault it is.** "The joke service had a problem", not "You broke it" or "Oops!".
-4. **Controls and labels are plain.** Buttons say what they do ("Try again", "Another one"). Puns live in the copy around them, never in a control's name. So the theme toggle is named "Dark theme", not "Night edition".
+4. **Controls and labels are plain.** Buttons say what they do ("Try again", "Another"). Puns live in the copy around them, never in a control's name. So the theme toggle is named "Dark theme", not "Night edition".
 5. **No exclamation marks** outside the Jokes themselves.
 6. **The paper's furniture is fair game:** kickers ("Today's top story", "Stop the presses"), the dateline, corrections ("The Dad-a-base regrets the error").
 

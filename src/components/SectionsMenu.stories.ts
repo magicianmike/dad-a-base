@@ -27,7 +27,8 @@ export const Open: Story = {
       'Home',
       'Search',
       'Random',
-      'Favorites',
+      'Faves',
+      'Groans',
     ])
   },
 }

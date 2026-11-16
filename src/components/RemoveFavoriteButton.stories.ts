@@ -22,3 +22,14 @@ export const Default: Story = {
     await expect(args.onClick).toHaveBeenCalledOnce()
   },
 }
+
+/** On the Groan Leaderboard: a cross, not a broken heart, and its own name. */
+export const Groan: Story = {
+  args: { label: 'Remove from groans', icon: 'cross' },
+  play: async ({ canvas, args, userEvent }) => {
+    const button = canvas.getByRole('button', { name: 'Remove from groans' })
+    await expect(button.querySelector('svg')).toHaveClass('cross')
+    await userEvent.click(button)
+    await expect(args.onClick).toHaveBeenCalledOnce()
+  },
+}

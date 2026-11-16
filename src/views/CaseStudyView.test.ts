@@ -1,5 +1,6 @@
-import { screen, waitFor, within } from '@testing-library/vue'
+import { fireEvent, screen, waitFor, within } from '@testing-library/vue'
 import userEvent from '@testing-library/user-event'
+import { GROANS_STORAGE_KEY } from '@/stores/groans'
 import { renderPage } from '@/test/renderPage'
 import CaseStudyView from './CaseStudyView.vue'
 
@@ -69,6 +70,20 @@ describe('CaseStudyView', () => {
       'In the app, this asks the joke service again.',
     )
     await waitFor(() => expect(document.title).toBe('How the Dad-a-base was built'))
+  })
+
+  it('has a live Groan button under "A moment of delight", whose Groans are real', async () => {
+    await renderPage(CaseStudyView, { path: '/case-study' })
+    expect(screen.getByRole('heading', { level: 3, name: 'A moment of delight' })).toHaveAttribute(
+      'id',
+      'a-moment-of-delight',
+    )
+    const button = screen.getByRole('button', { name: 'Groan' })
+    await fireEvent.pointerDown(button, { button: 0 })
+    await new Promise((resolve) => setTimeout(resolve, 400))
+    await fireEvent.pointerUp(button, { button: 0 })
+    expect(screen.getByRole('status')).toHaveTextContent(/Groan score \d+\.\d out of 10\./)
+    expect(JSON.parse(localStorage.getItem(GROANS_STORAGE_KEY)!)).toHaveLength(1)
   })
 
   it('shows the Pagination window live, at both ends and in the middle', async () => {

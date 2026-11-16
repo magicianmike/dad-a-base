@@ -31,7 +31,7 @@ test('r shows another Joke, and is a letter while typing', async ({ page }) => {
 test('? lists the shortcuts; Escape closes the list and focus goes back', async ({ page }) => {
   await page.goto('/random')
   await expect(page.getByRole('blockquote')).toHaveText(cheetah)
-  const another = page.getByRole('button', { name: 'Another one' })
+  const another = page.getByRole('button', { name: 'Another' })
   await another.focus()
   await page.keyboard.press('?')
   const list = page.getByRole('dialog', { name: 'Keyboard shortcuts' })

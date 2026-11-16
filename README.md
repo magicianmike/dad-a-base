@@ -17,7 +17,7 @@ A dad-joke site on the [icanhazdadjoke](https://icanhazdadjoke.com/api) API, sty
 | Search for a joke             | Search as you type, with the term and page in the address, and recent and suggested searches      |
 | Pagination would be nice      | A Pagination window that stays 11 pages wide, with pages you can link to                          |
 | Handle no results             | An inline state with suggestions, distinct from an error                                          |
-| A random joke                 | "Another one", or the `r` key, and a Joke of the moment on the front page                         |
+| A random joke                 | "Another", or the `r` key, and a Joke of the moment on the front page                             |
 | A joke's page, with copy      | Copy, with a fallback when the clipboard is blocked, plus Share and Favorite                      |
 | Header, footer and navigation | A masthead, a dateline, skip links, a theme toggle, and keyboard shortcuts that can be turned off |
 | Nicely laid out               | A design system built from tokens, in light and dark                                              |

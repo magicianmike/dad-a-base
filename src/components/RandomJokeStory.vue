@@ -5,18 +5,19 @@ import { useMinimumBusy } from '@/useMinimumBusy'
 import AppButton from './AppButton.vue'
 import ErrorView from './ErrorView.vue'
 import FavoriteButton from './FavoriteButton.vue'
+import GroanButton from './GroanButton.vue'
 import JokeCard from './JokeCard.vue'
 import StoryHeading from './StoryHeading.vue'
 
-/** A random Joke as a page's story, with "Another one". Used by home and by /random. */
+/** A random Joke as a page's story, with "Another". Used by home and by /random. */
 defineProps<{ kicker: string; headline: string; caption?: string }>()
 
 const { joke, loading, error, next } = useRandomJoke()
 
-/** "Another one" stays busy for at least half a second, so a quick answer doesn't make it flicker. */
+/** "Another" stays busy for at least half a second, so a quick answer doesn't make it flicker. */
 const busy = useMinimumBusy(loading, 500)
 
-/** "Another one", by button or by the `r` shortcut. Ignored while it's busy, as the button is. */
+/** "Another", by button or by the `r` shortcut. Ignored while it's busy, as the button is. */
 function another() {
   if (!busy.value) next()
 }
@@ -52,9 +53,13 @@ useShortcut('r', another)
           <path d="M4.5 11A7.5 7.5 0 0 1 17.8 7.2L20 9.5M20 4v5.5h-5.5" />
           <path d="M19.5 13A7.5 7.5 0 0 1 6.2 16.8L4 14.5M4 20v-5.5h5.5" />
         </svg>
-        Another one
+        Another
       </AppButton>
-      <FavoriteButton v-if="joke" :joke="joke" />
+      <template v-if="joke">
+        <FavoriteButton :joke="joke" />
+        <!-- Keyed by the Joke, so a hold on one never carries over to the next. -->
+        <GroanButton :key="joke.id" :joke="joke" />
+      </template>
     </div>
   </template>
 </template>
@@ -120,5 +125,15 @@ useShortcut('r', another)
   flex-wrap: wrap;
   gap: var(--space-3) var(--space-4);
   align-items: center;
+}
+
+/*
+ * Groan keeps room for its widest "Ughhh…!", so it shares the line when that fits and wraps to its own when it
+ * doesn't, and never moves while it's held. On a line too narrow even for that, it shrinks rather than overflows.
+ */
+.actions > .groan {
+  flex: 1 1 var(--groan-room);
+  justify-content: flex-start;
+  min-width: 0;
 }
 </style>

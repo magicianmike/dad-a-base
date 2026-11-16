@@ -10,7 +10,7 @@ let next = 0
  */
 export const MOCK_FAILURE_KEY = 'dadabase:mock-failure'
 
-/** Cycles through the fixtures, so "Another one" visibly changes the Joke. */
+/** Cycles through the fixtures, so "Another" visibly changes the Joke. */
 export function resetMocks() {
   next = 0
 }

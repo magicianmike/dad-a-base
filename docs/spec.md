@@ -45,7 +45,7 @@ The API is called straight from the browser: it allows CORS on GET, and every re
 ### `/` Home
 
 - A pun hero.
-- The joke of the moment, with "Another one".
+- The joke of the moment, with "Another".
 - A search box that goes to `/search?q=…`.
 - A peek at your favorites, the newest three, when you have some.
 
@@ -64,14 +64,16 @@ The API is called straight from the browser: it allows CORS on GET, and every re
 
 ### `/random`
 
-- "Another one", or the `r` key, fetches a new joke without changing the URL.
+- "Another", or the `r` key, fetches a new joke without changing the URL.
 - The joke card links to `/jokes/:id`, on home too.
+- A Groan button after "Another", on home too (see `/jokes/:id`). It keeps room for its widest label: it shares the line when that fits, and wraps when it doesn't.
 
 ### `/jokes/:id`
 
 - **Copy:** the button reads "Copied!" for about 2 seconds, and a toast announces it in an `aria-live` region. If the clipboard is denied, the joke's text is selected and the toast asks you to press ⌘C or Ctrl+C.
 - **Share:** uses the Web Share API, or copies the link where that isn't available.
-- **Favorite:** saves or removes the joke, and reads "Favorited" while it's saved.
+- **Fave:** saves or removes the joke, and reads "Faved" while it's saved.
+- **Groan:** press and hold. It fills with a gradient over 3 seconds while "Ugh" gains an h every quarter second, and shakes when it's full. Letting go records the Groan, with a "GROAN! 7.2" burst and a toast, and the "Ughhh" stays. Only a long press groans: a press under 300ms records nothing and shows the tooltip for a moment. Sliding off, a scroll or Escape cancels. Space and Enter hold it too. A mouse over it gets a nudge, and a tooltip says how it works. Its name is "Groan", then "Groan: Ughhh".
 - An unknown id shows `ErrorView` with a 404.
 
 ### `/favorites`
@@ -81,6 +83,14 @@ The API is called straight from the browser: it allows CORS on GET, and every re
 - A search box filters the favorites as you type, in the browser, with the term in the URL as `?q`. No matches is an inline state with links to all favorites and to Search.
 - Ten a page, with Search's pagination and `?page`.
 - Has its own empty state.
+
+### `/groans`
+
+- The Groan Leaderboard: the Visitor's Groans, saved in the Pinia store as whole Jokes, so the page makes no API calls. Highest Groan score first, and the newest first on a tie.
+- Each row has its rank, the joke card, and the score as a bar in the Groan button's fill with "7.2/10".
+- Each joke has a Remove button pinned to its card's corner, as on Favorites, and focus moves to the next one's button.
+- Ten a page, with Search's pagination and `?page`.
+- Has its own empty state, linking to Random.
 
 ### `/case-study`, linked from the footer
 
@@ -110,7 +120,7 @@ See [Case Study](#case-study).
   - newsprint colours in light, and a "night edition" in dark;
   - Oswald headlines, Comic Neue kickers and captions, and Atkinson Hyperlegible for everything else;
   - each Joke in a halftone comic frame, with an optional caption.
-- **No ratings.** The API has no rating for a Joke, so none is invented.
+- **No invented ratings.** The API has no rating for a Joke, so none is made up. The only score is the Visitor's own Groan, saved in their browser ([journal 0011](journal/0011-groans.md)).
 - **Tokens** in three layers: primitive (the raw palette, type and steps), semantic (`--color-surface`, `--space-4`) and domain (`--masthead-font`, `--joke-frame-dots`). Components use only semantic and domain tokens, and a test enforces it.
 - **Themes:** light and dark. The page follows the system setting until the visitor presses the theme toggle, a small sun-and-moon switch, a toggle button named "Dark theme". Their choice is saved and applied before first paint, so it doesn't flash. There's no "Auto" option.
 - **Navigation** lists only built pages. Each milestone adds its own (`src/navigation.ts`). On a phone (below 40rem) it moves into a drawer from the left, opened by a hamburger button at the top left (named "Sections"). The drawer is a native modal dialog; choosing a section, Close, Escape or a tap beside it closes it.

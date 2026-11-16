@@ -81,7 +81,7 @@ describe('App', () => {
       within(nav)
         .getAllByRole('link')
         .map((link) => link.textContent),
-    ).toEqual(['Home', 'Search', 'Random', 'Favorites'])
+    ).toEqual(['Home', 'Search', 'Random', 'Faves', 'Groans'])
     expect(
       within(screen.getByRole('navigation', { name: 'Colophon' }))
         .getAllByRole('link')
@@ -102,7 +102,7 @@ describe('App', () => {
     await screen.findByText(joke.joke)
     expect(screen.queryByRole('region', { name: 'From your fridge' })).toBeNull()
 
-    await userEvent.click(screen.getByRole('button', { name: 'Favorite' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Fave' }))
     const peek = await screen.findByRole('region', { name: 'From your fridge' })
     expect(within(peek).getByRole('link', { name: joke.joke })).toBeInTheDocument()
 

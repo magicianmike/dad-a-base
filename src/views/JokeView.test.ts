@@ -86,15 +86,15 @@ describe('JokeView', () => {
 
   it('saves to and removes from Favorites, saying which', async () => {
     await renderPage(JokeView, { props: { id: joke.id } })
-    const favorite = await screen.findByRole('button', { name: 'Favorite' })
+    const favorite = await screen.findByRole('button', { name: 'Fave' })
 
     await userEvent.click(favorite)
-    expect(favorite).toHaveAccessibleName('Favorited')
+    expect(favorite).toHaveAccessibleName('Faved')
     expect(screen.getByRole('status')).toHaveTextContent('Saved to your favorites.')
     await waitFor(() => expect(localStorage.getItem(FAVORITES_STORAGE_KEY)).toContain(joke.id))
 
     await userEvent.click(favorite)
-    expect(favorite).toHaveAccessibleName('Favorite')
+    expect(favorite).toHaveAccessibleName('Fave')
     expect(screen.getByRole('status')).toHaveTextContent('Removed from your favorites.')
   })
 

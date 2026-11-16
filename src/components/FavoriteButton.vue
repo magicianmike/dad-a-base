@@ -25,7 +25,7 @@ function toggle() {
 
 <template>
   <!-- Its label says whether the Joke is saved, so it isn't also a toggle (aria-pressed): a toggle's name must stay
-  the same in both states, or a screen reader hears "Favorited, selected". -->
+  the same in both states, or a screen reader hears "Faved, selected". -->
   <AppButton class="favorite" @click="toggle">
     <span class="heart-box" aria-hidden="true">
       <svg
@@ -40,7 +40,7 @@ function toggle() {
       </svg>
       <span v-if="pressed === 'added'" :key="`burst-${presses}`" class="burst" />
     </span>
-    {{ saved ? 'Favorited' : 'Favorite' }}
+    {{ saved ? 'Faved' : 'Fave' }}
   </AppButton>
 </template>
 

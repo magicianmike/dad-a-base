@@ -23,11 +23,11 @@ type Story = StoryObj<typeof meta>
 
 export const Toggles: Story = {
   play: async ({ canvas, userEvent }) => {
-    const button = canvas.getByRole('button', { name: 'Favorite' })
+    const button = canvas.getByRole('button', { name: 'Fave' })
     await expect(button).not.toHaveAttribute('aria-pressed')
     await userEvent.click(button)
-    await expect(button).toHaveAccessibleName('Favorited')
+    await expect(button).toHaveAccessibleName('Faved')
     await userEvent.keyboard('{Enter}')
-    await expect(button).toHaveAccessibleName('Favorite')
+    await expect(button).toHaveAccessibleName('Fave')
   },
 }

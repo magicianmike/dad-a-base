@@ -18,7 +18,7 @@ describe('RandomJokeStory', () => {
       `/jokes/${jokes[0]!.id}`,
     )
 
-    await userEvent.click(screen.getByRole('button', { name: 'Another one' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Another' }))
 
     expect(await screen.findByText(jokes[1]!.joke)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: jokes[1]!.joke })).toHaveAttribute(
@@ -27,7 +27,7 @@ describe('RandomJokeStory', () => {
     )
   })
 
-  it('marks "Another one" unavailable while the next Joke loads, keeping focus, and ignores presses', async () => {
+  it('marks "Another" unavailable while the next Joke loads, keeping focus, and ignores presses', async () => {
     let fetched = 0
     await renderPage(RandomJokeStory, { props })
     await screen.findByText(jokes[0]!.joke)
@@ -38,7 +38,7 @@ describe('RandomJokeStory', () => {
         await delay(200)
       }),
     )
-    const another = screen.getByRole('button', { name: 'Another one' })
+    const another = screen.getByRole('button', { name: 'Another' })
 
     another.focus()
     await userEvent.keyboard('{Enter}')
@@ -56,8 +56,8 @@ describe('RandomJokeStory', () => {
 
   it('saves the Joke showing to Favorites', async () => {
     await renderPage(RandomJokeStory, { props })
-    await userEvent.click(await screen.findByRole('button', { name: 'Favorite' }))
-    expect(screen.getByRole('button', { name: 'Favorited' })).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('button', { name: 'Fave' }))
+    expect(screen.getByRole('button', { name: 'Faved' })).toBeInTheDocument()
   })
 
   it('shows the Error state when the API fails, and recovers on "Try again"', async () => {

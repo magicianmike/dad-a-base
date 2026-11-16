@@ -21,6 +21,14 @@
   --blue-300: #86b1d9;
   --yellow-300: #f0c56b;
 
+  /* The Groan fill: bold in light, deep in dark, so the label reads over both */
+  --sun-400: #ffcf33;
+  --tangerine-400: #ff8a2b;
+  --pink-400: #ff5c93;
+  --sun-800: #8f5a00;
+  --tangerine-800: #b8330f;
+  --pink-800: #a3165a;
+
   /* The dad */
   --skin-light: #f2c7a5;
   --skin-dark: #d9a77f;

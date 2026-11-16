@@ -9,7 +9,7 @@ const meta = {
   render: (args) => ({
     components: { LiveFigure, AppButton },
     setup: () => ({ args }),
-    template: '<LiveFigure v-bind="args"><AppButton>Another one</AppButton></LiveFigure>',
+    template: '<LiveFigure v-bind="args"><AppButton>Another</AppButton></LiveFigure>',
   }),
 } satisfies Meta<typeof LiveFigure>
 
@@ -20,6 +20,6 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   play: async ({ canvas, args }) => {
     await expect(canvas.getByRole('figure')).toHaveTextContent(args.caption)
-    await expect(canvas.getByRole('button', { name: 'Another one' })).toBeInTheDocument()
+    await expect(canvas.getByRole('button', { name: 'Another' })).toBeInTheDocument()
   },
 }

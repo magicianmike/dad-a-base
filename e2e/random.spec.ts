@@ -13,7 +13,7 @@ test('home shows a Joke of the moment; Random shows another, and another one on 
   const joke = page.getByRole('blockquote')
   await expect(joke).toHaveText(/golf/)
 
-  await page.getByRole('button', { name: 'Another one' }).click()
+  await page.getByRole('button', { name: 'Another' }).click()
   await expect(joke).toHaveText(/kinder/)
   await expect(page).toHaveURL('/random')
 })

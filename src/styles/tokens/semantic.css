@@ -18,6 +18,9 @@
   --color-dots: var(--dots-red-light);
   --color-skin: var(--skin-light);
   --color-hair: var(--hair-brown);
+  --color-groan-start: var(--sun-400);
+  --color-groan-middle: var(--tangerine-400);
+  --color-groan-end: var(--pink-400);
 
   /* Behind a modal dialog: dark in both themes, so the page always recedes. */
   --color-scrim: var(--black);
@@ -38,6 +41,9 @@
     --color-dots: var(--dots-red-dark);
     --color-skin: var(--skin-dark);
     --color-hair: var(--hair-brown);
+    --color-groan-start: var(--sun-800);
+    --color-groan-middle: var(--tangerine-800);
+    --color-groan-end: var(--pink-800);
 
     /* Behind a modal dialog: dark in both themes, so the page always recedes. */
     --color-scrim: var(--black);
@@ -58,6 +64,9 @@
   --color-dots: var(--dots-red-dark);
   --color-skin: var(--skin-dark);
   --color-hair: var(--hair-brown);
+  --color-groan-start: var(--sun-800);
+  --color-groan-middle: var(--tangerine-800);
+  --color-groan-end: var(--pink-800);
 
   /* Behind a modal dialog: dark in both themes, so the page always recedes. */
   --color-scrim: var(--black);

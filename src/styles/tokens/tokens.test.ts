@@ -1,4 +1,4 @@
-import { contrastRatio } from './contrast'
+import { contrastRatio, mix } from './contrast'
 import { parseBlocks, resolve, tokens, type Theme } from './tokens'
 
 const themes: Theme[] = ['light', 'dark']
@@ -81,6 +81,9 @@ describe('contrast, in both themes (WCAG 2.2 AA)', () => {
     ['--color-accent', '--color-surface'],
     ['--color-accent', '--color-surface-raised'],
     ['--color-on-accent', '--color-accent'],
+    ['--color-text', '--color-groan-start'],
+    ['--color-text', '--color-groan-middle'],
+    ['--color-text', '--color-groan-end'],
   ] as const
   const nonText = [
     ['--color-border', '--color-surface'],
@@ -90,6 +93,17 @@ describe('contrast, in both themes (WCAG 2.2 AA)', () => {
   ] as const
 
   for (const theme of themes) {
+    it(`${theme}: --color-text is at least 4.5:1 on every point of the Groan fill`, () => {
+      const at = (name: string) => resolve(`var(${name})`, theme)
+      const stops = ['--color-groan-start', '--color-groan-middle', '--color-groan-end'].map(at)
+      for (let i = 0; i < stops.length - 1; i++) {
+        for (let step = 0; step <= 20; step++) {
+          const point = mix(stops[i]!, stops[i + 1]!, step / 20)
+          expect(contrastRatio(at('--color-text'), point)).toBeGreaterThanOrEqual(4.5)
+        }
+      }
+    })
+
     it.each(text)(`${theme}: %s on %s is at least 4.5:1`, (fg, bg) => {
       expect(
         contrastRatio(resolve(`var(${fg})`, theme), resolve(`var(${bg})`, theme)),
@@ -101,6 +115,14 @@ describe('contrast, in both themes (WCAG 2.2 AA)', () => {
       ).toBeGreaterThanOrEqual(3)
     })
   }
+})
+
+describe('mix', () => {
+  it('mixes in sRGB, as a gradient does', () => {
+    expect(mix('#000', '#fff', 0)).toBe('#000000')
+    expect(mix('#000000', '#ffffff', 0.5)).toBe('#808080')
+    expect(mix('#000', '#fff', 1)).toBe('#ffffff')
+  })
 })
 
 describe('contrastRatio', () => {

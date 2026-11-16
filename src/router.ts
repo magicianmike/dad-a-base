@@ -12,6 +12,7 @@ export const routes: RouteRecordRaw[] = [
   { path: '/search', name: 'search', component: () => import('./views/SearchView.vue') },
   { path: '/random', name: 'random', component: () => import('./views/RandomView.vue') },
   { path: '/favorites', name: 'favorites', component: () => import('./views/FavoritesView.vue') },
+  { path: '/groans', name: 'groans', component: () => import('./views/GroansView.vue') },
   {
     path: '/case-study',
     name: 'case-study',

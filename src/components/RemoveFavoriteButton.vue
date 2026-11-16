@@ -2,10 +2,18 @@
 import { onScopeDispose, ref } from 'vue'
 
 /**
- * The round button, a broken heart, that takes a Joke off the Favorites page. Its tooltip is also its name, so it's
+ * The round button, a broken heart, that takes a Joke off the Favorites page, or the Groan Leaderboard. Its tooltip is also its name, so it's
  * always in the accessibility tree. It shows on hover and keyboard focus, stays while the pointer is over it, and
  * Escape hides it until the pointer or focus comes back (WCAG 1.4.13).
  */
+withDefaults(
+  defineProps<{
+    label?: string
+    /** A broken heart, to take off a Favorite, or a cross, for anything else, such as a Groan. */
+    icon?: 'heart' | 'cross'
+  }>(),
+  { label: 'Remove from favorites', icon: 'heart' },
+)
 const emit = defineEmits<{ click: [] }>()
 const dismissed = ref(false)
 
@@ -26,7 +34,7 @@ onScopeDispose(() => removeEventListener('keydown', onKeydown))
     @focus="dismissed = false"
   >
     <!-- FavoriteButton's heart, cracked from the dip to the tip, its halves pulled apart. -->
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <svg v-if="icon === 'heart'" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <path
         d="M12 20.5 4.6 11.95A4.5 4.5 0 1 1 12 6.94l-1.2 3.66 2.2 2.4-1.6 3.4Z"
         transform="translate(-1.25 0)"
@@ -36,8 +44,12 @@ onScopeDispose(() => removeEventListener('keydown', onKeydown))
         transform="translate(1.25 0)"
       />
     </svg>
+    <!-- A bold cross, drawn with a pen. -->
+    <svg v-else class="cross" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M6.5 6.5l11 11M17.5 6.5l-11 11" />
+    </svg>
     <!-- Pressing the tooltip itself mustn't remove the Joke. -->
-    <span class="tip" @click.stop>Remove from favorites</span>
+    <span class="tip" @click.stop>{{ label }}</span>
   </button>
 </template>
 
@@ -78,6 +90,13 @@ svg {
   stroke: currentcolor;
   stroke-linejoin: round;
   stroke-width: 1;
+}
+
+/* The cross is a line, not a shape. */
+.cross {
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 3;
 }
 
 .remove:hover svg {

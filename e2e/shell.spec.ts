@@ -109,7 +109,8 @@ test.describe('the Sections menu', () => {
         'Home',
         'Search',
         'Random',
-        'Favorites',
+        'Faves',
+        'Groans',
       ])
       await expect(nav(page).getByRole('link', { name: 'Random' })).toHaveAttribute(
         'aria-current',

@@ -9,7 +9,7 @@ One joke from icanhazdadjoke: an `id` and its text. Jokes have no titles.
 _Avoid_: Post, item
 
 **Joke of the moment**:
-The random Joke shown on the home page, replaced with "Another one".
+The random Joke shown on the home page, replaced with "Another".
 _Avoid_: Joke of the day (it isn't daily)
 
 **Search**:
@@ -28,6 +28,17 @@ _Avoid_: Pager
 **Favorite**:
 A Joke the visitor saved in this browser. It's stored as the whole Joke, so Favorites need no API calls.
 _Avoid_: Bookmark, like
+
+**Groan**:
+The Visitor's own reaction to a Joke: they press and hold the Groan button, and the longer they hold, the worse the Joke. One per Joke, saved in this browser. A new Groan replaces the last.
+_Avoid_: Rating, vote, like
+
+**Groan score**:
+How long a Groan was held, as a share of the full 3 seconds, shown out of 10 to a tenth (1.0–10.0). A press under 300ms is a tap, and records nothing: a Groan is a long press.
+
+**Groan Leaderboard**:
+The Visitor's Groans at `/groans`, highest Groan score first. Only theirs: there's no shared board.
+_Avoid_: Rankings, top jokes
 
 **Error state**:
 One of `ErrorView`'s codes: `404`, `403`, `429`, `500`, `offline` or `unknown`. Each has a pun headline, a plain explanation and a way to recover. No results is not an Error state.

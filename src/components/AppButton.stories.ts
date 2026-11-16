@@ -8,7 +8,7 @@ const meta = {
   render: (args) => ({
     components: { AppButton },
     setup: () => ({ args }),
-    template: '<AppButton v-bind="args">Another one</AppButton>',
+    template: '<AppButton v-bind="args">Another</AppButton>',
   }),
 } satisfies Meta<typeof AppButton>
 
@@ -17,7 +17,7 @@ type Story = StoryObj<typeof meta>
 
 export const Secondary: Story = {
   play: async ({ canvas, args, userEvent }) => {
-    const button = canvas.getByRole('button', { name: 'Another one' })
+    const button = canvas.getByRole('button', { name: 'Another' })
     await expect(button).toHaveAttribute('type', 'button')
     await userEvent.click(button)
     await expect(args.onClick).toHaveBeenCalledOnce()
@@ -42,7 +42,7 @@ export const Submit: Story = {
 export const Disabled: Story = {
   args: { variant: 'primary', disabled: true },
   play: async ({ canvas, args, userEvent }) => {
-    const button = canvas.getByRole('button', { name: 'Another one' })
+    const button = canvas.getByRole('button', { name: 'Another' })
     await expect(button).toHaveAttribute('aria-disabled', 'true')
     await userEvent.click(button)
     await expect(args.onClick).not.toHaveBeenCalled()

@@ -24,19 +24,19 @@ async function seed(page: Page, saved: { id: string; joke: string }[]) {
 test('a Joke saved on home is on home and Favorites, and opens from there', async ({ page }) => {
   await page.goto('/')
   await expect(page.getByRole('blockquote').first()).toHaveText(joke.text)
-  await page.getByRole('button', { name: 'Favorite', exact: true }).click()
+  await page.getByRole('button', { name: 'Fave', exact: true }).click()
 
   const peek = page.getByRole('region', { name: 'From your fridge' })
   await expect(peek.getByRole('link', { name: joke.text })).toBeVisible()
 
-  await goToSection(page, 'Favorites')
+  await goToSection(page, 'Faves')
   await expect(page).toHaveURL('/favorites')
   await expect(page.getByRole('heading', { level: 1, name: 'Stuck to the fridge' })).toBeFocused()
   await expect(page.getByRole('heading', { level: 2 })).toHaveText('1 saved joke')
 
   await page.getByRole('link', { name: joke.text }).click()
   await expect(page).toHaveURL(`/jokes/${joke.id}`)
-  await expect(page.getByRole('button', { name: 'Favorited', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Faved', exact: true })).toBeVisible()
 })
 
 test('removing a Joke takes it off, moves focus to the next, and lasts', async ({ page }) => {

@@ -5,6 +5,7 @@ import { useJoke } from '@/api/useJoke'
 import CopyButton from '@/components/CopyButton.vue'
 import ErrorView from '@/components/ErrorView.vue'
 import FavoriteButton from '@/components/FavoriteButton.vue'
+import GroanButton from '@/components/GroanButton.vue'
 import JokeCard from '@/components/JokeCard.vue'
 import ShareButton from '@/components/ShareButton.vue'
 import StoryHeading from '@/components/StoryHeading.vue'
@@ -43,6 +44,7 @@ useHead({ title })
           />
           <ShareButton :joke="joke" />
           <FavoriteButton :joke="joke" />
+          <GroanButton :joke="joke" />
         </div>
       </template>
       <p v-else>Fetching the joke from the archives…</p>
@@ -69,6 +71,16 @@ useHead({ title })
     flex: 1 1 auto;
     justify-content: center;
   }
+}
+
+/*
+ * Groan keeps room for its widest "Ughhh…!", so it shares the line when that fits and wraps to its own when it
+ * doesn't, and never moves while it's held. On a line too narrow even for that, it shrinks rather than overflows.
+ */
+.actions > .groan {
+  flex: 1 1 var(--groan-room);
+  justify-content: flex-start;
+  min-width: 0;
 }
 
 .more {
