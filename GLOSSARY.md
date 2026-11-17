@@ -44,7 +44,7 @@ _Avoid_: Rankings, top jokes
 One of `ErrorView`'s codes: `404`, `403`, `429`, `500`, `offline` or `unknown`. Each has a pun headline, a plain explanation and a way to recover. No results is not an Error state.
 
 **Case Study**:
-The write-up of the product, design and engineering decisions, aimed at hiring managers, at `/case-study` on the same site.
+The write-up of the product, design and engineering decisions, aimed at people reading the portfolio, at `/case-study` on the same site.
 _Avoid_: About page, portfolio
 
 **Masthead**:

@@ -45,7 +45,7 @@ Milestone 0. The whole stack, rough but real. `/random` fetches a random Joke fr
 
 - **Live at <https://dadabase-jade.vercel.app>.** `dadabase.vercel.app` was taken, so Vercel picked the alias. A new project's first deploy goes to production, so this one did.
 - Each deploy's own URL is behind Vercel's login (Deployment Protection). The alias is public.
-- `vercel link` couldn't connect the onX-Hiring repo, as expected, and added `.env*` to `.gitignore`. That would have ignored `.env.e2e`, which the Playwright build needs, so it's narrowed to `.env*.local`.
+- `vercel link` couldn't connect the GitHub repo, as expected, and added `.env*` to `.gitignore`. That would have ignored `.env.e2e`, which the Playwright build needs, so it's narrowed to `.env*.local`.
 - Checked live in Chromium against the real API: `/random` shows a Joke, "Another one" shows a different one, the title is right and the console is clean. `/`, `/random` and an unknown path all serve the app.
 
 ## Open

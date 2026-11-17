@@ -56,7 +56,7 @@ Defaults, not asked: the author said "build milestone 2".
 - **Focus follows navigation.** After every navigation but the first, focus moves to the new page's `h1`, as on a page load. The skip link ("Skip to the main story") is the first stop on the page and moves focus to `main`.
 - **The main navigation lists only built pages:** Home and Random for now. Search, Favorites and About join as their milestones land (`src/navigation.ts`), so nothing links to a stub.
 - **The dateline shows today's date,** with "All the jokes that are fit to groan" and "Free, like Dad's advice".
-- **The footer credits icanhazdadjoke and links the colophon:** the design system and Storybook. There's no link to the code yet: the repo is internal to onX, so the public would get a 404.
+- **The footer credits icanhazdadjoke and links the colophon:** the design system and Storybook. There's no link to the code yet: the repo was private, so the public would get a 404.
 - **CI's actions are on v7** (`checkout`, `setup-node`, `upload-artifact`), clearing GitHub's Node 20 deprecation notice.
 
 ## Problems found on the way
@@ -102,5 +102,5 @@ Defaults, not asked: the author said "build milestone 2".
 
 ## Open
 
-- **No link to the code.** The repo is internal to onX, so neither the footer nor the Case Study links to it. The author removed the Case Study's planned "View the code on GitHub" button.
+- **No link to the code.** The repo was private, so neither the footer nor the Case Study links to it. The author removed the Case Study's planned "View the code on GitHub" button.
 - **No real 404 status.** The site is a single-page app on static hosting, so an unknown address returns HTTP 200 with the 404 page. Search engines see a soft 404. It's fine for a demo; fixing it would need server-side routes.

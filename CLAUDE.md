@@ -4,7 +4,7 @@ A dad-joke site on the icanhazdadjoke REST API, with a Case Study explaining how
 
 ## Working here
 
-- Work in milestones (see the spec). Each is a GitHub issue on `onX-Hiring/interview-project-mike-mccormick` and a PR, managed with `gh`. Everything there is visible to the hiring team: ask the author before pushing, opening issues or PRs, or commenting.
+- Work in milestones (see the spec). Each is a GitHub issue on `magicianmike/dad-a-base` and a PR, managed with `gh`. Everything there is public: ask the author before pushing, opening issues or PRs, or commenting.
 - Each milestone ends with a journal entry in `docs/journal/NNNN-name.md`: its decisions, the alternatives considered, its tests, screenshots and the VoiceOver pass.
 - Decisions that are hard to reverse go in `docs/adr/`. Domain terms are in `GLOSSARY.md`; use them as written there.
 - Deploys use the Vercel CLI from the author's machine (`vercel`, `vercel --prod`). There's no Git integration.

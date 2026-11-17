@@ -149,7 +149,7 @@ The author does a VoiceOver pass on a Mac and an iPhone for each milestone, reco
 
 ## Case Study
 
-`/case-study` is an MDX page with live components in fixed states, inline SVG diagrams, and an Open Graph image made at build time ([ADR 0003](adr/0003-case-study-in-app.md)). It gives more weight to engineering, while still showing product ownership and UX skill. It doesn't link to the code: the repo is internal to onX.
+`/case-study` is an MDX page with live components in fixed states, inline SVG diagrams, and an Open Graph image made at build time ([ADR 0003](adr/0003-case-study-in-app.md)). It gives more weight to engineering, while still showing product ownership and UX skill. It doesn't link to the code.
 
 1. **In 60 seconds**
 2. **Engineering**
@@ -172,9 +172,9 @@ It stands apart from the paper: a slim header with the masthead and a link back 
 ## Process
 
 - [`CLAUDE.md`](../CLAUDE.md), [`GLOSSARY.md`](../GLOSSARY.md), ADRs in `docs/adr/`, and a journal entry per milestone in `docs/journal/`, with screenshots and a VoiceOver pass.
-- Work happens as issues and PRs on `onX-Hiring/interview-project-mike-mccormick`. The hiring team can see everything there, so it's part of the submission.
+- Work happens as issues and PRs on `magicianmike/dad-a-base`. They're public, so the reasoning behind each change sits beside the code.
 - GitHub Actions runs CI: lint, typecheck, Vitest with coverage, the build, Storybook tests and Playwright.
-- Deploys run from the author's machine with the Vercel CLI (`vercel` for a preview, `vercel --prod` for production), because the org repo can't have Vercel's GitHub app installed.
+- Deploys run from the author's machine with the Vercel CLI (`vercel` for a preview, `vercel --prod` for production), because the repo isn't connected to Vercel's GitHub app.
 - The README is written for reviewers.
 
 ## Milestones
