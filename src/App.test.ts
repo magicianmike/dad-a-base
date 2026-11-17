@@ -8,9 +8,17 @@ import { jokes } from '@/mocks/fixtures'
 import { server } from '@/mocks/node'
 import App from './App.vue'
 import { focusOnNavigation } from './focusOnNavigation'
-import { router } from './router'
+import { router, routes } from './router'
 
 focusOnNavigation(router)
+
+// Every route's code loads on first visit, and in Vitest that first load compiles the view too, which under a full,
+// parallel run can outlast a query's 1-second wait. Loading them all once first keeps that out of every test.
+beforeAll(async () => {
+  // Each route's component is a lazy import, `() => import(...)`.
+  const loads = routes.map(({ component }) => (component as () => Promise<unknown>)())
+  await Promise.all(loads)
+})
 
 async function renderApp(path: string) {
   await router.push(path)

@@ -102,6 +102,6 @@ The author tried a preview deploy on an iPhone, and found it clunky.
 
 The author also held the button with a real finger on an iPhone, on a preview deploy, after the long-press changes: the one path the tests can't drive. It works.
 
-## Open
+## Deployed
 
-- **Not deployed.** Production stays where it is until this is merged and deployed.
+In production at <https://the-dad-a-base.vercel.app> since 2026-11-16, from `master` at `5701402`, with the Sections menu before it (journal 0010) and the refactor after it (journal 0012).

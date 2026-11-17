@@ -56,6 +56,10 @@ New:
 
 **Status: not needed.** Nothing a screen reader meets changed: the same names, roles, descriptions, announcements and focus moves, which the unchanged tests check.
 
-## Open
+## After merging
 
-- **Not deployed.** Production stays where it is until this is merged and deployed.
+- **A flaky App test, fixed.** "Goes from home to a random joke" failed twice in full runs, once before this refactor and once just before deploying, and passed on its own each time. It's the first test in `App.test.ts`, so it paid for loading each route's code for the first time, and in Vitest that load compiles the view, which under a full parallel run can outlast a query's 1-second wait. The file now loads every route once in `beforeAll`, so no test is timed on a cold compile, rather than raising the wait. Three full runs in a row passed, 381 of 381.
+
+## Deployed
+
+In production at <https://the-dad-a-base.vercel.app> since 2026-11-16, from `master` at `5701402`, with the Sections menu (journal 0010) and Groans (journal 0011).

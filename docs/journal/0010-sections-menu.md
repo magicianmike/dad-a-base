@@ -57,6 +57,6 @@ The first version was a disclosure: a "Sections" button under the dateline that 
 3. Choosing a section closes the drawer and moves VoiceOver to the new page's headline.
 4. Close returns VoiceOver to the Sections button.
 
-## Open
+## Deployed
 
-- **Not deployed.** Production stays where it is until this is merged and deployed.
+In production at <https://the-dad-a-base.vercel.app> since 2026-11-16, from `master` at `5701402`, with Groans (journal 0011) and the refactor after it (journal 0012).
