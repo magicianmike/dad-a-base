@@ -148,27 +148,35 @@ test.describe('the Sections menu', () => {
     })
 
     for (const colorScheme of ['light', 'dark'] as const) {
-      test(`open, it has no axe violations, ${colorScheme}`, async ({ page }) => {
-        await page.emulateMedia({ colorScheme })
-        await page.goto('/')
-        await menu(page).click()
-        await settled(page)
-        const { violations } = await new AxeBuilder({ page }).analyze()
-        expect(violations).toEqual([])
-      })
+      test(
+        `open, it has no axe violations, ${colorScheme}`,
+        { tag: '@axe-phone' },
+        async ({ page }) => {
+          await page.emulateMedia({ colorScheme })
+          await page.goto('/')
+          await menu(page).click()
+          await settled(page)
+          const { violations } = await new AxeBuilder({ page }).analyze()
+          expect(violations).toEqual([])
+        },
+      )
     }
 
-    test('open at 320px, every link is a full touch target', async ({ page }) => {
-      await page.setViewportSize({ width: 320, height: 640 })
-      await page.goto('/')
-      await menu(page).click()
-      for (const target of [menu(page), ...(await nav(page).getByRole('link').all())]) {
-        const box = (await target.boundingBox())!
-        expect(box.height).toBeGreaterThanOrEqual(44)
-      }
-      const scroll = await page.evaluate(() => document.documentElement.scrollWidth)
-      expect(scroll).toBeLessThanOrEqual(320)
-    })
+    test(
+      'open at 320px, every link is a full touch target',
+      { tag: '@reflow' },
+      async ({ page }) => {
+        await page.setViewportSize({ width: 320, height: 640 })
+        await page.goto('/')
+        await menu(page).click()
+        for (const target of [menu(page), ...(await nav(page).getByRole('link').all())]) {
+          const box = (await target.boundingBox())!
+          expect(box.height).toBeGreaterThanOrEqual(44)
+        }
+        const scroll = await page.evaluate(() => document.documentElement.scrollWidth)
+        expect(scroll).toBeLessThanOrEqual(320)
+      },
+    )
   })
 })
 
@@ -228,7 +236,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
     test.use({ colorScheme })
 
     for (const code of ['404', '403', '429', '500', 'offline', 'unknown']) {
-      test(`/error/${code} has no axe violations`, async ({ page }) => {
+      test(`/error/${code} has no axe violations`, { tag: '@axe' }, async ({ page }) => {
         await page.goto(`/error/${code}`)
         await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
         await settled(page)

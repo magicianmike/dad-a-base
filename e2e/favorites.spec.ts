@@ -106,19 +106,23 @@ test('Favorites search as you type, and page ten at a time', async ({ page }) =>
 })
 
 for (const colorScheme of ['light', 'dark'] as const) {
-  test(`/favorites with Favorites has no axe violations, ${colorScheme}`, async ({ page }) => {
-    await page.emulateMedia({ colorScheme })
-    await seed(page, [golf, { id: joke.id, joke: joke.text }])
-    await page.goto('/favorites')
-    await expect(page.getByRole('heading', { level: 2 })).toHaveText('2 saved jokes')
-    await settled(page)
-    const { violations } = await new AxeBuilder({ page }).analyze()
-    expect(violations).toEqual([])
-  })
+  test(
+    `/favorites with Favorites has no axe violations, ${colorScheme}`,
+    { tag: '@axe' },
+    async ({ page }) => {
+      await page.emulateMedia({ colorScheme })
+      await seed(page, [golf, { id: joke.id, joke: joke.text }])
+      await page.goto('/favorites')
+      await expect(page.getByRole('heading', { level: 2 })).toHaveText('2 saved jokes')
+      await settled(page)
+      const { violations } = await new AxeBuilder({ page }).analyze()
+      expect(violations).toEqual([])
+    },
+  )
 }
 
 for (const path of ['/', `/jokes/${golf.id}`, '/favorites', '/search?q=golf']) {
-  test(`${path} with a Favorite's heart reflows at 320px`, async ({ page }) => {
+  test(`${path} with a Favorite's heart reflows at 320px`, { tag: '@reflow' }, async ({ page }) => {
     await seed(page, [golf])
     await page.setViewportSize({ width: 320, height: 640 })
     await page.goto(path)

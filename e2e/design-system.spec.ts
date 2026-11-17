@@ -23,7 +23,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
     test.use({ colorScheme })
 
     for (const path of routes) {
-      test(`${path} has no axe violations`, async ({ page }) => {
+      test(`${path} has no axe violations`, { tag: '@axe' }, async ({ page }) => {
         await page.goto(path)
         await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
         await settled(page)
@@ -59,13 +59,17 @@ test('/design-system shows the tokens in both themes, whatever the page’s them
 })
 
 for (const path of routes) {
-  test(`${path} reflows at 320px with no sideways scrolling`, async ({ page }) => {
-    await page.setViewportSize({ width: 320, height: 640 })
-    await page.goto(path)
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)
-    expect(overflow).toBeLessThanOrEqual(0)
-  })
+  test(
+    `${path} reflows at 320px with no sideways scrolling`,
+    { tag: '@reflow' },
+    async ({ page }) => {
+      await page.setViewportSize({ width: 320, height: 640 })
+      await page.goto(path)
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)
+      expect(overflow).toBeLessThanOrEqual(0)
+    },
+  )
 }
 
 test('the masthead names the paper and goes home', async ({ page }) => {

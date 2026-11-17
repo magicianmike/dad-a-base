@@ -77,14 +77,18 @@ test('a new page fades up as it arrives, except with reduced motion', async ({ p
 })
 
 for (const colorScheme of ['light', 'dark'] as const) {
-  test(`the shortcuts list has no axe violations, ${colorScheme}`, async ({ page }) => {
-    await page.emulateMedia({ colorScheme })
-    await page.goto('/random')
-    await expect(page.getByRole('blockquote')).toHaveText(cheetah)
-    await page.keyboard.press('?')
-    await expect(page.getByRole('dialog', { name: 'Keyboard shortcuts' })).toBeVisible()
-    await settled(page)
-    const { violations } = await new AxeBuilder({ page }).analyze()
-    expect(violations).toEqual([])
-  })
+  test(
+    `the shortcuts list has no axe violations, ${colorScheme}`,
+    { tag: '@axe' },
+    async ({ page }) => {
+      await page.emulateMedia({ colorScheme })
+      await page.goto('/random')
+      await expect(page.getByRole('blockquote')).toHaveText(cheetah)
+      await page.keyboard.press('?')
+      await expect(page.getByRole('dialog', { name: 'Keyboard shortcuts' })).toBeVisible()
+      await settled(page)
+      const { violations } = await new AxeBuilder({ page }).analyze()
+      expect(violations).toEqual([])
+    },
+  )
 }

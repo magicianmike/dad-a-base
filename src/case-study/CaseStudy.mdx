@@ -90,7 +90,7 @@ One bug taught me how custom properties really work. A `var()` resolves where th
 
 - **Vitest** covers the logic and the views: stores, schemas, cache policies, the Pagination window, the error mapping, composables, and each page rendered as the visitor sees it.
 - **Storybook** has stories for every component, each with a play test run in Chromium, and axe failing a story on any violation.
-- **Playwright** runs every route end to end on desktop Chromium, mobile WebKit and mobile Chrome, with axe in both themes and reflow at 320px.
+- **Playwright** runs every route end to end on desktop Chromium, mobile WebKit and mobile Chrome, with axe in both themes and reflow at 320px. The checks that don't depend on the browser run once, and each browser is its own CI job, so CI takes a few minutes, not ten.
 - **MSW** answers the API in all three, from one set of handlers. One smoke test calls the real API, in its own CI job that can't block a merge, because the API isn't mine.
 
 The tests earned their keep. They caught a cache write that silently stored empty Jokes, a WebKit race in how tests saved data before loading a page, axe measuring contrast while a page was still fading in, and a Storybook story that passed alone but failed after another story left data behind.

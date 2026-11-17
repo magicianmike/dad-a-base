@@ -17,16 +17,48 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
-      - run: npx playwright install --with-deps
+      # Storybook's component tests run in Chromium, the only browser this job needs.
+      - uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-chromium-${{ hashFiles('package-lock.json') }}
+      - run: npx playwright install --with-deps chromium
       # Unit tests and every Storybook story (as a component test in Chromium), with one coverage gate over both.
       - run: npm run test:coverage
       # The app, and Storybook under /storybook, as Vercel builds them.
       - run: npm run build:site
-      - run: npm run test:e2e
+
+  # End to end, one job per browser project, side by side. Each builds and previews the app itself.
+  e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project: desktop-chromium
+            browser: chromium
+          - project: mobile-webkit
+            browser: webkit
+          - project: mobile-chrome
+            browser: chromium
+    name: e2e (${{ matrix.project }})
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ matrix.browser }}-${{ hashFiles('package-lock.json') }}
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npx playwright test --project=${{ matrix.project }}
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.project }}
           path: playwright-report/
 
   # The one check against the real API. It can't block a merge: the API isn't ours.

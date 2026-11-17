@@ -69,7 +69,7 @@ e2e/              # Playwright
 
 - **Vitest** for the logic and for each page as the visitor sees it, with the API answered by MSW.
 - **Storybook** interaction tests for every component, run in Chromium, with axe failing a story on any violation.
-- **Playwright** for every route, on desktop Chromium, mobile WebKit and mobile Chrome, with axe in both themes and reflow at 320px.
+- **Playwright** for every route, on desktop Chromium, mobile WebKit and mobile Chrome, with axe in both themes and reflow at 320px. Axe and reflow, which don't depend on the browser, run once rather than three times (`@axe`, `@axe-phone` and `@reflow` tags, filtered per project in `playwright.config.ts`).
 - **One smoke test** against the real API, in its own CI job that can't block a merge.
 
 CI runs all of it on every pull request, with a 90% coverage gate.

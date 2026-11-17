@@ -143,7 +143,7 @@ The author does a VoiceOver pass on a Mac and an iPhone for each milestone, reco
 
 - **Vitest:** the stores, the Zod schemas, the Apollo cache policies, the pagination window, the error mapping and composables. CI enforces 90% of lines and branches.
 - **Storybook:** every component has stories, and every story has a `play` function, run as a component test through `@storybook/addon-vitest` in Chromium.
-- **Playwright:** every route end to end, on desktop Chromium, mobile WebKit and mobile Chrome, plus the accessibility checks.
+- **Playwright:** every route end to end, on desktop Chromium, mobile WebKit and mobile Chrome, plus the accessibility checks. Checks that don't depend on the browser run once: axe on desktop Chromium (and on mobile Chrome for what only a phone shows), and 320px reflow on desktop Chromium and WebKit ([journal 0013](journal/0013-faster-ci.md)). In CI, each browser is its own job, side by side.
 - **MSW** mocks the API in Storybook, Vitest and Playwright. One smoke test hits the real API.
 - Storybook is built and served at `/storybook`, marked `noindex`.
 

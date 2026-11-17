@@ -198,17 +198,21 @@ test.describe('with a mouse', () => {
 })
 
 for (const colorScheme of ['light', 'dark'] as const) {
-  test(`mid-hold and after, no axe violations, ${colorScheme}`, async ({ page }) => {
-    await page.emulateMedia({ colorScheme, reducedMotion: 'reduce' })
-    await page.goto(`/jokes/${cheetah}`)
-    const button = groanButton(page)
-    await hold(page, button, 1500, { letGo: false })
-    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
-    await page.mouse.up()
-    await button.dispatchEvent('pointerup', { button: 0 })
-    await settled(page)
-    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
-  })
+  test(
+    `mid-hold and after, no axe violations, ${colorScheme}`,
+    { tag: '@axe' },
+    async ({ page }) => {
+      await page.emulateMedia({ colorScheme, reducedMotion: 'reduce' })
+      await page.goto(`/jokes/${cheetah}`)
+      const button = groanButton(page)
+      await hold(page, button, 1500, { letGo: false })
+      expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+      await page.mouse.up()
+      await button.dispatchEvent('pointerup', { button: 0 })
+      await settled(page)
+      expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+    },
+  )
 }
 
 test.describe('the Groan Leaderboard', () => {
@@ -285,7 +289,7 @@ test.describe('the Groan Leaderboard', () => {
   })
 
   for (const colorScheme of ['light', 'dark'] as const) {
-    test(`with Groans, no axe violations, ${colorScheme}`, async ({ page }) => {
+    test(`with Groans, no axe violations, ${colorScheme}`, { tag: '@axe' }, async ({ page }) => {
       await page.emulateMedia({ colorScheme })
       await withGroans(page)
       await page.goto('/groans')
@@ -295,14 +299,20 @@ test.describe('the Groan Leaderboard', () => {
     })
   }
 
-  test('with Groans, it reflows at 320px with full touch targets', async ({ page }) => {
-    await page.setViewportSize({ width: 320, height: 640 })
-    await withGroans(page)
-    await page.goto('/groans')
-    await expect(page.getByRole('heading', { level: 2 })).toHaveText('2 groaned jokes')
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
-    for (const target of await page.getByRole('button', { name: 'Remove from groans' }).all()) {
-      expect((await target.boundingBox())!.height).toBeGreaterThanOrEqual(44)
-    }
-  })
+  test(
+    'with Groans, it reflows at 320px with full touch targets',
+    { tag: '@reflow' },
+    async ({ page }) => {
+      await page.setViewportSize({ width: 320, height: 640 })
+      await withGroans(page)
+      await page.goto('/groans')
+      await expect(page.getByRole('heading', { level: 2 })).toHaveText('2 groaned jokes')
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+        320,
+      )
+      for (const target of await page.getByRole('button', { name: 'Remove from groans' }).all()) {
+        expect((await target.boundingBox())!.height).toBeGreaterThanOrEqual(44)
+      }
+    },
+  )
 })
