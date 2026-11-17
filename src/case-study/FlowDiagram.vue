@@ -115,7 +115,7 @@ const height = computed(() => {
 .flow {
   display: block;
   width: 100%;
-  max-width: 26rem;
+  max-width: var(--flow-diagram-width);
   height: auto;
   font-family: var(--font-body);
 }

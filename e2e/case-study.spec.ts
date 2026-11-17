@@ -96,3 +96,21 @@ test('the build serves the Case Study with Open Graph tags, and their image', as
     '<meta property="og:image" content="https://the-dad-a-base.vercel.app/og/case-study.png" />',
   )
 })
+
+test('the diagrams keep their own width on a wide screen, narrower than the text', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, 'On a phone the diagrams fill the column')
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/case-study')
+  const diagrams = page.getByRole('img', { name: /^(How a Search|One colour)/ })
+  await expect(diagrams).toHaveCount(2)
+  const text = (await page.locator('.prose > p').first().boundingBox())!
+  for (const diagram of await diagrams.all()) {
+    const box = (await diagram.boundingBox())!
+    // --flow-diagram-width, 26rem.
+    expect(box.width).toBeLessThanOrEqual(26 * 16 + 1)
+    expect(box.width).toBeLessThan(text.width)
+  }
+})

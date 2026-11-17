@@ -270,6 +270,11 @@ onScopeDispose(() => {
   max-width: var(--measure-reading);
 }
 
+/* A diagram keeps its own width, narrower than the text, rather than stretching to the measure. */
+.prose > :deep(.flow) {
+  max-width: var(--flow-diagram-width);
+}
+
 /* A live component gets a little more room than the text, so it lays out as it does in the app. */
 .prose > :deep(.live) {
   max-width: calc(var(--measure-reading) + 2 * var(--space-5));

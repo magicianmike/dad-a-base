@@ -65,6 +65,9 @@
     var(--color-groan-end)
   );
 
+  /* A Case Study diagram: a column of steps, as wide as reads comfortably, even on a wide screen */
+  --flow-diagram-width: 26rem;
+
   /* The dad */
   --dad-skin: var(--color-skin);
   --dad-hair: var(--color-hair);
