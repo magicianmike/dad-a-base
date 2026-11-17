@@ -1,6 +1,6 @@
 # Dad-a-base
 
-A dad-joke site on the icanhazdadjoke REST API, with a Case Study explaining how it was built. The spec is `docs/spec.md`, and the original brief is `docs/brief.md`.
+A dad-joke site on the icanhazdadjoke REST API, with a Case Study explaining how it was built. The spec is `docs/spec.md`.
 
 ## Working here
 

@@ -5,7 +5,7 @@ Favorites, Groans, Recent searches, the theme and the shortcuts switch are saved
 ## Considered Options
 
 - **A shared Groan Leaderboard** behind a Vercel function and a Marketplace store, such as Upstash Redis: the whole internet's worst jokes. But with no accounts it would be a board of whoever held longest, or scripted the longest hold, and it needs abuse handling, a backend, its deploys and its tests, for a feature that's there for fun. The author ruled it out when Groans were designed (journal 0011).
-- **Accounts,** to sync Favorites and Groans across devices: the most useful, and far beyond a take-home's scope, with sign-in, storage and privacy to own.
+- **Accounts,** to sync Favorites and Groans across devices: the most useful, and far beyond a portfolio piece's scope, with sign-in, storage and privacy to own.
 - **IndexedDB,** for room to grow: more than a few hundred small records need, with an async API every store would have to wait on.
 - **`localStorage`, through one helper (chosen).**
 

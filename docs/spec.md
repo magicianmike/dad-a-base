@@ -1,10 +1,10 @@
 # Dad-a-base: spec
 
-Dad-a-base is a quirky, comedic dad-joke site built on the [icanhazdadjoke](https://icanhazdadjoke.com/api) REST API, for the brief in [`brief.md`](brief.md). It's a take-home interview project. Beyond the brief, it aims to show depth in the Vue ecosystem, product ownership, and UX and design craft. A Case Study inside the app explains how and why it was built.
+Dad-a-base is a quirky, comedic dad-joke site built on the [icanhazdadjoke](https://icanhazdadjoke.com/api) REST API. It's a portfolio project, and it takes a different approach from the rest of the portfolio on purpose: it aims to show depth in the Vue ecosystem, Apollo over a REST API, product ownership, and UX and design craft. A Case Study inside the app explains how and why it was built.
 
-## Brief, and what it becomes
+## The basics, and what they become
 
-| Brief                                          | Dad-a-base                                                                    |
+| The basics                                     | Dad-a-base                                                                    |
 | ---------------------------------------------- | ----------------------------------------------------------------------------- |
 | Search for a joke                              | `/search`: search as you type, with the query and page in the URL             |
 | Pagination, nice to have                       | Numbered pagination with an 11-number window                                  |
@@ -160,7 +160,7 @@ The author does a VoiceOver pass on a Mac and an iPhone for each milestone, reco
    - The testing approach
    - Building with Claude
 3. **Product and UX**
-   - Owning the brief
+   - Owning the basics
    - Designing the flows
    - Look, voice and accessibility
 4. **What I rejected:** the upstream GraphQL endpoint, a backend for the frontend, infinite scroll, component libraries and the Apollo 4 prereleases.
@@ -175,7 +175,7 @@ It stands apart from the paper: a slim header with the masthead and a link back 
 - Work happens as issues and PRs on `onX-Hiring/interview-project-mike-mccormick`. The hiring team can see everything there, so it's part of the submission.
 - GitHub Actions runs CI: lint, typecheck, Vitest with coverage, the build, Storybook tests and Playwright.
 - Deploys run from the author's machine with the Vercel CLI (`vercel` for a preview, `vercel --prod` for production), because the org repo can't have Vercel's GitHub app installed.
-- The README is written for reviewers. The original brief is in [`brief.md`](brief.md).
+- The README is written for reviewers.
 
 ## Milestones
 

@@ -9,7 +9,7 @@ import PaginationStates from './PaginationStates.vue'
 
 ## In 60 seconds
 
-The brief asked for a site on the icanhazdadjoke API: search, a random joke, a page per joke with a copy button, a header and footer, and a tidy layout. I built that as **The Dad-a-base**, a dad-joke paper styled as a newspaper's Sunday funnies, and then took it further: Favorites, Share, keyboard shortcuts, a design system, an Error state for every way the API can fail, and a press-and-hold Groan button with its own leaderboard.
+I wanted a portfolio piece that took a different approach from my other work, on a small, familiar problem: a site on the icanhazdadjoke API with search, a random joke, a page per joke with a copy button, a header and footer, and a tidy layout. I built that as **The Dad-a-base**, a dad-joke paper styled as a newspaper's Sunday funnies, and then took it further: Favorites, Share, keyboard shortcuts, a design system, an Error state for every way the API can fail, and a press-and-hold Groan button with its own leaderboard.
 
 - **Stack:** Vue 3 with `<script setup>` and TypeScript, Vite, vue-router and Pinia. All API data goes through Apollo Client, talking to the REST API through `apollo-link-rest`, with Zod checking every response.
 - **Quality:** every route runs end to end on three browsers, with axe in both themes and reflow at 320px. Unit and component tests cover over 95% of statements, against a 90% gate.
@@ -21,11 +21,11 @@ The boxes marked **Live** on this page are the app's own components, given fixed
 
 ### The stack, and why
 
-Vue 3, TypeScript and Vite, with plain CSS. The brief judges how the components are laid out, so I wrote the layout myself rather than reaching for a component library. Nuxt would have brought server rendering this app doesn't need, and hidden the routing and data wiring I wanted to show. Tailwind's utility classes can't express the semantic and domain tokens the design system is built on.
+Vue 3, TypeScript and Vite, with plain CSS. How the components are laid out is part of what I wanted this piece to show, so I wrote the layout myself rather than reaching for a component library. Nuxt would have brought server rendering this app doesn't need, and hidden the routing and data wiring I wanted to show. Tailwind's utility classes can't express the semantic and domain tokens the design system is built on.
 
 ### Apollo over REST
 
-The role asks for Apollo and GraphQL, but icanhazdadjoke's own GraphQL endpoint can't build this app. Its schema has one field, which returns one random match for a search, so there's no search list and no pagination. The REST API has everything. So every request is a GraphQL document with an `@rest` directive, which `apollo-link-rest` turns into a REST call. There's no GraphQL server to run.
+I wanted this piece to show a different data layer from the rest of my portfolio, Apollo and GraphQL, but icanhazdadjoke's own GraphQL endpoint can't build this app. Its schema has one field, which returns one random match for a search, so there's no search list and no pagination. The REST API has everything. So every request is a GraphQL document with an `@rest` directive, which `apollo-link-rest` turns into a REST call. There's no GraphQL server to run.
 
 <FlowDiagram
   title="How a Search reaches the API and comes back"
@@ -110,14 +110,14 @@ I built this with Claude Code, Anthropic's coding agent, and I'd rather show how
 
 ## Product and UX
 
-### Owning the brief
+### Owning the basics
 
-I treated each line of the brief as a goal rather than a checklist.
+I treated each of the basics as a goal rather than a checklist.
 
 <table>
   <thead>
     <tr>
-      <th scope="col">The brief</th>
+      <th scope="col">The basics</th>
       <th scope="col">What it became</th>
     </tr>
   </thead>
@@ -221,10 +221,10 @@ Accessibility is built in rather than checked at the end, and the details change
 
 ## What I rejected
 
-- **The upstream GraphQL endpoint.** It has no search list and no pagination, so it can't do what the brief asks.
+- **The upstream GraphQL endpoint.** It has no search list and no pagination, so it can't do what the site needs.
 - **A backend for the frontend.** A small GraphQL server could have bridged the REST API into a proper paginated schema and shown schema design, but it would have added a server, its deploys and its tests, for a gain a visitor would never notice.
 - **A shared Groan Leaderboard.** The whole internet's worst jokes would be fun, but with no accounts it would rank whoever held longest, or scripted the longest hold, and it would need a backend to run and police. So the Visitor's data stays in their browser, a decision with its own architecture decision record.
 - **Infinite scroll.** Pages you can link to, Back that works, a footer you can reach, and a screen reader that knows where it is all matter more than saving a click.
-- **Component libraries.** The brief asks how I lay out components, so a library would have answered the question for me.
+- **Component libraries.** How I lay out components is part of what this piece shows, so a library would have answered the question for me.
 - **Apollo 4's prereleases.** They're current, but a release candidate and a beta are a risk I didn't need to take with a deadline.
 - **A "reveal the punchline" interaction.** The comic-zine prototype split each Joke into a setup panel and a punchline panel, and I planned it for the end. I dropped it: it adds an interaction to learn and code to maintain, and many Jokes have no natural break, so any rule for finding one would guess wrong.

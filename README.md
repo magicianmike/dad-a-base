@@ -1,6 +1,6 @@
 # The Dad-a-base
 
-A dad-joke site on the [icanhazdadjoke](https://icanhazdadjoke.com/api) API, styled as a newspaper's Sunday funnies. Built with Vue 3, TypeScript, Apollo Client and Pinia, for [this brief](docs/brief.md).
+A dad-joke site on the [icanhazdadjoke](https://icanhazdadjoke.com/api) API, styled as a newspaper's Sunday funnies. Built with Vue 3, TypeScript, Apollo Client and Pinia, as a portfolio piece that takes a different approach from my other work.
 
 **Live at <https://the-dad-a-base.vercel.app>**
 
@@ -12,7 +12,7 @@ A dad-joke site on the [icanhazdadjoke](https://icanhazdadjoke.com/api) API, sty
 
 ## What it does
 
-| The brief                     | The Dad-a-base                                                                                                           |
+| The basics                    | The Dad-a-base                                                                                                           |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | Search for a joke             | Search as you type, with the term and page in the address, and recent and suggested searches                             |
 | Pagination would be nice      | A Pagination window that stays 11 pages wide, with pages you can link to                                                 |
@@ -43,7 +43,7 @@ npm run storybook    # Storybook at http://localhost:6006
 
 ## How it's built
 
-- **Vue 3** with `<script setup>` and TypeScript, built with Vite. No component library: the layout is the point of the brief ([ADR 0001](docs/adr/0001-vue-stack.md)).
+- **Vue 3** with `<script setup>` and TypeScript, built with Vite. No component library: hand-written layout is part of what this piece shows ([ADR 0001](docs/adr/0001-vue-stack.md)).
 - **Apollo Client over the REST API,** through `apollo-link-rest`, since icanhazdadjoke's own GraphQL endpoint has no search list or pagination ([ADR 0002](docs/adr/0002-apollo-over-rest.md)). Each Joke is cached once, as `Joke:id`.
 - **Zod** checks every response, and is the single source of truth for the API's types.
 - **State lives in one of three places:** what you can link to in the URL, what the API said in Apollo's cache, and what the visitor chose in Pinia. What the visitor saves stays in their browser, through one helper, `useStoredRef`, that checks it with Zod when it's read back ([ADR 0005](docs/adr/0005-visitor-data-in-the-browser.md)).
