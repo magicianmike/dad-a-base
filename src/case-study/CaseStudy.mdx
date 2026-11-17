@@ -13,7 +13,7 @@ The brief asked for a site on the icanhazdadjoke API: search, a random joke, a p
 
 - **Stack:** Vue 3 with `<script setup>` and TypeScript, Vite, vue-router and Pinia. All API data goes through Apollo Client, talking to the REST API through `apollo-link-rest`, with Zod checking every response.
 - **Quality:** every route runs end to end on three browsers, with axe in both themes and reflow at 320px. Unit and component tests cover over 95% of statements, against a 90% gate.
-- **Process:** nine milestones, each with a GitHub issue, a pull request and a journal entry with screenshots. From the app shell on, each also had a VoiceOver pass that I ran on a Mac and an iPhone.
+- **Process:** nine milestones, then five follow-ups (a mobile pass, a phone menu, the Groan button, a refactor and faster CI), each with a GitHub issue, a pull request and a journal entry with screenshots. From the app shell on, each that changed what a screen reader meets also had a VoiceOver pass that I ran on a Mac and an iPhone.
 
 The boxes marked **Live** on this page are the app's own components, given fixed props, not screenshots of them.
 
@@ -54,7 +54,7 @@ Every piece of state lives in exactly one place, chosen by one question each:
 
 - **Can someone link to it? Then it's in the URL:** the search term and page, a Joke's id, and the Favorites filter. Reload, Back and sharing all just work.
 - **Did the API say it? Then it's in Apollo's cache:** Jokes and pages of search results, normalised so one Joke is one entry.
-- **Did the visitor choose it? Then it's in Pinia:** Favorites, recent searches, the theme, the shortcuts switch and toasts. What should outlive a visit is saved in the browser and checked with Zod when it's read back, so bad data starts empty rather than breaking the page.
+- **Did the visitor choose it? Then it's in Pinia:** Favorites, Groans, recent searches, the theme, the shortcuts switch and toasts. What should outlive a visit is saved in this browser, and nowhere else, through one helper, `useStoredRef`: it checks what it reads back with Zod, so bad data falls back rather than breaking the page, and keeps open tabs in step.
 
 ### A design system built from tokens
 
@@ -90,10 +90,10 @@ One bug taught me how custom properties really work. A `var()` resolves where th
 
 - **Vitest** covers the logic and the views: stores, schemas, cache policies, the Pagination window, the error mapping, composables, and each page rendered as the visitor sees it.
 - **Storybook** has stories for every component, each with a play test run in Chromium, and axe failing a story on any violation.
-- **Playwright** runs every route end to end on desktop Chromium, mobile WebKit and mobile Chrome, with axe in both themes and reflow at 320px. The checks that don't depend on the browser run once, and each browser is its own CI job, so CI takes a few minutes, not ten.
+- **Playwright** runs every route end to end on desktop Chromium, mobile WebKit and mobile Chrome, with axe in both themes and reflow at 320px. The checks that don't depend on the browser run once, and each browser is its own CI job, so CI takes about three and a half minutes, down from nine.
 - **MSW** answers the API in all three, from one set of handlers. One smoke test calls the real API, in its own CI job that can't block a merge, because the API isn't mine.
 
-The tests earned their keep. They caught a cache write that silently stored empty Jokes, a WebKit race in how tests saved data before loading a page, axe measuring contrast while a page was still fading in, and a Storybook story that passed alone but failed after another story left data behind.
+The tests earned their keep. They caught a cache write that silently stored empty Jokes, a WebKit race in how tests saved data before loading a page, axe measuring contrast while a page was still fading in, a Storybook story that passed alone but failed after another story left data behind, a hidden tooltip that made a phone scroll sideways, and a button whose name didn't match its label.
 
 ### Building with Claude
 
@@ -103,6 +103,9 @@ I built this with Claude Code, Anthropic's coding agent, and I'd rather show how
 - **Claude built each milestone to the spec,** with its tests, and recorded every decision it made by default in the journal, under "Defaults, not asked", so I could see which choices were mine.
 - **I reviewed each milestone running,** locally or on a preview deploy, and asked for changes. Milestone 5 alone took more than a dozen changes: the Remove button pinned over the card, the broken-heart icon, the falling animation, search and pages on Favorites, and a heart on every Favorite.
 - **Some of my requests had accessibility catches, and Claude flagged them** with the accessible version. "Faved" meant dropping the toggle-button role. A centred tooltip would have run off a phone's screen, so it stays right-aligned there. A disabled button needed to keep its focus.
+- **Bigger features started with a grilling.** Before any code for the Groan button, Claude asked me its design one round of questions at a time, each with a recommended answer, until nothing was left assumed: whose leaderboard it is, how a hold becomes a score, what a keyboard does, what happens on a scroll.
+- **I tested on my own phone.** Claude deployed previews I could open on an iPhone. The first Groan button there was clunky: a tap started a hold that only a second tap ended. The fix, a long press only and a lift heard anywhere on the page, came from that, since no test can drive a real finger.
+- **Once it was done, I asked what to change.** Claude reviewed the architecture and found what Groans had copied from Favorites, which became a refactor with no change in behaviour. I asked whether we were testing too much: not too much, it said, but some checks ran on three browsers for nothing, and the browsers ran one after another. CI went from nine minutes to three and a half without dropping a check.
 - **I kept the outward-facing steps.** Claude asked before every push, issue and pull request, and I ran every VoiceOver pass myself.
 
 ## Product and UX
@@ -139,7 +142,7 @@ I treated each line of the brief as a goal rather than a checklist.
     </tr>
     <tr>
       <td>A joke's own page, with copy</td>
-      <td>Copy, with a fallback when the clipboard is blocked, plus Share and Favorite</td>
+      <td>Copy, with a fallback when the clipboard is blocked, plus Share, Favorite and Groan</td>
     </tr>
     <tr>
       <td>Header, footer and navigation</td>
@@ -166,6 +169,8 @@ The Pagination window keeps 11 numbers in view and stays full at both ends, so t
 
 <ErrorStates />
 
+**On a phone,** the sections move into a drawer from the left, behind a hamburger at the top left. It's a native modal dialog, so focus stays inside and the page behind is inert, and choosing a section, Close, Escape or a tap beside it closes it, with focus back where it was.
+
 **Favorites** are kept as whole Jokes in the browser, so the Favorites page needs no API calls. They're written into Apollo's cache too, so opening one is instant. They can be searched and paged like Search. Removing one plays a short "falls off the fridge" animation and moves focus to the next Joke's button, so a keyboard user doesn't lose their place.
 
 ### A moment of delight
@@ -184,7 +189,7 @@ The last feature is there for fun. The **Groan button** lets you say how bad a J
 - **It reverses an earlier call, and says so.** I'd left ratings out because the API has none. A Groan isn't a rating made up for the Joke: it's your own reaction, saved in your browser. So the board is yours alone. A shared one, with no accounts behind it, would be a leaderboard of whoever held longest.
 - **A hold has to work without a mouse.** Space and Enter hold it as a pointer does, a held key's repeats are ignored, and Escape cancels. On a phone, only a long press groans: a tap shows how it works instead, and a scroll that takes over cancels it.
 - **The name follows the label.** axe caught the first version, where the name stayed "Groan" while the button read "Ughhh" (WCAG 2.5.3, Label in Name). Now it's "Groan: Ughhh", so the words you see are in the name, and speech input can still say "Groan".
-- **The button grows with its "Ughhh",** so it can wrap onto the next line mid-hold. It holds on to the pointer while it's held, and only sliding more than a touch target away cancels, not the button moving under your finger.
+- **The button grows with its "Ughhh", but never moves.** It keeps room for its widest label beside the other buttons, and wraps to its own line only when that room isn't there. It holds on to the pointer while it's held, and only sliding more than a touch target away cancels.
 - **The gradient was chosen by the numbers.** The label stays the text colour over all of it, and a test checks it at 4.5:1 against every point along the gradient, in both themes.
 - **Motion is optional here too.** Under reduced motion there's no nudge on hover, no shake and no flying burst, but the fill and the "Ughhh" still show the hold.
 
@@ -218,6 +223,7 @@ Accessibility is built in rather than checked at the end, and the details change
 
 - **The upstream GraphQL endpoint.** It has no search list and no pagination, so it can't do what the brief asks.
 - **A backend for the frontend.** A small GraphQL server could have bridged the REST API into a proper paginated schema and shown schema design, but it would have added a server, its deploys and its tests, for a gain a visitor would never notice.
+- **A shared Groan Leaderboard.** The whole internet's worst jokes would be fun, but with no accounts it would rank whoever held longest, or scripted the longest hold, and it would need a backend to run and police. So the Visitor's data stays in their browser, a decision with its own architecture decision record.
 - **Infinite scroll.** Pages you can link to, Back that works, a footer you can reach, and a screen reader that knows where it is all matter more than saving a click.
 - **Component libraries.** The brief asks how I lay out components, so a library would have answered the question for me.
 - **Apollo 4's prereleases.** They're current, but a release candidate and a beta are a risk I didn't need to take with a deadline.
