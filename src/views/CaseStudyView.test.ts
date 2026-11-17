@@ -14,6 +14,30 @@ describe('CaseStudyView', () => {
     await waitFor(() => expect(document.title).toBe('How the Dad-a-base was built'))
   })
 
+  it('links to the code on GitHub, in a new tab, and says so', async () => {
+    await renderPage(CaseStudyView, { path: '/case-study' })
+    const code = screen.getByRole('link', { name: 'View the code on GitHub (opens in a new tab)' })
+    expect(code).toHaveAttribute('href', 'https://github.com/magicianmike/dad-a-base')
+    expect(code).toHaveAttribute('target', '_blank')
+    expect(code).toHaveAttribute('rel', 'noopener noreferrer')
+  })
+
+  it('names the repo, its decision records and its journal in the summary', async () => {
+    await renderPage(CaseStudyView, { path: '/case-study' })
+    expect(screen.getByRole('link', { name: 'magicianmike/dad-a-base' })).toHaveAttribute(
+      'href',
+      'https://github.com/magicianmike/dad-a-base',
+    )
+    expect(screen.getByRole('link', { name: 'decision record' })).toHaveAttribute(
+      'href',
+      'https://github.com/magicianmike/dad-a-base/tree/master/docs/adr',
+    )
+    expect(screen.getByRole('link', { name: 'journal' })).toHaveAttribute(
+      'href',
+      'https://github.com/magicianmike/dad-a-base/tree/master/docs/journal',
+    )
+  })
+
   it('lists its chapters, Engineering before Product and UX, each going to a heading that exists', async () => {
     await renderPage(CaseStudyView, { path: '/case-study' })
     const chapters = screen.getByRole('navigation', { name: 'Chapters' })

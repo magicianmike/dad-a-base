@@ -17,6 +17,9 @@ useHead({
   ],
 })
 
+/** The repository, for a reader who wants to check the code. */
+const REPOSITORY = 'https://github.com/magicianmike/dad-a-base'
+
 /** The Case Study's chapters, in order. Their ids are on the headings in the MDX. */
 const chapters = [
   { id: 'in-60-seconds', label: 'In 60 seconds' },
@@ -122,6 +125,19 @@ onScopeDispose(() => {
       A case study of the product, design and engineering decisions behind this site, for the people
       reviewing it.
     </p>
+    <!-- The way to the code, on the first screen, so a reader scanning for it finds it at once. -->
+    <a :href="REPOSITORY" target="_blank" rel="noopener noreferrer" class="code-link">
+      <!-- Angle brackets around a slash: code. The words beside it carry the meaning. -->
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16" />
+      </svg>
+      View the code on GitHub
+      <!-- A box with an arrow leaving it: a new tab. -->
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+      </svg>
+      <span class="visually-hidden"> (opens in a new tab)</span>
+    </a>
   </header>
   <div class="layout">
     <!-- The chapters stay beside the text as it scrolls past, and mark the one being read. -->
@@ -167,6 +183,50 @@ onScopeDispose(() => {
 
 .standfirst {
   font-size: var(--text-lg);
+}
+
+/* A link that looks like the app's outlined buttons, since it's the page's one call to action. */
+.code-link {
+  display: inline-flex;
+  gap: var(--space-2);
+  align-items: center;
+  min-height: var(--target-min);
+  padding: var(--space-2) var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  box-shadow: var(--button-shadow);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.code-link:hover {
+  text-decoration: underline;
+}
+
+.code-link:active {
+  box-shadow: none;
+  transform: translate(var(--shadow-offset), var(--shadow-offset));
+}
+
+.code-link .icon {
+  flex: none;
+  width: var(--space-4);
+  height: var(--space-4);
+  fill: none;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code-link:active {
+    transform: none;
+  }
 }
 
 /* Chapters beside the text on a wide screen; above it, and not sticky, on a narrow one. */
